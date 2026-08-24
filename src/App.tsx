@@ -38,6 +38,7 @@ import { AttendeeList } from './components/AttendeeRoster/AttendeeList';
 import { AddAttendeeModal } from './components/AttendeeRoster/AddAttendeeModal';
 import { CsvImportExport } from './components/AttendeeRoster/CsvImportExport';
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
+import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
 
 type TabId = 'map' | 'editor' | 'roster' | 'print';
 
@@ -45,6 +46,32 @@ export function App() {
   const plan = useHistory<PlanState>(loadPlan);
   const { seats, attendees, volunteers, answers, categories: planCategories } = plan.present;
   const categories = planCategories || CATEGORIES;
+
+  // Route check for /seattracker or /findmyseat
+  const isTrackerUrl = () => {
+    const p = window.location.pathname.toLowerCase();
+    const h = window.location.hash.toLowerCase();
+    const s = window.location.search.toLowerCase();
+    return (
+      p.includes('seattracker') ||
+      h.includes('seattracker') ||
+      s.includes('seattracker') ||
+      p.includes('findmyseat') ||
+      h.includes('findmyseat')
+    );
+  };
+
+  const [isKioskMode, setIsKioskMode] = useState(isTrackerUrl);
+
+  useEffect(() => {
+    const checkUrl = () => setIsKioskMode(isTrackerUrl());
+    window.addEventListener('popstate', checkUrl);
+    window.addEventListener('hashchange', checkUrl);
+    return () => {
+      window.removeEventListener('popstate', checkUrl);
+      window.removeEventListener('hashchange', checkUrl);
+    };
+  }, []);
 
   // Navigation & view state
   const [activeTab, setActiveTab] = useState<TabId>('map');
@@ -515,6 +542,26 @@ export function App() {
 
   const assignedCount = attendees.filter((a) => Boolean(a.seatId)).length;
 
+  // ---------------------------------------------------------------------
+  // If in Kiosk Mode (/seattracker) -> Render Dedicated Fullscreen Kiosk
+  // ---------------------------------------------------------------------
+  if (isKioskMode) {
+    return (
+      <SeatTrackerKiosk
+        seats={seatsWithPeople}
+        attendees={attendees}
+        volunteers={volunteers}
+        categories={categories}
+        eventTitle={answers.eventTitle}
+        departmentName={answers.departmentName}
+        onNavigateToAdmin={() => {
+          window.history.pushState({}, '', '/');
+          setIsKioskMode(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
       
@@ -545,6 +592,10 @@ export function App() {
         onResetToDefault={handleResetToDefaultLayout}
         onExportJson={handleExportJson}
         onOpenBackup={() => importInputRef.current?.click()}
+        onLaunchKiosk={() => {
+          window.history.pushState({}, '', '/seattracker');
+          setIsKioskMode(true);
+        }}
       />
 
       <HowToUseBanner
