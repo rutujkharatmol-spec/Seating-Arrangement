@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Seat, Volunteer, CategoryId, TierType, Attendee } from '../../types/seating';
+import { Seat, Volunteer, CategoryId, TierType, Attendee, QuestionnaireAnswers } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import { SeatNode } from './SeatNode';
 import { VolunteersLayer } from './VolunteersLayer';
@@ -7,9 +7,9 @@ import { GatesAndExitsLayer } from './GatesAndExitsLayer';
 import { MapControls } from './MapControls';
 import { Legend } from './Legend';
 import { SeatInspector } from '../Editor/SeatInspector';
-import { MapPin, User, Shield, MousePointerSquareDashed, X } from 'lucide-react';
+import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Check } from 'lucide-react';
 
-interface AuditoriumMapProps {
+export interface AuditoriumMapProps {
   seats: Seat[];
   volunteers: Volunteer[];
   selectedCategory: CategoryId | 'all';
@@ -33,19 +33,22 @@ interface AuditoriumMapProps {
   showAisles: boolean;
   eventTitle: string;
   departmentName: string;
-  /** When set, the map pans and zooms to this seat, then reports back. */
+  onUpdateEventMetadata?: (title: string, dept: string) => void;
+  answers?: QuestionnaireAnswers;
+  onApplyAnswers?: (answers: QuestionnaireAnswers) => void;
+  onAddVolunteer?: (vol: Volunteer) => void;
+  onUpdateVolunteer?: (vol: Volunteer) => void;
+  onDeleteVolunteer?: (id: string) => void;
   focusSeatId: string | null;
   onFocusHandled: () => void;
 }
 
-/** The drawing is authored in these units; pan and zoom sit on top of it. */
 const VIEW_W = 1000;
 const VIEW_H = 1050;
 
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 4;
 
-/** Above this zoom the chair glyph is replaced by the readable seat number. */
 const LABEL_ZOOM = 1.7;
 
 const LOWER_ROW_LIST = [
@@ -57,7 +60,6 @@ const UPPER_ROW_ORDER = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
 
 const SEAT_SIZE = 20;
 
-/** Where each seat is drawn. Pure, so it is safe to call from anywhere. */
 export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
   if (seat.tier === 'UPPER') {
     const y = 90 + Math.max(0, UPPER_ROW_ORDER.indexOf(seat.row)) * 25;
@@ -98,6 +100,12 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   showAisles,
   eventTitle,
   departmentName,
+  onUpdateEventMetadata,
+  answers,
+  onApplyAnswers,
+  onAddVolunteer,
+  onUpdateVolunteer,
+  onDeleteVolunteer,
   focusSeatId,
   onFocusHandled,
 }) => {
@@ -108,7 +116,27 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   const { zoom } = view;
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  /** Either panning the view or dragging a selection box — never both. */
+  // Direct Category Paint Brush tool
+  const [paintCategory, setPaintCategory] = useState<CategoryId | null>(null);
+
+  // Inline Title Editing state
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editableTitle, setEditableTitle] = useState(eventTitle);
+  const [editableDept, setEditableDept] = useState(departmentName);
+
+  useEffect(() => {
+    setEditableTitle(eventTitle);
+    setEditableDept(departmentName);
+  }, [eventTitle, departmentName]);
+
+  const handleSaveTitle = () => {
+    if (onUpdateEventMetadata) {
+      onUpdateEventMetadata(editableTitle.trim() || eventTitle, editableDept.trim() || departmentName);
+    }
+    setIsEditingTitle(false);
+  };
+
+  /** Either panning the view or dragging a selection box */
   const [drag, setDrag] = useState<
     | { mode: 'pan'; startClient: { x: number; y: number }; startPan: { x: number; y: number } }
     | { mode: 'lasso'; origin: { x: number; y: number }; current: { x: number; y: number }; additive: boolean }
@@ -145,13 +173,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     [selectedTier, selectedCategory, searchQuery, matchingIds]
   );
 
-  // ------------------------------------------------------------------
-  // View transform
-  // ------------------------------------------------------------------
-
   const clampZoom = (z: number) => Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z));
 
-  /** Zooms about the middle of the view, so the map doesn't drift off screen. */
   const zoomAboutCentre = useCallback((factor: number) => {
     setView((v) => {
       const next = clampZoom(v.zoom * factor);
@@ -167,7 +190,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
   const resetView = useCallback(() => setView({ zoom: 1, x: 0, y: 0 }), []);
 
-  /** Puts a point of the drawing in the middle of the view at a given zoom. */
   const centreOn = useCallback((x: number, y: number, nextZoom: number) => {
     const z = clampZoom(nextZoom);
     setView({ zoom: z, x: VIEW_W / 2 - z * x, y: VIEW_H / 2 - z * y });
@@ -204,11 +226,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     return () => document.removeEventListener('fullscreenchange', onChange);
   }, []);
 
-  // ------------------------------------------------------------------
-  // Pointer handling: plain drag pans, Shift-drag draws a selection box
-  // ------------------------------------------------------------------
-
-  /** Screen point -> drawing coordinates, accounting for viewBox, pan and zoom. */
   const toDrawingPoint = useCallback((clientX: number, clientY: number) => {
     const g = viewportRef.current;
     const ctm = g?.getScreenCTM();
@@ -217,10 +234,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     return { x: pt.x, y: pt.y };
   }, []);
 
-  /** Screen pixels -> drawing units, for turning a mouse delta into a pan. */
   const screenToDrawingScale = useCallback(() => {
     const ctm = viewportRef.current?.getScreenCTM();
-    // ctm.a already includes the zoom, which pan must not be scaled by.
     return ctm && ctm.a !== 0 ? ctm.a / zoom : 1;
   }, [zoom]);
 
@@ -263,7 +278,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
       const top = Math.min(origin.y, current.y);
       const bottom = Math.max(origin.y, current.y);
 
-      // A tiny box is a mis-click, not an attempt to select nothing.
       if (right - left > 4 || bottom - top > 4) {
         const ids = seats
           .filter((s) => {
@@ -275,7 +289,13 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           })
           .map((s) => s.id);
 
-        if (ids.length > 0) onSelectSeatIds(ids, additive);
+        if (ids.length > 0) {
+          if (paintCategory) {
+            onUpdateSeatsCategory(ids, paintCategory);
+          } else {
+            onSelectSeatIds(ids, additive);
+          }
+        }
       }
     }
     setDrag(null);
@@ -285,8 +305,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     zoomAboutCentre(e.deltaY < 0 ? 1.12 : 1 / 1.12);
   };
 
-  // A React onWheel handler is passive, so preventDefault there is ignored.
-  // Registering directly lets us stop the page scrolling behind the map.
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
@@ -295,10 +313,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     return () => node.removeEventListener('wheel', block);
   }, []);
 
-  // ------------------------------------------------------------------
-  // Tooltips
-  // ------------------------------------------------------------------
-
   const showTooltipAt = useCallback((e: React.MouseEvent, payload: Partial<typeof tooltip>) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -306,7 +320,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     const y = e.clientY - rect.top;
     setTooltip({
       visible: true,
-      // Flip to the other side near the edges so the card stays on screen.
       x: x > rect.width - 300 ? x - 275 : x + 16,
       y: y > rect.height - 220 ? y - 200 : y + 16,
       type: 'seat',
@@ -320,13 +333,25 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   );
 
   const handleSeatClick = useCallback(
-    (e: React.MouseEvent, seat: Seat) => onToggleSelectSeat(seat, e.shiftKey || e.ctrlKey || e.metaKey),
-    [onToggleSelectSeat]
+    (e: React.MouseEvent, seat: Seat) => {
+      if (paintCategory) {
+        onUpdateSeatsCategory([seat.id], paintCategory);
+        return;
+      }
+      onToggleSelectSeat(seat, e.shiftKey || e.ctrlKey || e.metaKey);
+    },
+    [paintCategory, onUpdateSeatsCategory, onToggleSelectSeat]
   );
 
   const handleSeatEnter = useCallback(
-    (e: React.MouseEvent, seat: Seat) => showTooltipAt(e, { type: 'seat', seat }),
-    [showTooltipAt]
+    (e: React.MouseEvent, seat: Seat) => {
+      // If paintbrush is active and user is holding primary mouse button, paint directly
+      if (paintCategory && e.buttons === 1) {
+        onUpdateSeatsCategory([seat.id], paintCategory);
+      }
+      showTooltipAt(e, { type: 'seat', seat });
+    },
+    [paintCategory, onUpdateSeatsCategory, showTooltipAt]
   );
 
   const handleVolunteerEnter = useCallback(
@@ -349,7 +374,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   return (
     <div className={`flex ${isFullscreen ? 'h-screen' : 'h-[calc(100vh-192px)] min-h-[560px]'}`}>
 
-      {/* ---------------------------- Map ---------------------------- */}
+      {/* ---------------------------- Map Area ---------------------------- */}
       <div
         ref={containerRef}
         onMouseDown={handleMouseDown}
@@ -361,9 +386,10 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
         }}
         onWheel={handleWheel}
         className={`relative flex-1 min-w-0 bg-slate-100/60 overflow-hidden select-none border-b border-slate-200 ${
-          drag?.mode === 'pan' ? 'cursor-grabbing' : drag?.mode === 'lasso' ? 'cursor-crosshair' : 'cursor-grab'
+          drag?.mode === 'pan' ? 'cursor-grabbing' : drag?.mode === 'lasso' ? 'cursor-crosshair' : paintCategory ? 'cursor-cell' : 'cursor-grab'
         }`}
       >
+        {/* Top-Left Legend */}
         <div className="absolute top-3 left-3 z-20 max-w-xs hidden lg:block">
           <Legend
             selectedCategory={selectedCategory}
@@ -372,6 +398,23 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           />
         </div>
 
+        {/* Floating Paintbrush Active Banner */}
+        {paintCategory && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white px-4 py-2 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-xs animate-bounce">
+            <Paintbrush className="w-4 h-4 text-amber-400" />
+            <span>
+              Painting as: <strong className="text-amber-400">{CATEGORIES[paintCategory]?.name || paintCategory}</strong>
+            </span>
+            <button
+              onClick={() => setPaintCategory(null)}
+              className="px-2 py-0.5 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] cursor-pointer"
+            >
+              Exit Paint Mode (✕)
+            </button>
+          </div>
+        )}
+
+        {/* Map Zoom Controls */}
         <MapControls
           zoom={zoom}
           onZoomIn={() => zoomAboutCentre(1.2)}
@@ -382,15 +425,17 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           onToggleFullscreen={handleToggleFullscreen}
         />
 
-        {/* How to select many seats — the one non-obvious interaction */}
-        <div className="absolute bottom-3 left-3 z-20 hidden md:flex items-center gap-1.5 bg-white/95 backdrop-blur px-2.5 py-1.5 rounded-lg border border-slate-300 shadow-sm text-[11px] text-slate-600 font-medium">
-          <MousePointerSquareDashed className="w-3.5 h-3.5 text-blue-600" />
+        {/* Quick Interaction Tip */}
+        <div className="absolute bottom-3 left-3 z-20 hidden md:flex items-center gap-1.5 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl border border-slate-300 shadow-sm text-xs text-slate-700 font-medium">
+          <MousePointerSquareDashed className="w-4 h-4 text-blue-600 shrink-0" />
           <span>
-            Drag to move • <kbd className="px-1 py-0.5 bg-slate-100 border border-slate-300 rounded font-mono text-[10px]">Shift</kbd>
-            +drag to select many • scroll to zoom
+            {paintCategory
+              ? '🎨 Click or drag over any chair to paint it!'
+              : '💡 Click any chair to edit details • Drag to pan • Scroll to zoom'}
           </span>
         </div>
 
+        {/* SVG Drawing Canvas */}
         <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} className="w-full h-full">
           <defs>
             <pattern id="lightGrid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -408,7 +453,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             <rect width={VIEW_W} height={VIEW_H} fill="url(#lightGrid)" />
             <rect x="200" y="800" width="600" height="250" fill="url(#stageGlowLight)" />
 
-            {/* Titles */}
+            {/* Editable Titles */}
             <text x="500" y="32" textAnchor="middle" fill="#0f172a" fontSize="18" fontWeight="bold" fontFamily="system-ui" letterSpacing="0.5">
               {eventTitle}
             </text>
@@ -428,7 +473,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
               <text x="26" y="21" fill="#334155" fontSize="10" fontWeight="bold">Arrangement</text>
             </g>
 
-            {/* Balcony outlines */}
+            {/* Balcony Tier Outlines */}
             <rect x="65" y="78" width="870" height="160" rx="24" fill="#f8fafc" fillOpacity="0.8" stroke="#94a3b8" strokeWidth="1.5" />
             <rect x="80" y="85" width="215" height="145" rx="10" fill="#faf5ff" stroke="#a855f7" strokeWidth="1" strokeDasharray="3 3" />
             {showAisles && (
@@ -460,7 +505,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
               </text>
             )}
 
-            {/* Ground floor zone outlines */}
+            {/* Lower Floor Outlines */}
             <rect x="75" y="290" width="230" height="295" rx="8" fill="#faf5ff" fillOpacity="0.4" stroke="#9333ea" strokeWidth="1" />
             {showAisles && (
               <text x="190" y="445" textAnchor="middle" fill="#7e22ce" fontSize="10" fontWeight="bold">
@@ -531,7 +576,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
               </text>
             )}
 
-            {/* Row letters down the sides */}
             {LOWER_ROW_LIST.map((rowLetter, idx) => {
               const yPos = 315 + idx * 26.5;
               return (
@@ -589,51 +633,48 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           </g>
         </svg>
 
-        {/* Hover card */}
+        {/* Hover Tooltip Card */}
         {tooltip.visible && (
           <div className="absolute z-30 pointer-events-none" style={{ left: tooltip.x, top: tooltip.y }}>
             {tooltip.type === 'seat' && tooltip.seat && (
-              <div className="bg-white/98 text-slate-900 p-3.5 rounded-2xl border border-slate-300 shadow-2xl backdrop-blur-md min-w-[240px] max-w-[300px]">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-2 gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
+              <div className="bg-white/98 text-slate-900 p-3 rounded-2xl border border-slate-300 shadow-2xl backdrop-blur-md min-w-[220px] max-w-[280px]">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-1.5 mb-1.5 gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
                     <span
-                      className="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-400/40"
+                      className="w-3 h-3 rounded-full shrink-0 border border-slate-400/40"
                       style={{ backgroundColor: CATEGORIES[tooltip.seat.categoryId]?.color ?? '#0284c7' }}
                     />
-                    <span className="font-extrabold text-sm text-slate-900 font-mono truncate">
+                    <span className="font-black text-xs text-slate-900 font-mono truncate">
                       Seat {tooltip.seat.id}
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
                     Row {tooltip.seat.row}
                   </span>
                 </div>
 
-                <div className="space-y-1.5 text-xs">
+                <div className="space-y-1 text-xs">
                   <Row label="Zone" value={CATEGORIES[tooltip.seat.categoryId]?.name ?? tooltip.seat.categoryId} strong />
                   <Row label="Block" value={tooltip.seat.blockName} />
 
                   {tooltip.seat.attendee ? (
-                    <div className="mt-2 pt-2 bg-blue-50/80 p-2.5 rounded-xl border border-blue-200">
-                      <div className="flex items-center gap-1.5 text-blue-950 font-bold text-xs">
-                        <User className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <div className="mt-1.5 pt-1.5 bg-blue-50/80 p-2 rounded-xl border border-blue-200">
+                      <div className="flex items-center gap-1 text-blue-950 font-bold text-xs">
+                        <User className="w-3 h-3 text-blue-600 shrink-0" />
                         <span className="truncate">{tooltip.seat.attendee.name}</span>
                       </div>
                       {tooltip.seat.attendee.designation && (
-                        <p className="text-[11px] text-slate-700 font-medium mt-0.5">{tooltip.seat.attendee.designation}</p>
-                      )}
-                      {tooltip.seat.attendee.department && (
-                        <p className="text-[10px] text-slate-500">{tooltip.seat.attendee.department}</p>
+                        <p className="text-[10px] text-slate-700 font-medium mt-0.5">{tooltip.seat.attendee.designation}</p>
                       )}
                     </div>
                   ) : tooltip.seat.isBlocked ? (
-                    <p className="mt-2 text-rose-700 font-bold text-[11px]">Blocked — nobody may sit here</p>
+                    <p className="mt-1 text-rose-700 font-bold text-[10px]">🚫 Blocked Seat</p>
                   ) : (
-                    <p className="mt-2 text-emerald-700 font-bold text-[11px]">Empty — click to seat a guest</p>
+                    <p className="mt-1 text-emerald-700 font-bold text-[10px]">✓ Open Seat (Click to assign)</p>
                   )}
 
-                  <div className="mt-2 pt-1.5 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between">
-                    <span>Enter through</span>
+                  <div className="mt-1.5 pt-1 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between">
+                    <span>Entry Door:</span>
                     <span className="font-bold text-emerald-700">{tooltip.seat.gateRecommendation}</span>
                   </div>
                 </div>
@@ -641,54 +682,48 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             )}
 
             {tooltip.type === 'volunteer' && tooltip.volunteer && (
-              <div className="bg-white/98 text-slate-900 p-3.5 rounded-2xl border border-emerald-400 shadow-2xl backdrop-blur-md min-w-[220px]">
-                <div className="flex items-center gap-2 border-b border-slate-200 pb-1.5 mb-1.5 text-emerald-800 font-bold text-xs">
+              <div className="bg-white/98 text-slate-900 p-3 rounded-2xl border border-emerald-400 shadow-2xl backdrop-blur-md min-w-[200px]">
+                <div className="flex items-center gap-1.5 border-b border-slate-200 pb-1 mb-1 text-emerald-800 font-bold text-xs">
                   <Shield className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Volunteer checkpoint</span>
+                  <span>Volunteer Checkpoint</span>
                 </div>
-                <p className="font-bold text-sm text-slate-900">{tooltip.volunteer.name}</p>
-                <p className="text-xs text-emerald-700 font-semibold">{tooltip.volunteer.role}</p>
-                <p className="text-[11px] text-slate-600 mt-1 flex items-center gap-1">
+                <p className="font-bold text-xs text-slate-900">{tooltip.volunteer.name}</p>
+                <p className="text-[11px] text-emerald-700 font-semibold">{tooltip.volunteer.role}</p>
+                <p className="text-[10px] text-slate-600 mt-0.5 flex items-center gap-1">
                   <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                   {tooltip.volunteer.location}
                 </p>
-                {tooltip.volunteer.phone && (
-                  <p className="text-[10px] text-slate-500 mt-1 font-mono">{tooltip.volunteer.phone}</p>
-                )}
               </div>
             )}
           </div>
         )}
       </div>
 
-      {/* ------------------- Editing panel, beside the map ------------------- */}
-      <aside
-        className={`shrink-0 border-l border-slate-200 bg-slate-50 overflow-y-auto ${
-          selectedSeats.length > 0 ? 'w-[340px] block' : 'w-[340px] hidden xl:block'
-        }`}
-      >
-        <div
-          className={`sticky top-0 z-10 flex items-center justify-between gap-2 px-3 py-2 ${
-            selectedSeats.length > 0 ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'
-          }`}
-        >
-          <span className="text-xs font-bold">
-            {selectedSeats.length === 0
-              ? 'Seat editor'
-              : selectedSeats.length === 1
-              ? `Editing seat ${selectedSeats[0].id}`
-              : `Editing ${selectedSeats.length} seats`}
+      {/* ------------------- COMPLETE LIVE EDITING SIDEBAR ------------------- */}
+      <aside className="w-[330px] md:w-[350px] shrink-0 border-l border-slate-200 bg-slate-50 overflow-y-auto">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-2 px-3 py-2 bg-slate-900 text-white shadow-xs">
+          <span className="text-xs font-bold flex items-center gap-1.5">
+            <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+            <span>
+              {selectedSeats.length === 0
+                ? 'Direct Editor Panel'
+                : selectedSeats.length === 1
+                ? `Editing Seat ${selectedSeats[0].id}`
+                : `Editing ${selectedSeats.length} Seats`}
+            </span>
           </span>
+
           {selectedSeats.length > 0 && (
             <button
               onClick={onClearSelection}
-              aria-label="Close the editing panel"
-              className="p-1 rounded hover:bg-blue-500 transition cursor-pointer"
+              aria-label="Deselect"
+              className="text-[11px] px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-white font-bold transition cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              Done (✕)
             </button>
           )}
         </div>
+
         <div className="p-3">
           <SeatInspector
             selectedSeats={selectedSeats}
@@ -701,6 +736,14 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             onClearSelection={onClearSelection}
             onSelectRow={onSelectRow}
             onSelectZone={onSelectZone}
+            answers={answers}
+            onApplyAnswers={onApplyAnswers}
+            paintCategory={paintCategory}
+            onSetPaintCategory={setPaintCategory}
+            volunteers={volunteers}
+            onAddVolunteer={onAddVolunteer}
+            onUpdateVolunteer={onUpdateVolunteer}
+            onDeleteVolunteer={onDeleteVolunteer}
           />
         </div>
       </aside>
@@ -709,8 +752,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 };
 
 const Row: React.FC<{ label: string; value: string; strong?: boolean }> = ({ label, value, strong }) => (
-  <div className="flex items-center justify-between gap-3 text-slate-500">
-    <span className="shrink-0">{label}</span>
+  <div className="flex items-center justify-between gap-2 text-slate-500">
+    <span className="shrink-0">{label}:</span>
     <span className={`text-right truncate ${strong ? 'font-bold text-slate-900' : 'text-slate-700 font-medium'}`}>
       {value}
     </span>

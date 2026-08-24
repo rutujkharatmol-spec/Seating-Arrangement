@@ -137,6 +137,12 @@ export const EditorTab: React.FC<EditorTabProps> = ({
               onClearSelection={onClearSelection}
               onSelectRow={onSelectRow}
               onSelectZone={onSelectZone}
+              answers={answers}
+              onApplyAnswers={onApplyAnswers}
+              volunteers={volunteers}
+              onAddVolunteer={onAddVolunteer}
+              onUpdateVolunteer={onUpdateVolunteer}
+              onDeleteVolunteer={onDeleteVolunteer}
             />
           </div>
 

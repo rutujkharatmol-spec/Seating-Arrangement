@@ -557,6 +557,17 @@ export function App() {
             showAisles={showAisles}
             eventTitle={answers.eventTitle}
             departmentName={answers.departmentName}
+            onUpdateEventMetadata={(title, dept) =>
+              plan.commit(
+                (p) => ({ ...p, answers: { ...p.answers, eventTitle: title, departmentName: dept } }),
+                'Edit Event Details'
+              )
+            }
+            answers={answers}
+            onApplyAnswers={handleApplyQuestionnaireAnswers}
+            onAddVolunteer={handleAddVolunteer}
+            onUpdateVolunteer={handleUpdateVolunteer}
+            onDeleteVolunteer={handleDeleteVolunteer}
             focusSeatId={focusSeatId}
             onFocusHandled={() => setFocusSeatId(null)}
           />
