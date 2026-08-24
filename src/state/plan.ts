@@ -16,22 +16,13 @@ export interface PlanState {
   categories: Record<string, CategoryInfo>;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v3';
-
-/** Legacy keys from previous versions */
-const LEGACY_KEYS = {
-  v2: 'aiims_seating_plan_v2',
-  answers: 'aiims_seating_answers',
-  seats: 'aiims_seating_seats',
-  attendees: 'aiims_seating_attendees',
-  volunteers: 'aiims_seating_volunteers',
-};
+const STORAGE_KEY = 'aiims_seating_plan_v5';
 
 export function createDefaultPlan(): PlanState {
   return {
     answers: INITIAL_QUESTIONNAIRE_ANSWERS,
     seats: generateDefaultSeats(),
-    attendees: INITIAL_ATTENDEES,
+    attendees: [],
     volunteers: DEFAULT_VOLUNTEERS,
     categories: { ...CATEGORIES },
   };
@@ -61,7 +52,7 @@ export function normalisePlan(plan: Partial<PlanState>): PlanState {
 
   // One seat can hold one person; if a file has duplicates, the first wins.
   const claimed = new Set<string>();
-  const rawAttendees = plan.attendees || INITIAL_ATTENDEES;
+  const rawAttendees = plan.attendees || [];
   const attendees = rawAttendees.map((a) => {
     const catId = categories[a.categoryId] ? a.categoryId : 'faculty';
     if (!a.seatId) return { ...a, categoryId: catId };
@@ -105,41 +96,7 @@ export function loadPlan(): PlanState {
     // Corrupt storage should never block the app from opening.
   }
 
-  const migrated = loadLegacyPlan();
-  if (migrated) return migrated;
-
   return createDefaultPlan();
-}
-
-function loadLegacyPlan(): PlanState | null {
-  try {
-    const v2Raw = localStorage.getItem(LEGACY_KEYS.v2);
-    if (v2Raw) {
-      const v2 = JSON.parse(v2Raw) as PlanState;
-      if (v2?.seats?.length) return normalisePlan(v2);
-    }
-
-    const seatsRaw = localStorage.getItem(LEGACY_KEYS.seats);
-    if (!seatsRaw) return null;
-
-    const seats = JSON.parse(seatsRaw) as Seat[];
-    if (!seats?.length) return null;
-
-    const read = <T,>(key: string, fallback: T): T => {
-      const raw = localStorage.getItem(key);
-      return raw ? (JSON.parse(raw) as T) : fallback;
-    };
-
-    return normalisePlan({
-      seats,
-      answers: read(LEGACY_KEYS.answers, INITIAL_QUESTIONNAIRE_ANSWERS),
-      attendees: read(LEGACY_KEYS.attendees, INITIAL_ATTENDEES),
-      volunteers: read(LEGACY_KEYS.volunteers, DEFAULT_VOLUNTEERS),
-      categories: { ...CATEGORIES },
-    });
-  } catch {
-    return null;
-  }
 }
 
 export function savePlan(plan: PlanState) {
