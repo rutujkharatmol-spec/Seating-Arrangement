@@ -227,6 +227,23 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   }, [zoom]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    // In paintbrush mode: never pan the viewport on left click.
+    // Instead, left click & drag does box painting over seats without moving the screen.
+    if (paintCategory) {
+      if (e.button === 1 || e.altKey) {
+        // Allow intentional pan if middle mouse button or Alt key is held
+        setDrag({ mode: 'pan', startClient: { x: e.clientX, y: e.clientY }, startPan: { x: view.x, y: view.y } });
+        return;
+      }
+      if (e.button === 0) {
+        const origin = toDrawingPoint(e.clientX, e.clientY);
+        if (!origin) return;
+        setDrag({ mode: 'lasso', origin, current: origin, additive: true });
+        return;
+      }
+      return;
+    }
+
     if (e.button !== 0) return;
 
     if (e.shiftKey) {
@@ -321,6 +338,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
   const handleSeatClick = useCallback(
     (e: React.MouseEvent, seat: Seat) => {
+      e.stopPropagation();
       if (paintCategory) {
         onUpdateSeatsCategory([seat.id], paintCategory);
         return;
@@ -333,6 +351,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   const handleSeatEnter = useCallback(
     (e: React.MouseEvent, seat: Seat) => {
       if (paintCategory && e.buttons === 1) {
+        e.stopPropagation();
         onUpdateSeatsCategory([seat.id], paintCategory);
       }
       showTooltipAt(e, { type: 'seat', seat });

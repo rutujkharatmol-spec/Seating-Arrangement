@@ -53,7 +53,13 @@ const SeatNodeComponent: React.FC<SeatNodeProps> = ({
   return (
     <g
       transform={`translate(${x}, ${y})`}
-      onClick={(e) => onClick(e, seat)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick(e, seat);
+      }}
+      onMouseDown={(e) => {
+        e.stopPropagation();
+      }}
       onMouseEnter={(e) => onMouseEnter(e, seat)}
       onMouseLeave={onMouseLeave}
       className="cursor-pointer group"
