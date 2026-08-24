@@ -26,6 +26,7 @@ import { Header } from './components/Header';
 import { StatsBar } from './components/UI/StatsBar';
 import { SearchFilterBar } from './components/UI/SearchFilterBar';
 import { PlanHealthBar } from './components/UI/PlanHealthBar';
+import { HowToUseBanner } from './components/UI/HowToUseBanner';
 import { Toast, ToastKind } from './components/UI/Toast';
 import { AuditoriumMap } from './components/AuditoriumMap/AuditoriumMap';
 import { EditorTab } from './components/Editor/EditorTab';
@@ -285,14 +286,31 @@ export function App() {
   };
 
   const handleImportAttendees = (newAttendees: Attendee[]) => {
-    plan.commit(
-      (p) => ({ ...p, attendees: [...p.attendees, ...newAttendees] }),
-      `Import ${newAttendees.length} guests`
-    );
-    showToast(
-      `Imported ${newAttendees.length} guests. Use "Auto-seat roster" to place them.`,
-      'success'
-    );
+    let droppedSeats = 0;
+
+    plan.commit((p) => {
+      const seatIds = new Set(p.seats.map((s) => s.id));
+      const taken = new Set(p.attendees.map((a) => a.seatId).filter(Boolean) as string[]);
+
+      // A seat named in the file is only honoured if it exists and is free,
+      // so an import can never double-book somebody who is already seated.
+      const cleaned = newAttendees.map((a) => {
+        if (!a.seatId) return a;
+        if (!seatIds.has(a.seatId) || taken.has(a.seatId)) {
+          droppedSeats++;
+          return { ...a, seatId: undefined };
+        }
+        taken.add(a.seatId);
+        return a;
+      });
+
+      return { ...p, attendees: [...p.attendees, ...cleaned] };
+    }, `Import ${newAttendees.length} guests`);
+
+    const suffix = droppedSeats
+      ? ` ${droppedSeats} had a seat that was taken or missing — use Auto-seat to place them.`
+      : ' Use Auto-seat to place anyone without a seat.';
+    showToast(`Imported ${newAttendees.length} guests.${suffix}`, droppedSeats ? 'info' : 'success');
   };
 
   const handleAddVolunteer = (vol: Volunteer) => {
@@ -418,7 +436,8 @@ export function App() {
       }
 
       if (e.key === 'Escape') {
-        handleClearSelection();
+        if (isQuestionnaireModalOpen) setIsQuestionnaireModalOpen(false);
+        else handleClearSelection();
         return;
       }
 
@@ -432,7 +451,7 @@ export function App() {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [plan, handleClearSelection]);
+  }, [plan, handleClearSelection, isQuestionnaireModalOpen]);
 
   const assignedCount = attendees.filter((a) => Boolean(a.seatId)).length;
 
@@ -476,6 +495,8 @@ export function App() {
         onExportJson={handleExportJson}
         onOpenBackup={() => importInputRef.current?.click()}
       />
+
+      <HowToUseBanner onOpenWizard={() => setIsQuestionnaireModalOpen(true)} />
 
       <StatsBar
         seats={seatsWithPeople}
@@ -593,7 +614,12 @@ export function App() {
       </main>
 
       {isQuestionnaireModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setIsQuestionnaireModalOpen(false);
+          }}
+        >
           <div className="relative w-full max-w-4xl my-8">
             <QuestionnaireWizard
               answers={answers}

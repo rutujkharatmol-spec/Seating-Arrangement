@@ -1,7 +1,6 @@
 import React from 'react';
 import { Seat, CategoryId } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
-import { ShieldCheck, UserCheck, Armchair, Ban, Users } from 'lucide-react';
 
 interface StatsBarProps {
   seats: Seat[];
@@ -14,116 +13,95 @@ export const StatsBar: React.FC<StatsBarProps> = ({
   selectedCategory,
   onSelectCategory,
 }) => {
-  const total = seats.length; // 750
+  const categoryCounts = seats.reduce((acc, seat) => {
+    acc[seat.categoryId] = (acc[seat.categoryId] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
-  const counts: Record<CategoryId, number> = {
-    vip: 0,
-    senior_faculty: 0,
-    faculty: 0,
-    awardees: 0,
-    reporters: 0,
-    accompanying: 0,
-    band_party: 0,
-    console: 0,
-    audience: 0,
-    blocked: 0,
-    available: 0,
-  };
-
-  let assignedCount = 0;
-  let blockedCount = 0;
-
-  seats.forEach((s) => {
-    if (counts[s.categoryId] !== undefined) {
-      counts[s.categoryId]++;
-    }
-    if (s.attendee || s.attendeeId) assignedCount++;
-    if (s.isBlocked || s.categoryId === 'blocked') blockedCount++;
-  });
-
-  const categoriesList: CategoryId[] = [
+  const categoryOrder: CategoryId[] = [
     'vip',
-    'senior_faculty',
     'faculty',
+    'senior_faculty',
     'awardees',
     'reporters',
     'accompanying',
-    'console',
     'band_party',
+    'console',
     'audience',
     'blocked',
   ];
 
+  const categoryIcons: Record<string, string> = {
+    vip: '👑',
+    faculty: '🎓',
+    senior_faculty: '⭐',
+    awardees: '🏆',
+    reporters: '🎤',
+    accompanying: '👨‍👩‍👧',
+    band_party: '🎵',
+    console: '💻',
+    audience: '👥',
+    blocked: '🚫',
+  };
+
   return (
-    <div className="no-print bg-white/90 border-b border-slate-200 px-4 py-2.5 shadow-xs">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-3">
-        
-        {/* Quick summary chips */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg text-blue-900 font-bold">
-            <Armchair className="w-3.5 h-3.5 text-blue-600" />
-            <span>Total Seats: <strong>{total}</strong></span>
-          </div>
+    <div className="no-print bg-slate-100/80 border-b border-slate-200 py-2 px-4 overflow-x-auto scrollbar-none">
+      <div className="max-w-7xl mx-auto flex items-center gap-1.5 min-w-max">
+        <span className="text-[11px] font-bold text-slate-500 mr-1 uppercase tracking-wider flex items-center gap-1">
+          <span>Filter Zone:</span>
+        </span>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 font-semibold">
-            <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Assigned: <strong>{assignedCount}</strong></span>
-          </div>
+        {/* All Seats Filter */}
+        <button
+          onClick={() => onSelectCategory('all')}
+          className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-2xs border ${
+            selectedCategory === 'all'
+              ? 'bg-slate-900 text-white border-slate-900 scale-[1.02]'
+              : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+          }`}
+        >
+          <span>🏛️ All Seats</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200/80 text-slate-800 font-mono">
+            {seats.length}
+          </span>
+        </button>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 font-semibold">
-            <Users className="w-3.5 h-3.5 text-amber-600" />
-            <span>Reserved: <strong>{total - assignedCount - blockedCount}</strong></span>
-          </div>
+        {/* Specific Category Chips */}
+        {categoryOrder.map((catId) => {
+          const cat = CATEGORIES[catId];
+          if (!cat) return null;
+          const count = categoryCounts[catId] || 0;
+          const isSelected = selectedCategory === catId;
+          const icon = categoryIcons[catId] || '🏷️';
 
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-50 border border-rose-200 rounded-lg text-rose-900 font-semibold">
-            <Ban className="w-3.5 h-3.5 text-rose-600" />
-            <span>Blocked: <strong>{blockedCount}</strong></span>
-          </div>
-        </div>
-
-        {/* Category breakdown clickable pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 scrollbar-thin">
-          <button
-            onClick={() => onSelectCategory('all')}
-            className={`px-2.5 py-1 rounded-md text-xs font-bold whitespace-nowrap transition-all shadow-xs ${
-              selectedCategory === 'all'
-                ? 'bg-slate-900 text-white shadow-sm ring-2 ring-blue-500'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
-            }`}
-          >
-            All Zones ({total})
-          </button>
-
-          {categoriesList.map((catId) => {
-            const cat = CATEGORIES[catId];
-            const isSelected = selectedCategory === catId;
-            const count = counts[catId] || 0;
-
-            return (
-              <button
-                key={catId}
-                onClick={() => onSelectCategory(isSelected ? 'all' : catId)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all border shadow-2xs ${
-                  isSelected
-                    ? 'ring-2 ring-slate-900 shadow-md scale-105 font-bold text-slate-950'
-                    : 'text-slate-800 hover:bg-slate-100'
-                }`}
+          return (
+            <button
+              key={catId}
+              onClick={() => onSelectCategory(isSelected ? 'all' : catId)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-2xs border ${
+                isSelected
+                  ? 'ring-2 ring-slate-900 scale-105 font-black'
+                  : 'hover:opacity-90 opacity-95'
+              }`}
+              style={{
+                backgroundColor: cat.color,
+                color: cat.textColor,
+                borderColor: cat.borderColor,
+              }}
+            >
+              <span>{icon} {cat.shortName}</span>
+              <span
+                className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold"
                 style={{
-                  backgroundColor: isSelected ? cat.color : '#f8fafc',
-                  borderColor: isSelected ? '#0f172a' : cat.borderColor,
+                  backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                  color: cat.textColor,
                 }}
               >
-                <span
-                  className="w-2.5 h-2.5 rounded-full inline-block border border-slate-400/40"
-                  style={{ backgroundColor: cat.color }}
-                />
-                <span>{cat.shortName}</span>
-                <span className="font-mono text-[11px] font-bold text-slate-600">({count})</span>
-              </button>
-            );
-          })}
-        </div>
-
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

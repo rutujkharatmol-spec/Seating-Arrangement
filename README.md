@@ -1,120 +1,86 @@
-# AIIMS Kalyani - Auditorium Seating Arrangement Web Application
+# AIIMS Kalyani — Auditorium Seating Arrangement
 
-An interactive, light professional web application designed for managing and visualizing the **763-Seat Auditorium Seating Arrangement** at **AIIMS Kalyani** (Department of Physiology & Academic Section).
+A visual planner for the 763-seat AIIMS Kalyani auditorium. Lay out the zones,
+seat your guests, and print the charts, gate sheets and passes for the day.
 
-![Auditorium Seating Arrangement](https://img.shields.io/badge/AIIMS%20Kalyani-Seating%20Manager-blue)
-![React 18](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-Fast%20Bundler-646CFF?logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-Modern%20UI-38B2AC?logo=tailwind-css&logoColor=white)
+## Running it
 
----
-
-## 🏛️ Auditorium Blueprint & Zone Layout
-
-The application models the AIIMS Kalyani main auditorium across two primary tiers:
-
-### 1. Upper Balcony Tier (132 Seats)
-- **Upper Left Block**: 35 seats (5 rows × 7 cols) — Reserved for Audience / Students
-- **Upper Center Block**: 62 seats
-  - Back Row: 10 seats — Audience (6 + 4 highlighted)
-  - Row 4: 13 seats — Audience
-  - Rows 1–3: 39 seats (3 rows × 13 cols) — Band Party & Ceremonial Orchestra
-- **Upper Right Block**: 35 seats (5 rows × 7 cols) — Reserved for Audience / Students
-
-### 2. Lower / Ground Floor Tier (631 Seats across Rows A–X)
-- **Left Wing (166 Seats)**:
-  - Rows A–H: 54 seats (8 rows × 7 cols - 2 buffer seats) — Registrar & Senior Faculty
-  - Rows I–M: 35 seats (5 rows × 7 cols) — AV & Technical Console Staff
-  - Rows N–X: 77 seats (11 rows × 7 cols) — General Audience
-- **Center Block (299 Seats)**:
-  - Rows A–D: **52 seats (4 rows × 13 cols)** — VIP Dignitaries, Chief Guests & Ministry Officials
-  - Rows E–G: 39 seats (3 rows × 13 cols) — Press & Media Reporters
-  - Rows H–U: 182 seats (14 rows × 13 cols) — Faculty Members
-  - Rows V–W: 26 seats (2 rows × 13 cols) — Accompanying Persons & Family Guests
-- **Right Wing (166 Seats)**:
-  - Rows A–H: 54 seats (8 rows × 7 cols - 2 buffer seats) — Blocked / Buffer Seats
-  - Rows I–O: 49 seats (7 rows × 7 cols) — Awardees, Gold Medalists & Honorees
-  - Rows P–X: 63 seats (9 rows × 7 cols) — Accompanying Persons
-
----
-
-## ✨ Key Features
-
-1. **Interactive Auditorium Map Visualizer**:
-   - High-fidelity vector rendering of all 763 chairs matching the blueprint.
-   - Smooth zoom in/out, pan, and fit-to-screen controls.
-   - Live hover card / tooltip showing Seat ID, Zone Category, Assigned Dignitary, and Recommended Gate (`Gate-1` / `Gate-2`).
-   - Multi-select mode (Shift/Ctrl + Click) for bulk reassignments.
-   - Gate-1 and Gate-2 entry points with directional flow and 14 stationed volunteer checkpoints.
-
-2. **Editor Mode & Questionnaire Wizard**:
-   - Step-by-step guided questionnaire:
-     - *How many Faculty Members are attending?*
-     - *How many Senior Faculty & Registrars?*
-     - *How many VIPs & Chief Guests?* (4 rows × 13 = 52 seats)
-     - *How many Awardees & Prize Recipients?*
-     - *How many Press & Media Reporters?*
-     - *How many Accompanying Family Members?*
-     - *How many Band Party & Orchestra Members?*
-     - *How many Technical & AV Console Staff?*
-     - *How many Blocked / Buffer Seats required?*
-     - *Remaining Seats for General Audience & Students*
-   - Live Capacity Validator with 1-click **"Auto-Reallocate Seating Plan"** algorithm.
-   - Single & Bulk **Seat Inspector** for manual category reassignment and attendee assignment.
-   - **Volunteer Station Manager** for usher assignment at gates and aisle checkpoints.
-
-3. **Attendee Roster & Spotlight Search**:
-   - Search by Seat ID (e.g. `C-A7`), Attendee Name, Designation, or Department.
-   - Instant spotlighting on the map with animated glow.
-   - Bulk **CSV Import** with downloadable sample template and **CSV Roster Export**.
-
-4. **Print & Export Center**:
-   - Print-ready A4/A3 Seating Blueprint with full color-coded legend.
-   - Gate-1 and Gate-2 usher seating sheets.
-   - Printable Attendee Admission Badges with QR code representations.
-   - JSON configuration backup & restore.
-
----
-
-## 🛠️ Technology Stack
-
-- **Frontend**: React 18, TypeScript, Vite
-- **Styling**: Tailwind CSS v4, Custom Design Tokens (Light Professional Executive Theme)
-- **Icons**: Lucide React
-- **Data & Export**: CSV Parser/Generator, JSON Backup, Print CSS
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm / pnpm / yarn
-
-### Installation
 ```bash
-# Clone the repository
-git clone https://github.com/rutujkharatmol-spec/Seating-Arrangement.git
-
-# Navigate into project directory
-cd Seating-Arrangement
-
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
+npm run dev      # opens on http://localhost:5173
 ```
 
-The application will be running at `http://localhost:5173/`.
-
-### Build for Production
 ```bash
-npm run build
+npm run build    # production build into dist/
+npm run preview  # serve that build locally
 ```
-The compiled bundle will be available in the `dist/` directory.
 
----
+## The four tabs
 
-## 📄 License
-MIT License. Developed for AIIMS Kalyani Event & Auditorium Seating Management.
+| Tab | What it is for |
+| --- | --- |
+| **Seating map** | The floor plan. Click a seat to edit it in the panel on the right. |
+| **Setup** | The zone wizard, the seat editor, and volunteer checkpoints. |
+| **Guest list** | Everyone attending. Import a CSV, then auto-seat them. |
+| **Print** | Auditorium chart, A–Z guest sheet, per-gate usher sheets, seat passes. |
+
+## The quickest way to build a plan
+
+1. **Setup wizard** — say how many VIPs, faculty, awardees and so on you expect.
+   The zones are laid out across the auditorium for you.
+2. **Guest list → Import CSV** — paste or upload your list of names. Each row
+   needs a name; a zone (`vip`, `faculty`, `awardees`, …) and a seat are optional.
+3. **Auto-seat** — every guest without a seat is placed in the best free seat of
+   their own zone: closest to the stage, closest to the centre aisle. Anyone who
+   does not fit is reported rather than squeezed in somewhere wrong.
+4. **Adjust by hand** on the map — click a seat, or Shift-drag a box around a
+   group of them.
+5. **Print** what you need.
+
+## Working on the map
+
+- **Click** a seat to open it in the editing panel.
+- **Shift + drag** a box to select many seats; add `Ctrl` to add to the selection.
+- **Drag** to move the map, **scroll** to zoom. Past about 170% the chair icons
+  turn into readable seat numbers.
+- With a seat selected you can grab **its whole row** or **its whole zone** in
+  one click, then change them all together.
+
+### Shortcuts
+
+| Key | Does |
+| --- | --- |
+| `Ctrl + Z` | Undo |
+| `Ctrl + Shift + Z` | Redo |
+| `/` | Jump to the search box |
+| `Enter` in search | Zoom the map to the first match |
+| `Esc` | Clear the selection, or close a dialog |
+
+## Saving your work
+
+The plan saves itself in this browser as you go. **Plan → Save backup file**
+writes the whole thing — seats, guests, volunteers, zone counts — to one dated
+`.json` file, and **Plan → Open backup file** reads it back. Use that to keep a
+copy before big changes, or to move a plan to another computer.
+
+The strip above the map tells you whether the plan is ready: who still has no
+seat, who is sitting outside their own zone, and any zone with more guests than
+it has seats.
+
+## How it is put together
+
+```
+src/
+  App.tsx                  every action, and the state they all share
+  state/plan.ts            the saved plan: load, save, repair, seat↔guest join
+  hooks/useHistory.ts      undo / redo
+  utils/autoSeat.ts        automatic seating, and the plan health checks
+  utils/seatAlgorithms.ts  turns the wizard's answers into zones
+  utils/exportHelpers.ts   CSV and JSON in and out
+  data/                    the master blueprint, zone colours, presets
+  components/              map, editor, guest list, print
+```
+
+One rule holds the data together: **a seat never stores who is sitting in it.**
+Only `attendee.seatId` records that, and the map joins the two at render time.
+So the two can never drift out of step, and one seat can never hold two people.

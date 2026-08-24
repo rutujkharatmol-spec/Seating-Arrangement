@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Attendee } from '../../types/seating';
 import { parseAttendeesCsv } from '../../utils/exportHelpers';
+import { useDismissOnEscape } from '../../hooks/useDismissOnEscape';
 import { X, Upload, CheckCircle2, AlertCircle, Download } from 'lucide-react';
 
 interface CsvImportExportProps {
@@ -14,11 +15,13 @@ export const CsvImportExport: React.FC<CsvImportExportProps> = ({
   onClose,
   onImportAttendees,
 }) => {
-  if (!isOpen) return null;
-
   const [csvText, setCsvText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [successCount, setSuccessCount] = useState<number | null>(null);
+
+  useDismissOnEscape(isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,6 +68,9 @@ export const CsvImportExport: React.FC<CsvImportExportProps> = ({
       onImportAttendees(fullAttendees);
       setSuccessCount(fullAttendees.length);
       setTimeout(() => {
+        // Clear the box so reopening the dialog doesn't re-import the same list.
+        setCsvText('');
+        setSuccessCount(null);
         onClose();
       }, 1200);
     } catch (err: any) {
@@ -88,7 +94,13 @@ export const CsvImportExport: React.FC<CsvImportExportProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in"
+      onMouseDown={(e) => {
+        // Only a click on the backdrop itself closes the dialog.
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-2xl max-w-xl w-full text-slate-900 relative">
         <button
           onClick={onClose}

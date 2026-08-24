@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Attendee, CategoryId, Seat } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
+import { useDismissOnEscape } from '../../hooks/useDismissOnEscape';
 import { X, UserPlus } from 'lucide-react';
 
 interface AddAttendeeModalProps {
@@ -16,8 +17,6 @@ export const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
   onAdd,
   availableSeats,
 }) => {
-  if (!isOpen) return null;
-
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
   const [department, setDepartment] = useState('');
@@ -26,6 +25,10 @@ export const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
   const [phone, setPhone] = useState('');
   const [categoryId, setCategoryId] = useState<CategoryId>('faculty');
   const [selectedSeatId, setSelectedSeatId] = useState('');
+
+  useDismissOnEscape(isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,11 +47,24 @@ export const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
       isVip: categoryId === 'vip',
     });
 
+    setName('');
+    setDesignation('');
+    setDepartment('');
+    setEmail('');
+    setPhone('');
+    setSelectedSeatId('');
+
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in"
+      onMouseDown={(e) => {
+        // Only a click on the backdrop itself closes the dialog.
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-2xl max-w-lg w-full text-slate-900 relative">
         <button
           onClick={onClose}
