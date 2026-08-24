@@ -24,6 +24,7 @@ interface EditorTabProps {
   onAddVolunteer: (vol: Volunteer) => void;
   onUpdateVolunteer: (vol: Volunteer) => void;
   onDeleteVolunteer: (id: string) => void;
+  onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
 }
 
 const SHORTCUTS: [string, string][] = [
@@ -54,6 +55,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
   onAddVolunteer,
   onUpdateVolunteer,
   onDeleteVolunteer,
+  onSwapSeats,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'wizard' | 'seats' | 'volunteers'>('wizard');
 
@@ -143,6 +145,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
               onAddVolunteer={onAddVolunteer}
               onUpdateVolunteer={onUpdateVolunteer}
               onDeleteVolunteer={onDeleteVolunteer}
+              onSwapSeats={onSwapSeats}
             />
           </div>
 

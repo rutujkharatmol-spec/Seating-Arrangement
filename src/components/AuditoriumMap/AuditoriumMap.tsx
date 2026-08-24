@@ -7,7 +7,7 @@ import { GatesAndExitsLayer } from './GatesAndExitsLayer';
 import { MapControls } from './MapControls';
 import { Legend } from './Legend';
 import { SeatInspector } from '../Editor/SeatInspector';
-import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Settings } from 'lucide-react';
+import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Settings, ArrowLeftRight } from 'lucide-react';
 
 export interface AuditoriumMapProps {
   seats: Seat[];
@@ -41,6 +41,7 @@ export interface AuditoriumMapProps {
   onAddVolunteer?: (vol: Volunteer) => void;
   onUpdateVolunteer?: (vol: Volunteer) => void;
   onDeleteVolunteer?: (id: string) => void;
+  onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
   focusSeatId: string | null;
   onFocusHandled: () => void;
 }
@@ -110,6 +111,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   onAddVolunteer,
   onUpdateVolunteer,
   onDeleteVolunteer,
+  onSwapSeats,
   focusSeatId,
   onFocusHandled,
 }) => {
@@ -405,6 +407,41 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           />
         </div>
 
+        {/* Floating Quick Swap Action Bar when 2 Seats Selected */}
+        {selectedSeats.length === 2 && onSwapSeats && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-900/95 text-white px-4 py-2 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 backdrop-blur-md animate-fade-in text-xs">
+            <div className="flex items-center gap-2 font-mono">
+              <span className="font-black text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-lg border border-emerald-800">
+                {selectedSeats[0].id}
+              </span>
+              <span className="text-slate-400">⇄</span>
+              <span className="font-black text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-lg border border-emerald-800">
+                {selectedSeats[1].id}
+              </span>
+            </div>
+
+            <div className="h-4 w-px bg-slate-700" />
+
+            <button
+              type="button"
+              onClick={() => onSwapSeats(selectedSeats[0].id, selectedSeats[1].id)}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-black transition cursor-pointer shadow-sm"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+              <span>Swap Guests</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onClearSelection}
+              className="text-slate-400 hover:text-white text-[11px] cursor-pointer"
+              title="Cancel Selection"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* Floating Paintbrush Active Banner */}
         {paintCategory && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white px-4 py-2 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-xs animate-bounce">
@@ -687,6 +724,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             onAddVolunteer={onAddVolunteer}
             onUpdateVolunteer={onUpdateVolunteer}
             onDeleteVolunteer={onDeleteVolunteer}
+            onSwapSeats={onSwapSeats}
           />
         </div>
       </aside>

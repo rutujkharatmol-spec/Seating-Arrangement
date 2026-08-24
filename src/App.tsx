@@ -341,6 +341,40 @@ export function App() {
     showToast(`Emptied seat ${seatId}`);
   };
 
+  const handleSwapSeats = (seatIdA: string, seatIdB: string) => {
+    const attA = attendees.find((a) => a.seatId === seatIdA);
+    const attB = attendees.find((a) => a.seatId === seatIdB);
+
+    if (!attA && !attB) {
+      showToast(`Both ${seatIdA} and ${seatIdB} are empty seats.`, 'info');
+      return;
+    }
+
+    plan.commit((p) => {
+      const pAttA = p.attendees.find((a) => a.seatId === seatIdA);
+      const pAttB = p.attendees.find((a) => a.seatId === seatIdB);
+
+      const nextAttendees = p.attendees.map((a) => {
+        if (pAttA && a.id === pAttA.id) {
+          return { ...a, seatId: seatIdB };
+        }
+        if (pAttB && a.id === pAttB.id) {
+          return { ...a, seatId: seatIdA };
+        }
+        return a;
+      });
+
+      return {
+        ...p,
+        attendees: nextAttendees,
+      };
+    }, `Swap seats ${seatIdA} ⇄ ${seatIdB}`);
+
+    const nameA = attA?.name || `Seat ${seatIdA}`;
+    const nameB = attB?.name || `Seat ${seatIdB}`;
+    showToast(`Swapped positions: ${nameA} ⇄ ${nameB}`);
+  };
+
   const handleApplyQuestionnaireAnswers = (newAnswers: QuestionnaireAnswers) => {
     plan.commit((p) => {
       const reallocated = reallocateSeatsFromAnswers(p.seats, newAnswers);
@@ -676,6 +710,7 @@ export function App() {
             onAddVolunteer={handleAddVolunteer}
             onUpdateVolunteer={handleUpdateVolunteer}
             onDeleteVolunteer={handleDeleteVolunteer}
+            onSwapSeats={handleSwapSeats}
             focusSeatId={focusSeatId}
             onFocusHandled={() => setFocusSeatId(null)}
           />
@@ -700,6 +735,7 @@ export function App() {
             onAddVolunteer={handleAddVolunteer}
             onUpdateVolunteer={handleUpdateVolunteer}
             onDeleteVolunteer={handleDeleteVolunteer}
+            onSwapSeats={handleSwapSeats}
           />
         )}
 

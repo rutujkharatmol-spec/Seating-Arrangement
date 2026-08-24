@@ -22,7 +22,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Settings,
-  Layers
+  Layers,
+  ArrowLeftRight
 } from 'lucide-react';
 import { validateQuestionnaire } from '../../utils/seatAlgorithms';
 
@@ -37,6 +38,7 @@ export interface SeatInspectorProps {
   onClearSelection: () => void;
   onSelectRow?: (seat: Seat) => void;
   onSelectZone?: (seat: Seat) => void;
+  onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
 
   // Direct editing additions
   categories?: Record<string, CategoryInfo>;
@@ -74,6 +76,7 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
   onAddVolunteer,
   onUpdateVolunteer,
   onDeleteVolunteer,
+  onSwapSeats,
 }) => {
   const singleSeat = selectedSeats.length === 1 ? selectedSeats[0] : null;
   const isMultiple = selectedSeats.length > 1;
@@ -270,6 +273,64 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
             Deselect
           </button>
         </div>
+
+        {/* 🔀 1-Click Swap Seats Card (When exactly 2 seats are selected) */}
+        {selectedSeats.length === 2 && onSwapSeats && (
+          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-blue-950 flex items-center gap-1.5">
+                <ArrowLeftRight className="w-4 h-4 text-blue-600" />
+                <span>Quick Swap Guests / Seats</span>
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-200/80 text-blue-800">
+                2 Seats Selected
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {/* Seat A */}
+              <div className="p-2.5 rounded-xl bg-white border border-blue-200 shadow-2xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Seat A</span>
+                  <span className="font-mono font-black text-blue-700">{selectedSeats[0].id}</span>
+                </div>
+                <div className="font-bold text-slate-900 truncate">
+                  {selectedSeats[0].attendee ? selectedSeats[0].attendee.name : <em className="text-slate-400 font-normal">Empty Seat</em>}
+                </div>
+                {selectedSeats[0].attendee?.designation && (
+                  <div className="text-[10px] text-slate-500 truncate">
+                    {selectedSeats[0].attendee.designation}
+                  </div>
+                )}
+              </div>
+
+              {/* Seat B */}
+              <div className="p-2.5 rounded-xl bg-white border border-blue-200 shadow-2xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Seat B</span>
+                  <span className="font-mono font-black text-blue-700">{selectedSeats[1].id}</span>
+                </div>
+                <div className="font-bold text-slate-900 truncate">
+                  {selectedSeats[1].attendee ? selectedSeats[1].attendee.name : <em className="text-slate-400 font-normal">Empty Seat</em>}
+                </div>
+                {selectedSeats[1].attendee?.designation && (
+                  <div className="text-[10px] text-slate-500 truncate">
+                    {selectedSeats[1].attendee.designation}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onSwapSeats(selectedSeats[0].id, selectedSeats[1].id)}
+              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ArrowLeftRight className="w-4 h-4" />
+              <span>Swap Occupants ({selectedSeats[0].id} ⇄ {selectedSeats[1].id})</span>
+            </button>
+          </div>
+        )}
 
         {/* Quick Row / Zone Selection Buttons */}
         {(onSelectRow || onSelectZone) && singleSeat && (
