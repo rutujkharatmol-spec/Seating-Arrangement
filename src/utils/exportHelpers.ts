@@ -1,5 +1,6 @@
-import { Seat, Attendee, QuestionnaireAnswers, Volunteer } from '../types/seating';
+import { Seat, Attendee, QuestionnaireAnswers, Volunteer, CategoryInfo } from '../types/seating';
 import { CATEGORIES } from '../data/categories';
+import { PlanState } from '../state/plan';
 
 /**
  * Export seating allocation as CSV
@@ -58,32 +59,51 @@ export function exportSeatingToCsv(seats: Seat[], attendees: Attendee[], eventTi
 }
 
 /**
- * Export full state as JSON backup
+ * Export full state as JSON backup (supports either PlanState or separate arguments)
  */
 export function exportConfigurationJson(
-  seats: Seat[],
-  attendees: Attendee[],
-  answers: QuestionnaireAnswers,
+  planOrSeats: PlanState | Seat[],
+  attendees?: Attendee[],
+  answers?: QuestionnaireAnswers,
   volunteers: Volunteer[] = [],
   filename?: string
 ) {
-  const data = {
-    version: '2.0',
-    exportDate: new Date().toISOString(),
-    eventTitle: answers.eventTitle,
-    departmentName: answers.departmentName,
-    answers,
-    seats,
-    attendees,
-    volunteers,
-  };
+  let data: any;
+
+  if ('seats' in planOrSeats && 'answers' in planOrSeats) {
+    const p = planOrSeats as PlanState;
+    data = {
+      version: '3.0',
+      exportDate: new Date().toISOString(),
+      eventTitle: p.answers.eventTitle,
+      departmentName: p.answers.departmentName,
+      answers: p.answers,
+      seats: p.seats,
+      attendees: p.attendees,
+      volunteers: p.volunteers,
+      categories: p.categories || CATEGORIES,
+    };
+  } else {
+    const seats = planOrSeats as Seat[];
+    data = {
+      version: '3.0',
+      exportDate: new Date().toISOString(),
+      eventTitle: answers?.eventTitle || 'AIIMS Kalyani Seating',
+      departmentName: answers?.departmentName || '',
+      answers,
+      seats,
+      attendees: attendees || [],
+      volunteers,
+      categories: CATEGORIES,
+    };
+  }
 
   const jsonStr = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', filename || buildBackupFilename(answers.eventTitle));
+  link.setAttribute('download', filename || buildBackupFilename(data.eventTitle));
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -108,7 +128,6 @@ export function parseAttendeesCsv(csvText: string): Partial<Attendee>[] {
 
   for (let i = 1; i < lines.length; i++) {
     const rawLine = lines[i];
-    // Regex for CSV with quoted strings
     const match = rawLine.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
     const cols = (match || rawLine.split(',')).map((c) => c.replace(/^"|"$/g, '').trim());
 
@@ -131,43 +150,57 @@ export function parseAttendeesCsv(csvText: string): Partial<Attendee>[] {
 
 /**
  * Read back a file produced by `exportConfigurationJson`.
- *
- * Rejects with a plain-language message rather than a parser error, because
- * the person opening the file is the one who needs to understand what is wrong.
  */
-export async function importConfigurationJson(file: File): Promise<{
-  answers: QuestionnaireAnswers;
-  seats: Seat[];
-  attendees: Attendee[];
-  volunteers?: Volunteer[];
-}> {
-  let data: any;
-
+export async function importConfigurationJson(
+  file: File,
+  onSuccess?: (plan: PlanState) => void,
+  onError?: (err: Error) => void
+): Promise<PlanState> {
   try {
-    data = JSON.parse(await file.text());
-  } catch {
-    throw new Error("That file isn't valid JSON. Please choose a backup file saved from this app.");
-  }
+    const text = await file.text();
+    const data = JSON.parse(text);
 
-  if (!data || !Array.isArray(data.seats) || data.seats.length === 0) {
-    throw new Error("That file has no seating layout in it. Please choose a backup saved from this app.");
-  }
+    if (!data || !Array.isArray(data.seats) || data.seats.length === 0) {
+      throw new Error("That file has no seating layout in it. Please choose a backup saved from this app.");
+    }
 
-  if (!Array.isArray(data.attendees)) {
-    throw new Error("That file has no attendee list in it. Please choose a backup saved from this app.");
-  }
+    if (!Array.isArray(data.attendees)) {
+      throw new Error("That file has no attendee list in it. Please choose a backup saved from this app.");
+    }
 
-  return {
-    answers: data.answers,
-    seats: data.seats,
-    attendees: data.attendees,
-    volunteers: Array.isArray(data.volunteers) ? data.volunteers : undefined,
-  };
+    const plan: PlanState = {
+      answers: data.answers || {
+        eventTitle: data.eventTitle || 'AIIMS Kalyani Seating Arrangement',
+        departmentName: data.departmentName || '',
+        numVip: 52,
+        numSeniorFaculty: 54,
+        numFaculty: 182,
+        numAwardees: 49,
+        numReporters: 39,
+        numAccompanying: 89,
+        numBandParty: 39,
+        numConsole: 35,
+        numBlocked: 54,
+        numAudience: 174,
+        totalSeats: 763,
+      },
+      seats: data.seats,
+      attendees: data.attendees,
+      volunteers: Array.isArray(data.volunteers) ? data.volunteers : [],
+      categories: data.categories || CATEGORIES,
+    };
+
+    if (onSuccess) onSuccess(plan);
+    return plan;
+  } catch (err: any) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    if (onError) onError(error);
+    throw error;
+  }
 }
 
-/** e.g. "convocation-2026-plan-2026-08-24.json" — sorts nicely in a folder. */
 function buildBackupFilename(eventTitle: string) {
-  const slug = eventTitle
+  const slug = (eventTitle || 'seating')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')

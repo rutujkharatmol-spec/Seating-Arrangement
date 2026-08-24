@@ -1,9 +1,10 @@
 import React from 'react';
-import { Seat } from '../../types/seating';
+import { Seat, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 
 interface SeatNodeProps {
   seat: Seat;
+  categoryInfo?: CategoryInfo;
   isSelected: boolean;
   isHighlighted: boolean;
   dimmed: boolean;
@@ -19,6 +20,7 @@ interface SeatNodeProps {
 
 const SeatNodeComponent: React.FC<SeatNodeProps> = ({
   seat,
+  categoryInfo,
   isSelected,
   isHighlighted,
   dimmed,
@@ -30,7 +32,7 @@ const SeatNodeComponent: React.FC<SeatNodeProps> = ({
   y,
   size = 20,
 }) => {
-  const cat = CATEGORIES[seat.categoryId] ?? {
+  const cat = categoryInfo || CATEGORIES[seat.categoryId] || {
     color: '#94a3b8',
     borderColor: '#475569',
     textColor: '#0f172a',
@@ -39,14 +41,14 @@ const SeatNodeComponent: React.FC<SeatNodeProps> = ({
   const hasAttendee = Boolean(seat.attendee || seat.attendeeId);
   const isBlocked = seat.isBlocked || seat.categoryId === 'blocked';
 
-  const fillColor = isBlocked ? '#fecdd3' : cat.color;
+  const fillColor = isBlocked ? '#fca5a5' : cat.color;
   const strokeColor = isSelected
     ? '#0284c7'
     : isHighlighted
     ? '#f59e0b'
     : isBlocked
-    ? '#f43f5e'
-    : cat.borderColor;
+    ? '#e11d48'
+    : cat.borderColor || '#475569';
 
   return (
     <g
@@ -104,7 +106,7 @@ const SeatNodeComponent: React.FC<SeatNodeProps> = ({
           fontSize={size * 0.38}
           fontWeight="700"
           fontFamily="ui-monospace, monospace"
-          fill={isBlocked ? '#9f1239' : cat.textColor ?? '#0f172a'}
+          fill={isBlocked ? '#881337' : cat.textColor ?? '#0f172a'}
           pointerEvents="none"
         >
           {seat.col}
@@ -118,10 +120,10 @@ const SeatNodeComponent: React.FC<SeatNodeProps> = ({
             opacity="0.85"
           />
           {/* Cushion */}
-          <rect x="3" y="11" width="14" height="5" rx="1.5" fill={isBlocked ? '#be123c' : '#0f172a'} />
+          <rect x="3" y="11" width="14" height="5" rx="1.5" fill={isBlocked ? '#881337' : '#0f172a'} />
           {/* Armrests */}
-          <rect x="1" y="6" width="2" height="8" rx="1" fill={isBlocked ? '#be123c' : '#334155'} />
-          <rect x="17" y="6" width="2" height="8" rx="1" fill={isBlocked ? '#be123c' : '#334155'} />
+          <rect x="1" y="6" width="2" height="8" rx="1" fill={isBlocked ? '#881337' : '#334155'} />
+          <rect x="17" y="6" width="2" height="8" rx="1" fill={isBlocked ? '#881337' : '#334155'} />
           <path d="M8 17h4v2H8z" fill="#475569" />
         </g>
       )}
@@ -132,14 +134,10 @@ const SeatNodeComponent: React.FC<SeatNodeProps> = ({
       )}
 
       {isBlocked && labelMode === 'icon' && (
-        <line x1="3" y1="3" x2={size - 3} y2={size - 3} stroke="#b91c1c" strokeWidth="1.5" pointerEvents="none" />
+        <line x1="3" y1="3" x2={size - 3} y2={size - 3} stroke="#991b1b" strokeWidth="1.5" pointerEvents="none" />
       )}
     </g>
   );
 };
 
-/**
- * 763 of these re-render on every pan and hover otherwise, which makes
- * dragging the map feel sticky.
- */
 export const SeatNode = React.memo(SeatNodeComponent);

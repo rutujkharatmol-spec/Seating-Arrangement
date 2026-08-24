@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Attendee, Seat, CategoryId } from '../../types/seating';
+import { Attendee, Seat, CategoryId, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import {
   Search,
@@ -31,6 +31,7 @@ interface AttendeeListProps {
   onClearAllSeating: () => void;
   onClearSeat: (seatId: string) => void;
   eventTitle: string;
+  categories?: Record<string, CategoryInfo>;
 }
 
 export const AttendeeList: React.FC<AttendeeListProps> = ({
@@ -46,6 +47,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   onClearAllSeating,
   onClearSeat,
   eventTitle,
+  categories = CATEGORIES,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<CategoryId | 'ALL'>('ALL');
@@ -181,7 +183,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
             className="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-2xs"
           >
             <option value="ALL">All zones</option>
-            {Object.values(CATEGORIES).map((cat) => (
+            {Object.values(categories).filter((c) => c.id !== 'available').map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>
@@ -225,7 +227,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
                 </tr>
               ) : (
                 filteredAttendees.map((att) => {
-                  const cat = CATEGORIES[att.categoryId] || {
+                  const cat = categories[att.categoryId] || {
                     id: att.categoryId,
                     name: att.categoryId,
                     shortName: att.categoryId,

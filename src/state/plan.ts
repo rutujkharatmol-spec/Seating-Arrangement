@@ -1,28 +1,26 @@
-import { Attendee, QuestionnaireAnswers, Seat, Volunteer } from '../types/seating';
+import { Attendee, CategoryInfo, QuestionnaireAnswers, Seat, Volunteer } from '../types/seating';
 import { generateDefaultSeats, INITIAL_QUESTIONNAIRE_ANSWERS } from '../data/defaultSeatingData';
 import { INITIAL_ATTENDEES } from '../data/initialAttendees';
-import { DEFAULT_VOLUNTEERS } from '../data/categories';
+import { CATEGORIES, DEFAULT_VOLUNTEERS } from '../data/categories';
 
 /**
  * The complete seating plan — everything that gets saved, undone, exported and
  * printed. Keeping it in one object is what makes undo/redo and "export a file
  * and open it on another computer" work reliably.
- *
- * Note: `seats` never stores the attendee record itself, only the seat's own
- * properties. Who sits where lives on `attendee.seatId` alone, so the two can
- * never disagree. The joined view is built at render time by `withAttendees`.
  */
 export interface PlanState {
   answers: QuestionnaireAnswers;
   seats: Seat[];
   attendees: Attendee[];
   volunteers: Volunteer[];
+  categories: Record<string, CategoryInfo>;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v2';
+const STORAGE_KEY = 'aiims_seating_plan_v3';
 
-/** Legacy keys from the first version, migrated once then left alone. */
+/** Legacy keys from previous versions */
 const LEGACY_KEYS = {
+  v2: 'aiims_seating_plan_v2',
   answers: 'aiims_seating_answers',
   seats: 'aiims_seating_seats',
   attendees: 'aiims_seating_attendees',
@@ -35,34 +33,52 @@ export function createDefaultPlan(): PlanState {
     seats: generateDefaultSeats(),
     attendees: INITIAL_ATTENDEES,
     volunteers: DEFAULT_VOLUNTEERS,
+    categories: { ...CATEGORIES },
   };
 }
 
 /**
- * Strips any stale embedded attendee data off seats and drops seat assignments
- * that point at seats which no longer exist, so an imported or older file can
- * never show a guest on a seat that isn't there.
+ * Normalises the plan so all seat assignments, category IDs, and attendee IDs
+ * are valid and consistent.
  */
-export function normalisePlan(plan: PlanState): PlanState {
-  const seatIds = new Set(plan.seats.map((s) => s.id));
+export function normalisePlan(plan: Partial<PlanState>): PlanState {
+  const categories: Record<string, CategoryInfo> = {
+    ...CATEGORIES,
+    ...(plan.categories || {}),
+  };
 
-  const seats = plan.seats.map((s) => {
+  const rawSeats = plan.seats && plan.seats.length > 0 ? plan.seats : generateDefaultSeats();
+  const seatIds = new Set(rawSeats.map((s) => s.id));
+
+  const seats = rawSeats.map((s) => {
     const { attendee: _attendee, attendeeId: _attendeeId, ...rest } = s;
-    return rest as Seat;
+    const catId = categories[s.categoryId] ? s.categoryId : 'audience';
+    return {
+      ...rest,
+      categoryId: catId,
+    } as Seat;
   });
 
   // One seat can hold one person; if a file has duplicates, the first wins.
   const claimed = new Set<string>();
-  const attendees = plan.attendees.map((a) => {
-    if (!a.seatId) return a;
+  const rawAttendees = plan.attendees || INITIAL_ATTENDEES;
+  const attendees = rawAttendees.map((a) => {
+    const catId = categories[a.categoryId] ? a.categoryId : 'faculty';
+    if (!a.seatId) return { ...a, categoryId: catId };
     if (!seatIds.has(a.seatId) || claimed.has(a.seatId)) {
-      return { ...a, seatId: undefined };
+      return { ...a, categoryId: catId, seatId: undefined };
     }
     claimed.add(a.seatId);
-    return a;
+    return { ...a, categoryId: catId };
   });
 
-  return { ...plan, seats, attendees };
+  return {
+    answers: plan.answers || INITIAL_QUESTIONNAIRE_ANSWERS,
+    seats,
+    attendees,
+    volunteers: plan.volunteers || DEFAULT_VOLUNTEERS,
+    categories,
+  };
 }
 
 /** Joins attendees onto seats for display. Cheap, and always consistent. */
@@ -97,6 +113,12 @@ export function loadPlan(): PlanState {
 
 function loadLegacyPlan(): PlanState | null {
   try {
+    const v2Raw = localStorage.getItem(LEGACY_KEYS.v2);
+    if (v2Raw) {
+      const v2 = JSON.parse(v2Raw) as PlanState;
+      if (v2?.seats?.length) return normalisePlan(v2);
+    }
+
     const seatsRaw = localStorage.getItem(LEGACY_KEYS.seats);
     if (!seatsRaw) return null;
 
@@ -113,6 +135,7 @@ function loadLegacyPlan(): PlanState | null {
       answers: read(LEGACY_KEYS.answers, INITIAL_QUESTIONNAIRE_ANSWERS),
       attendees: read(LEGACY_KEYS.attendees, INITIAL_ATTENDEES),
       volunteers: read(LEGACY_KEYS.volunteers, DEFAULT_VOLUNTEERS),
+      categories: { ...CATEGORIES },
     });
   } catch {
     return null;

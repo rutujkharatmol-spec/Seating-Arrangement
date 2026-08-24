@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Seat, Attendee, Volunteer } from '../../types/seating';
+import { Seat, Attendee, Volunteer, CategoryInfo } from '../../types/seating';
 import { PrintableChart } from './PrintableChart';
 import { SeatPassBadge } from './SeatPassBadge';
-import { Printer, Map, DoorOpen, Ticket, Download } from 'lucide-react';
+import { Printer, Map, DoorOpen, Ticket } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
 
 interface PrintLayoutModalProps {
@@ -12,6 +12,7 @@ interface PrintLayoutModalProps {
   eventTitle: string;
   departmentName: string;
   totalSeats: number;
+  categories?: Record<string, CategoryInfo>;
 }
 
 export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
@@ -21,6 +22,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
   eventTitle,
   departmentName,
   totalSeats,
+  categories = CATEGORIES,
 }) => {
   const [printMode, setPrintMode] = useState<'chart' | 'gate1' | 'gate2' | 'badges'>('chart');
 
@@ -121,7 +123,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-black text-slate-900 leading-tight">
+                  <h3 className="font-extrabold text-sm text-slate-900 leading-tight">
                     {opt.title}
                   </h3>
                   <p className="text-[11px] text-slate-500 mt-1 leading-snug">
@@ -129,8 +131,9 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
                   </p>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-slate-100 text-[11px] font-bold text-purple-700">
-                  {isSelected ? '✓ Selected to Print' : 'Click to Select'}
+                <div className="mt-3 pt-2 border-t border-slate-100 text-[11px] font-bold text-purple-700 flex items-center justify-between">
+                  <span>{isSelected ? '✓ Currently Selected' : 'Click to preview'}</span>
+                  <span>→</span>
                 </div>
               </button>
             );
@@ -139,10 +142,10 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
 
       </div>
 
-      {/* Printable Area */}
-      <div className="printable-content">
+      {/* Render Area */}
+      <div className="print-surface">
         
-        {/* 1. CHART PRINT */}
+        {/* 1. AUDITORIUM CHART */}
         {printMode === 'chart' && (
           <PrintableChart
             seats={seats}
@@ -150,6 +153,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
             eventTitle={eventTitle}
             departmentName={departmentName}
             totalSeats={totalSeats}
+            categories={categories}
           />
         )}
 
@@ -162,7 +166,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
                   Gate-1 Entry Usher Seating Sheet
                 </h2>
                 <span className="px-3 py-1 bg-emerald-100 text-emerald-900 font-bold rounded-xl text-xs font-mono border border-emerald-200">
-                  GATE 1 ENTRY (Right Wing & Center Rows)
+                  GATE 1 ENTRY (Right Wing & VIP)
                 </span>
               </div>
               <p className="text-xs text-slate-600 mt-1">
@@ -189,9 +193,9 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
                 ) : (
                   gate1Attendees.map((att) => (
                     <tr key={att.id}>
-                      <td className="p-2.5 font-mono font-bold text-blue-900">{att.seatId || '—'}</td>
+                      <td className="p-2.5 font-mono font-bold text-emerald-900">{att.seatId || '—'}</td>
                       <td className="p-2.5 font-bold text-slate-900">{att.name}</td>
-                      <td className="p-2.5">{CATEGORIES[att.categoryId]?.name || att.categoryId}</td>
+                      <td className="p-2.5">{categories[att.categoryId]?.name || att.categoryId}</td>
                       <td className="p-2.5 text-slate-600">{att.designation || att.department || '—'}</td>
                     </tr>
                   ))
@@ -239,7 +243,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
                     <tr key={att.id}>
                       <td className="p-2.5 font-mono font-bold text-blue-900">{att.seatId || '—'}</td>
                       <td className="p-2.5 font-bold text-slate-900">{att.name}</td>
-                      <td className="p-2.5">{CATEGORIES[att.categoryId]?.name || att.categoryId}</td>
+                      <td className="p-2.5">{categories[att.categoryId]?.name || att.categoryId}</td>
                       <td className="p-2.5 text-slate-600">{att.designation || att.department || '—'}</td>
                     </tr>
                   ))
@@ -261,6 +265,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
                   seat={seat}
                   eventTitle={eventTitle}
                   departmentName={departmentName}
+                  categories={categories}
                 />
               );
             })}

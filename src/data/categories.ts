@@ -1,139 +1,167 @@
-import { CategoryId, CategoryInfo } from '../types/seating';
+import { CategoryInfo } from '../types/seating';
 
-export const CATEGORIES: Record<CategoryId, CategoryInfo> = {
+export const CATEGORIES: Record<string, CategoryInfo> = {
   vip: {
     id: 'vip',
     name: 'VIP & Dignitaries',
     shortName: 'VIP',
-    color: '#86efac',       // Light vibrant emerald green
+    color: '#86efac',       // Crisp Emerald Green
     textColor: '#14532d',
-    borderColor: '#22c55e',
+    borderColor: '#16a34a',
     description: 'Chief guests, Ministry officials, Deans, Director & Guest of Honor (Rows A-D Center, 4×13=52 seats)',
     defaultCount: 52,
     priority: 1,
     recommendedGate: 'Gate-1 or Gate-2',
-  },
-  senior_faculty: {
-    id: 'senior_faculty',
-    name: 'Registrar + Senior Faculty',
-    shortName: 'Senior Faculty',
-    color: '#fed7aa',       // Terracotta / Peachy orange
-    textColor: '#7c2d12',
-    borderColor: '#ea580c',
-    description: 'Registrar, Department Heads & Senior Professors (Rows A-H Left)',
-    defaultCount: 54,
-    priority: 2,
-    recommendedGate: 'Gate-2',
+    isCustom: false,
   },
   faculty: {
     id: 'faculty',
     name: 'Faculty Members',
     shortName: 'Faculty',
-    color: '#fef08a',       // Soft bright yellow
+    color: '#fde047',       // Bright Canary Yellow
     textColor: '#713f12',
-    borderColor: '#eab308',
+    borderColor: '#ca8a04',
     description: 'Assistant & Associate Professors, Resident Doctors & Teaching Staff (Rows H-U Center)',
     defaultCount: 182,
-    priority: 3,
+    priority: 2,
     recommendedGate: 'Gate-1 or Gate-2',
+    isCustom: false,
+  },
+  senior_faculty: {
+    id: 'senior_faculty',
+    name: 'Registrar + Senior Faculty',
+    shortName: 'Senior Faculty',
+    color: '#fdba74',       // Vibrant Warm Orange
+    textColor: '#7c2d12',
+    borderColor: '#ea580c',
+    description: 'Registrar, Department Heads & Senior Professors (Rows A-H Left)',
+    defaultCount: 54,
+    priority: 3,
+    recommendedGate: 'Gate-2',
+    isCustom: false,
   },
   awardees: {
     id: 'awardees',
     name: 'Awardees & Medalists',
     shortName: 'Awardees',
-    color: '#bbf7d0',       // Mint green with magenta border
-    textColor: '#14532d',
-    borderColor: '#d946ef',
+    color: '#f0abfc',       // Electric Magenta / Fuchsia
+    textColor: '#701a75',
+    borderColor: '#c026d3',
     description: 'Prize winners, Gold medalists, Presenters & Honorees (Rows I-O Right)',
     defaultCount: 49,
     priority: 4,
     recommendedGate: 'Gate-1',
+    isCustom: false,
   },
   reporters: {
     id: 'reporters',
     name: 'Media & Press Reporters',
     shortName: 'Reporter',
-    color: '#93c5fd',       // Steel / Sky blue
-    textColor: '#1e3a8a',
-    borderColor: '#3b82f6',
+    color: '#7dd3fc',       // Crisp Sky Blue
+    textColor: '#0c4a6e',
+    borderColor: '#0284c7',
     description: 'Accredited journalists, press photographers & videographers (Rows E-G Center)',
     defaultCount: 39,
     priority: 5,
     recommendedGate: 'Gate-2',
+    isCustom: false,
   },
   accompanying: {
     id: 'accompanying',
     name: 'Accompanying Persons',
     shortName: 'Accompanying',
-    color: '#c7d2fe',       // Soft indigo/periwinkle
+    color: '#a5b4fc',       // Royal Indigo / Soft Periwinkle
     textColor: '#312e81',
-    borderColor: '#6366f1',
-    description: 'Family members, relatives & invited companions of faculty and awardees (Rows V-W Center, P-X Right)',
-    defaultCount: 89,       // 26 Center + 63 Right
+    borderColor: '#4f46e5',
+    description: 'Family members & invited companions of faculty and awardees (Rows V-W Center, P-X Right)',
+    defaultCount: 89,
     priority: 6,
     recommendedGate: 'Gate-1',
-  },
-  console: {
-    id: 'console',
-    name: 'AV & Technical Console',
-    shortName: 'Console',
-    color: '#a5f3fc',       // Cyan / Light Aqua
-    textColor: '#164e63',
-    borderColor: '#06b6d4',
-    description: 'Audio-visual operators, sound engineers, lighting & live stream control (Rows I-M Left)',
-    defaultCount: 35,
-    priority: 7,
-    recommendedGate: 'Gate-2',
+    isCustom: false,
   },
   band_party: {
     id: 'band_party',
     name: 'Band Party & Orchestra',
     shortName: 'Band Party',
-    color: '#fde047',       // Warm yellow gold with amber border
-    textColor: '#713f12',
-    borderColor: '#f59e0b',
+    color: '#fcd34d',       // Amber Gold
+    textColor: '#78350f',
+    borderColor: '#d97706',
     description: 'Military / Institutional band musicians and choir (Upper Center Tier)',
     defaultCount: 39,
-    priority: 8,
+    priority: 7,
     recommendedGate: 'Balcony Gate',
+    isCustom: false,
+  },
+  console: {
+    id: 'console',
+    name: 'AV & Technical Console',
+    shortName: 'Console',
+    color: '#67e8f9',       // Clean Cyan / Aqua
+    textColor: '#164e63',
+    borderColor: '#0891b2',
+    description: 'Audio-visual operators, sound engineers, lighting & live stream control (Rows I-M Left)',
+    defaultCount: 35,
+    priority: 8,
+    recommendedGate: 'Gate-2',
+    isCustom: false,
   },
   audience: {
     id: 'audience',
     name: 'General Audience & Students',
     shortName: 'Audience',
-    color: '#e9d5ff',       // Lavender / Light Purple
+    color: '#d8b4fe',       // Soft Lavender / Purple
     textColor: '#581c87',
-    borderColor: '#a855f7',
-    description: 'Undergraduate & Postgraduate medical students, nursing staff, and general attendees',
-    defaultCount: 174,      // 77 Lower Left + 35 Upper Left + 27 Upper Center + 35 Upper Right
+    borderColor: '#9333ea',
+    description: 'Medical students, nursing trainees, hospital staff, and general attendees',
+    defaultCount: 174,
     priority: 9,
     recommendedGate: 'Gate-2 or Balcony Gate',
+    isCustom: false,
   },
   blocked: {
     id: 'blocked',
     name: 'Blocked / Reserved Buffer',
     shortName: 'Blocked',
-    color: '#fecdd3',       // Soft red / pink
+    color: '#fca5a5',       // Soft Rose Red
     textColor: '#881337',
-    borderColor: '#f43f5e',
-    description: 'Seats blocked for camera cranes, emergency pathways, or security buffer (Rows A-H Right)',
+    borderColor: '#e11d48',
+    description: 'Seats blocked for camera cranes, emergency pathways, or security buffer',
     defaultCount: 54,
     priority: 10,
     recommendedGate: 'N/A',
+    isCustom: false,
   },
   available: {
     id: 'available',
     name: 'Unassigned / Available',
     shortName: 'Available',
-    color: '#f1f5f9',       // Clean slate / off-white
+    color: '#f1f5f9',       // Slate off-white
     textColor: '#334155',
     borderColor: '#cbd5e1',
     description: 'Open seats available for walk-in allocation',
     defaultCount: 0,
     priority: 11,
     recommendedGate: 'Gate-1 or Gate-2',
+    isCustom: false,
   },
 };
+
+export const COLOR_SWATCH_PRESETS = [
+  { color: '#86efac', borderColor: '#16a34a', textColor: '#14532d', label: 'Emerald' },
+  { color: '#fde047', borderColor: '#ca8a04', textColor: '#713f12', label: 'Yellow' },
+  { color: '#fdba74', borderColor: '#ea580c', textColor: '#7c2d12', label: 'Orange' },
+  { color: '#f0abfc', borderColor: '#c026d3', textColor: '#701a75', label: 'Fuchsia' },
+  { color: '#7dd3fc', borderColor: '#0284c7', textColor: '#0c4a6e', label: 'Sky Blue' },
+  { color: '#a5b4fc', borderColor: '#4f46e5', textColor: '#312e81', label: 'Indigo' },
+  { color: '#fcd34d', borderColor: '#d97706', textColor: '#78350f', label: 'Amber' },
+  { color: '#67e8f9', borderColor: '#0891b2', textColor: '#164e63', label: 'Cyan' },
+  { color: '#d8b4fe', borderColor: '#9333ea', textColor: '#581c87', label: 'Purple' },
+  { color: '#fca5a5', borderColor: '#e11d48', textColor: '#881337', label: 'Rose' },
+  { color: '#5eead4', borderColor: '#0d9488', textColor: '#134e4a', label: 'Teal' },
+  { color: '#cbd5e1', borderColor: '#64748b', textColor: '#1e293b', label: 'Slate' },
+  { color: '#f472b6', borderColor: '#db2777', textColor: '#831843', label: 'Pink' },
+  { color: '#a3e635', borderColor: '#65a30d', textColor: '#365314', label: 'Lime' },
+];
 
 export const DEFAULT_VOLUNTEERS = [
   { id: 'v1', name: 'Dr. Arjun Sen', role: 'Upper Balcony Coordinator', location: 'Upper Left Balcony Entrance', phone: '+91 98301 11223', x: 75, y: 70, gate: 'Balcony Gate' },

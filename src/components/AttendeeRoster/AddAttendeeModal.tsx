@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Attendee, CategoryId, Seat } from '../../types/seating';
+import { Attendee, CategoryId, Seat, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import { useDismissOnEscape } from '../../hooks/useDismissOnEscape';
 import { X, UserPlus } from 'lucide-react';
@@ -9,6 +9,7 @@ interface AddAttendeeModalProps {
   onClose: () => void;
   onAdd: (attendee: Attendee) => void;
   availableSeats: Seat[];
+  categories?: Record<string, CategoryInfo>;
 }
 
 export const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
@@ -16,6 +17,7 @@ export const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
   onClose,
   onAdd,
   availableSeats,
+  categories = CATEGORIES,
 }) => {
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
@@ -127,7 +129,7 @@ export const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
                 onChange={(e) => setCategoryId(e.target.value as any)}
                 className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer shadow-2xs"
               >
-                {Object.values(CATEGORIES).map((cat) => (
+                {Object.values(categories).filter((c) => c.id !== 'available').map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>

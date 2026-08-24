@@ -7,8 +7,10 @@ import {
   TierType,
   QuestionnaireAnswers,
   SeatingPreset,
+  CategoryInfo,
 } from './types/seating';
 import { generateDefaultSeats } from './data/defaultSeatingData';
+import { CATEGORIES } from './data/categories';
 import { reallocateSeatsFromAnswers } from './utils/seatAlgorithms';
 import { autoSeatAttendees, findPlanIssues } from './utils/autoSeat';
 import { exportConfigurationJson, importConfigurationJson } from './utils/exportHelpers';
@@ -31,6 +33,7 @@ import { Toast, ToastKind } from './components/UI/Toast';
 import { AuditoriumMap } from './components/AuditoriumMap/AuditoriumMap';
 import { EditorTab } from './components/Editor/EditorTab';
 import { QuestionnaireWizard } from './components/Editor/QuestionnaireWizard';
+import { SectionManagerModal } from './components/Editor/SectionManagerModal';
 import { AttendeeList } from './components/AttendeeRoster/AttendeeList';
 import { AddAttendeeModal } from './components/AttendeeRoster/AddAttendeeModal';
 import { CsvImportExport } from './components/AttendeeRoster/CsvImportExport';
@@ -40,10 +43,10 @@ type TabId = 'map' | 'editor' | 'roster' | 'print';
 
 export function App() {
   const plan = useHistory<PlanState>(loadPlan);
-  const { seats, attendees, volunteers, answers } = plan.present;
+  const { seats, attendees, volunteers, answers, categories: planCategories } = plan.present;
+  const categories = planCategories || CATEGORIES;
 
-  // Navigation & view state (deliberately outside history — undo should never
-  // move you to a different tab).
+  // Navigation & view state
   const [activeTab, setActiveTab] = useState<TabId>('map');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
   const [selectedTier, setSelectedTier] = useState<TierType | 'ALL'>('ALL');
@@ -54,6 +57,7 @@ export function App() {
   const [focusSeatId, setFocusSeatId] = useState<string | null>(null);
 
   const [isQuestionnaireModalOpen, setIsQuestionnaireModalOpen] = useState(false);
+  const [isSectionManagerOpen, setIsSectionManagerOpen] = useState(false);
   const [isAddAttendeeModalOpen, setIsAddAttendeeModalOpen] = useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; kind: ToastKind } | null>(null);
@@ -74,7 +78,6 @@ export function App() {
   // Derived data
   // ---------------------------------------------------------------------
 
-  /** Seats joined with whoever is sitting in them. This is what the UI shows. */
   const seatsWithPeople = useMemo(() => withAttendees(seats, attendees), [seats, attendees]);
 
   const selectedSeats = useMemo(() => {
@@ -87,6 +90,14 @@ export function App() {
 
   const planIssues = useMemo(() => findPlanIssues(seats, attendees), [seats, attendees]);
 
+  const categorySeatCounts = useMemo(() => {
+    const counts = {} as Record<string, number>;
+    seats.forEach((s) => {
+      counts[s.categoryId] = (counts[s.categoryId] ?? 0) + 1;
+    });
+    return counts;
+  }, [seats]);
+
   const matchingSeatIds = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return [];
@@ -98,275 +109,89 @@ export function App() {
           s.blockName.toLowerCase().includes(q) ||
           s.categoryId.toLowerCase().includes(q) ||
           s.attendee?.name?.toLowerCase().includes(q) ||
-          s.attendee?.department?.toLowerCase().includes(q)
+          (s.attendee?.designation && s.attendee.designation.toLowerCase().includes(q)) ||
+          (s.attendee?.department && s.attendee.department.toLowerCase().includes(q))
       )
       .map((s) => s.id);
   }, [seatsWithPeople, searchQuery]);
 
-  // Persist, but not on every keystroke — serialising 763 seats is not free.
+  // Persist plan changes
   useEffect(() => {
-    const id = window.setTimeout(() => savePlan(plan.present), 400);
-    return () => window.clearTimeout(id);
+    savePlan(plan.present);
   }, [plan.present]);
 
   // ---------------------------------------------------------------------
-  // Plan mutations — every one goes through commit so it can be undone
+  // Section Management Handlers
   // ---------------------------------------------------------------------
 
-  const handleApplyQuestionnaireAnswers = (next: QuestionnaireAnswers) => {
-    plan.commit(
-      (p) => ({ ...p, answers: next, seats: reallocateSeatsFromAnswers(p.seats, next) }),
-      'Recalculate zones from the setup wizard'
-    );
-    setIsQuestionnaireModalOpen(false);
-    showToast('Seating zones recalculated from your answers.');
-  };
-
-  const handleApplyPreset = (preset: SeatingPreset) => {
+  const handleAddCategory = (newCat: CategoryInfo) => {
     plan.commit(
       (p) => ({
         ...p,
-        answers: preset.answers,
-        seats: reallocateSeatsFromAnswers(p.seats, preset.answers),
+        categories: {
+          ...(p.categories || CATEGORIES),
+          [newCat.id]: newCat,
+        },
       }),
-      `Load preset "${preset.name}"`
+      `Add section "${newCat.name}"`
     );
-    showToast(`Loaded preset: ${preset.name}`);
+    showToast(`Added section "${newCat.name}"`);
   };
 
-  const handleResetToDefault = () => {
-    if (!window.confirm('Reset everything back to the AIIMS Kalyani master blueprint?\n\nYou can still undo this afterwards.')) {
-      return;
-    }
-    plan.commit(() => createDefaultPlan(), 'Reset to master blueprint');
-    setSelectedSeatIds([]);
-    showToast('Reset to the AIIMS Kalyani master blueprint.');
-  };
-
-  const handleClearAllSeating = () => {
-    const seated = attendees.filter((a) => a.seatId).length;
-    if (seated === 0) {
-      showToast('Nobody is seated yet, so there is nothing to clear.', 'info');
-      return;
-    }
-    if (!window.confirm(`Remove all ${seated} guests from their seats?\n\nThe roster is kept, and you can undo this.`)) {
-      return;
-    }
-    plan.commit(
-      (p) => ({ ...p, attendees: p.attendees.map((a) => ({ ...a, seatId: undefined })) }),
-      'Clear every seat assignment'
-    );
-    showToast(`Emptied ${seated} seats. The guests are still on the roster.`);
-  };
-
-  const handleRegenerateLayout = () => {
-    plan.commit(
-      (p) => normalisePlan({ ...p, seats: reallocateSeatsFromAnswers(generateDefaultSeats(), p.answers) }),
-      'Rebuild the seat layout'
-    );
-    showToast('Seat layout rebuilt from the current zone counts.');
-  };
-
-  const handleUpdateSeatsCategory = (seatIds: string[], categoryId: CategoryId) => {
-    const wanted = new Set(seatIds);
+  const handleUpdateCategory = (updatedCat: CategoryInfo) => {
     plan.commit(
       (p) => ({
         ...p,
-        seats: p.seats.map((s) =>
-          wanted.has(s.id) ? { ...s, categoryId, isBlocked: categoryId === 'blocked' } : s
-        ),
+        categories: {
+          ...(p.categories || CATEGORIES),
+          [updatedCat.id]: updatedCat,
+        },
       }),
-      `Move ${seatIds.length} seat${seatIds.length === 1 ? '' : 's'} to another zone`
+      `Update section "${updatedCat.name}"`
     );
-    showToast(`Moved ${seatIds.length} seat${seatIds.length === 1 ? '' : 's'} into the new zone.`);
+    showToast(`Updated section "${updatedCat.name}"`);
   };
 
-  const handleToggleBlockedSeats = (seatIds: string[], isBlocked: boolean) => {
-    const wanted = new Set(seatIds);
+  const handleDeleteCategory = (catId: string) => {
+    const catName = categories[catId]?.name || catId;
+    plan.commit(
+      (p) => {
+        const next = { ...(p.categories || CATEGORIES) };
+        delete next[catId];
+        const seats = p.seats.map((s) => (s.categoryId === catId ? { ...s, categoryId: 'audience' } : s));
+        const attendees = p.attendees.map((a) => (a.categoryId === catId ? { ...a, categoryId: 'faculty' } : a));
+        return {
+          ...p,
+          categories: next,
+          seats,
+          attendees,
+        };
+      },
+      `Delete section "${catName}"`
+    );
+    showToast(`Deleted section "${catName}". Assigned seats changed to Audience.`);
+  };
+
+  const handleResetCategoriesToDefault = () => {
     plan.commit(
       (p) => ({
         ...p,
-        seats: p.seats.map((s) => {
-          if (!wanted.has(s.id)) return s;
-          return {
-            ...s,
-            isBlocked,
-            categoryId: isBlocked ? 'blocked' : s.categoryId === 'blocked' ? 'audience' : s.categoryId,
-          };
-        }),
-        // A blocked seat cannot hold a guest.
-        attendees: isBlocked
-          ? p.attendees.map((a) => (a.seatId && wanted.has(a.seatId) ? { ...a, seatId: undefined } : a))
-          : p.attendees,
+        categories: { ...CATEGORIES },
       }),
-      `${isBlocked ? 'Block' : 'Unblock'} ${seatIds.length} seat${seatIds.length === 1 ? '' : 's'}`
+      'Reset sections to default'
     );
-    showToast(`${isBlocked ? 'Blocked' : 'Unblocked'} ${seatIds.length} seat${seatIds.length === 1 ? '' : 's'}.`);
-  };
-
-  /** Create or update the guest sitting in a seat. */
-  const handleSaveAttendee = (seatId: string, data: Partial<Attendee>) => {
-    plan.commit((p) => {
-      const existingId = data.id;
-      const others = p.attendees.filter((a) => a.id !== existingId && a.seatId !== seatId);
-      const record: Attendee = {
-        id: existingId || `att-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        name: data.name?.trim() || 'Unnamed guest',
-        designation: data.designation,
-        department: data.department,
-        institution: data.institution || 'AIIMS Kalyani',
-        email: data.email,
-        phone: data.phone,
-        categoryId: data.categoryId || 'faculty',
-        notes: data.notes,
-        seatId,
-        isVip: (data.categoryId || 'faculty') === 'vip',
-      };
-      return { ...p, attendees: [...others, record] };
-    }, `Seat ${data.name?.trim() || 'a guest'} in ${seatId}`);
-
-    showToast(`${data.name?.trim() || 'Guest'} is seated in ${seatId}.`);
-  };
-
-  /** Move somebody who is already on the roster into a seat. */
-  const handleAssignExistingAttendee = (seatId: string, attendeeId: string) => {
-    const person = attendees.find((a) => a.id === attendeeId);
-    plan.commit(
-      (p) => ({
-        ...p,
-        attendees: p.attendees.map((a) => {
-          if (a.id === attendeeId) return { ...a, seatId };
-          // Whoever was in that seat gets bumped back to unseated.
-          if (a.seatId === seatId) return { ...a, seatId: undefined };
-          return a;
-        }),
-      }),
-      `Seat ${person?.name ?? 'guest'} in ${seatId}`
-    );
-    showToast(`${person?.name ?? 'Guest'} is seated in ${seatId}.`);
-  };
-
-  const handleClearSeat = (seatId: string) => {
-    plan.commit(
-      (p) => ({
-        ...p,
-        attendees: p.attendees.map((a) => (a.seatId === seatId ? { ...a, seatId: undefined } : a)),
-      }),
-      `Empty seat ${seatId}`
-    );
-    showToast(`Seat ${seatId} is empty again. The guest stays on the roster.`);
-  };
-
-  const handleAutoSeat = () => {
-    const result = autoSeatAttendees(seats, attendees);
-    if (result.seated === 0) {
-      showToast(result.summary, result.unseated.length > 0 ? 'error' : 'info');
-      return;
-    }
-    plan.commit((p) => ({ ...p, attendees: result.attendees }), `Auto-seat ${result.seated} guests`);
-    showToast(result.summary, result.unseated.length > 0 ? 'info' : 'success');
-  };
-
-  const handleAddAttendee = (newAtt: Attendee) => {
-    plan.commit((p) => ({ ...p, attendees: [...p.attendees, newAtt] }), `Add ${newAtt.name} to the roster`);
-    showToast(`Added ${newAtt.name} to the roster.`);
-  };
-
-  const handleUpdateAttendee = (updated: Attendee) => {
-    plan.commit(
-      (p) => ({ ...p, attendees: p.attendees.map((a) => (a.id === updated.id ? updated : a)) }),
-      `Edit ${updated.name}`
-    );
-  };
-
-  const handleDeleteAttendee = (id: string) => {
-    const person = attendees.find((a) => a.id === id);
-    plan.commit((p) => ({ ...p, attendees: p.attendees.filter((a) => a.id !== id) }), `Remove ${person?.name ?? 'guest'}`);
-    showToast(`Removed ${person?.name ?? 'guest'} from the roster.`);
-  };
-
-  const handleImportAttendees = (newAttendees: Attendee[]) => {
-    let droppedSeats = 0;
-
-    plan.commit((p) => {
-      const seatIds = new Set(p.seats.map((s) => s.id));
-      const taken = new Set(p.attendees.map((a) => a.seatId).filter(Boolean) as string[]);
-
-      // A seat named in the file is only honoured if it exists and is free,
-      // so an import can never double-book somebody who is already seated.
-      const cleaned = newAttendees.map((a) => {
-        if (!a.seatId) return a;
-        if (!seatIds.has(a.seatId) || taken.has(a.seatId)) {
-          droppedSeats++;
-          return { ...a, seatId: undefined };
-        }
-        taken.add(a.seatId);
-        return a;
-      });
-
-      return { ...p, attendees: [...p.attendees, ...cleaned] };
-    }, `Import ${newAttendees.length} guests`);
-
-    const suffix = droppedSeats
-      ? ` ${droppedSeats} had a seat that was taken or missing — use Auto-seat to place them.`
-      : ' Use Auto-seat to place anyone without a seat.';
-    showToast(`Imported ${newAttendees.length} guests.${suffix}`, droppedSeats ? 'info' : 'success');
-  };
-
-  const handleAddVolunteer = (vol: Volunteer) => {
-    plan.commit((p) => ({ ...p, volunteers: [...p.volunteers, vol] }), `Add volunteer ${vol.name}`);
-    showToast(`Added volunteer checkpoint for ${vol.name}.`);
-  };
-
-  const handleUpdateVolunteer = (vol: Volunteer) => {
-    plan.commit(
-      (p) => ({ ...p, volunteers: p.volunteers.map((v) => (v.id === vol.id ? vol : v)) }),
-      `Edit volunteer ${vol.name}`
-    );
-    showToast(`Updated volunteer ${vol.name}.`);
-  };
-
-  const handleDeleteVolunteer = (id: string) => {
-    plan.commit((p) => ({ ...p, volunteers: p.volunteers.filter((v) => v.id !== id) }), 'Remove a volunteer');
-    showToast('Removed the volunteer checkpoint.');
+    showToast('Reset sections and colors to default');
   };
 
   // ---------------------------------------------------------------------
-  // Backup file in / out
-  // ---------------------------------------------------------------------
-
-  const handleExportJson = () => {
-    exportConfigurationJson(seats, attendees, answers, volunteers);
-    showToast('Backup file saved to your Downloads folder.');
-  };
-
-  const handleImportJsonFile = async (file: File) => {
-    try {
-      const data = await importConfigurationJson(file);
-      plan.reset(
-        normalisePlan({
-          answers: data.answers ?? answers,
-          seats: data.seats,
-          attendees: data.attendees,
-          volunteers: data.volunteers ?? volunteers,
-        }),
-        'Open backup file'
-      );
-      setSelectedSeatIds([]);
-      setSearchQuery('');
-      showToast(`Opened "${file.name}" — ${data.seats.length} seats, ${data.attendees.length} guests.`);
-    } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Could not open that file.', 'error');
-    }
-  };
-
-  // ---------------------------------------------------------------------
-  // Selection
+  // Seat & Attendee Handlers
   // ---------------------------------------------------------------------
 
   const handleToggleSelectSeat = (seat: Seat, multi: boolean) => {
     setSelectedSeatIds((prev) => {
-      if (!multi) return prev.length === 1 && prev[0] === seat.id ? [] : [seat.id];
+      if (!multi) {
+        return prev.length === 1 && prev[0] === seat.id ? [] : [seat.id];
+      }
       return prev.includes(seat.id) ? prev.filter((id) => id !== seat.id) : [...prev, seat.id];
     });
   };
@@ -378,23 +203,258 @@ export function App() {
   const handleClearSelection = useCallback(() => setSelectedSeatIds([]), []);
 
   const handleSelectRow = (seat: Seat) => {
-    const ids = seats.filter((s) => s.block === seat.block && s.row === seat.row).map((s) => s.id);
-    setSelectedSeatIds(ids);
-    showToast(`Selected all ${ids.length} seats in row ${seat.row}.`, 'info');
+    const rowSeats = seats.filter((s) => s.tier === seat.tier && s.block === seat.block && s.row === seat.row);
+    setSelectedSeatIds(rowSeats.map((s) => s.id));
   };
 
   const handleSelectZone = (seat: Seat) => {
-    const ids = seats.filter((s) => s.categoryId === seat.categoryId).map((s) => s.id);
-    setSelectedSeatIds(ids);
-    showToast(`Selected all ${ids.length} seats in that zone.`, 'info');
+    const zoneSeats = seats.filter((s) => s.categoryId === seat.categoryId);
+    setSelectedSeatIds(zoneSeats.map((s) => s.id));
   };
 
-  /** Jump the map to a seat — used by the roster's "show on map" links. */
+  const handleUpdateSeatsCategory = (seatIds: string[], categoryId: CategoryId) => {
+    if (seatIds.length === 0) return;
+    const targetSet = new Set(seatIds);
+    const catName = categories[categoryId]?.shortName || categoryId;
+
+    plan.commit(
+      (p) => ({
+        ...p,
+        seats: p.seats.map((s) => {
+          if (!targetSet.has(s.id)) return s;
+          return {
+            ...s,
+            categoryId,
+            isBlocked: categoryId === 'blocked',
+          };
+        }),
+      }),
+      seatIds.length === 1 ? `Change seat ${seatIds[0]} to ${catName}` : `Set ${seatIds.length} seats to ${catName}`
+    );
+    showToast(`Updated ${seatIds.length} seat(s) to ${catName}`);
+  };
+
+  const handleToggleBlockedSeats = (seatIds: string[], isBlocked: boolean) => {
+    if (seatIds.length === 0) return;
+    const targetSet = new Set(seatIds);
+    plan.commit(
+      (p) => ({
+        ...p,
+        seats: p.seats.map((s) => (targetSet.has(s.id) ? { ...s, isBlocked } : s)),
+      }),
+      isBlocked ? `Block ${seatIds.length} seats` : `Unblock ${seatIds.length} seats`
+    );
+    showToast(`${isBlocked ? 'Blocked' : 'Unblocked'} ${seatIds.length} seat(s)`);
+  };
+
+  const handleSaveAttendee = (seatId: string, attendeeData: Partial<Attendee>) => {
+    plan.commit((p) => {
+      const existing = p.attendees.find((a) => a.seatId === seatId);
+      let nextAttendees: Attendee[];
+
+      if (existing) {
+        nextAttendees = p.attendees.map((a) =>
+          a.id === existing.id
+            ? ({
+                ...a,
+                ...attendeeData,
+                seatId,
+                name: attendeeData.name ?? a.name,
+                categoryId: attendeeData.categoryId ?? a.categoryId,
+              } as Attendee)
+            : a
+        );
+      } else {
+        const newAttendee: Attendee = {
+          id: attendeeData.id || `att-${Date.now()}`,
+          name: attendeeData.name || 'Unnamed Guest',
+          designation: attendeeData.designation,
+          department: attendeeData.department,
+          institution: attendeeData.institution,
+          email: attendeeData.email,
+          phone: attendeeData.phone,
+          categoryId: attendeeData.categoryId || 'faculty',
+          seatId,
+          isVip: attendeeData.isVip,
+        };
+        nextAttendees = [...p.attendees, newAttendee];
+      }
+
+      return { ...p, attendees: nextAttendees };
+    }, `Seat ${attendeeData.name || 'guest'} on ${seatId}`);
+
+    showToast(`Seated ${attendeeData.name || 'guest'} on ${seatId}`);
+  };
+
+  const handleAssignExistingAttendee = (seatId: string, attendeeId: string) => {
+    plan.commit((p) => {
+      const target = p.attendees.find((a) => a.id === attendeeId);
+      if (!target) return p;
+
+      const nextAttendees = p.attendees.map((a) => {
+        if (a.seatId === seatId && a.id !== attendeeId) return { ...a, seatId: undefined };
+        if (a.id === attendeeId) return { ...a, seatId };
+        return a;
+      });
+
+      return { ...p, attendees: nextAttendees };
+    }, `Seat guest on ${seatId}`);
+
+    showToast(`Seated guest on ${seatId}`);
+  };
+
+  const handleClearSeat = (seatId: string) => {
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: p.attendees.map((a) => (a.seatId === seatId ? { ...a, seatId: undefined } : a)),
+      }),
+      `Empty seat ${seatId}`
+    );
+    showToast(`Emptied seat ${seatId}`);
+  };
+
+  const handleApplyQuestionnaireAnswers = (newAnswers: QuestionnaireAnswers) => {
+    plan.commit((p) => {
+      const reallocated = reallocateSeatsFromAnswers(p.seats, newAnswers);
+      return {
+        ...p,
+        answers: newAnswers,
+        seats: reallocated,
+      };
+    }, 'Auto-arrange seating blueprint');
+
+    setIsQuestionnaireModalOpen(false);
+    showToast('Applied seating plan calculation successfully');
+  };
+
+  const handleApplyPreset = (preset: SeatingPreset) => {
+    handleApplyQuestionnaireAnswers({
+      ...preset.answers,
+      eventTitle: preset.eventTitle,
+      departmentName: preset.departmentName,
+    });
+    showToast(`Applied preset "${preset.name}"`);
+  };
+
+  const handleResetToDefaultLayout = () => {
+    plan.commit(() => createDefaultPlan(), 'Reset to factory blueprint');
+    setSelectedSeatIds([]);
+    showToast('Reset auditorium to initial blueprint layout');
+  };
+
+  const handleAutoSeat = () => {
+    const result = autoSeatAttendees(seats, attendees);
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: result.attendees,
+      }),
+      `Auto-seat ${result.seated} guests`
+    );
+    showToast(`Seated ${result.seated} guests automatically`);
+  };
+
+  const handleClearAllSeating = () => {
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: p.attendees.map((a) => ({ ...a, seatId: undefined })),
+      }),
+      'Clear all seat assignments'
+    );
+    showToast('Cleared all guest seating assignments');
+  };
+
+  const handleAddAttendee = (newAttendee: Attendee) => {
+    plan.commit((p) => ({ ...p, attendees: [...p.attendees, newAttendee] }), `Add guest ${newAttendee.name}`);
+    showToast(`Added ${newAttendee.name} to roster`);
+  };
+
+  const handleUpdateAttendee = (updated: Attendee) => {
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: p.attendees.map((a) => (a.id === updated.id ? updated : a)),
+      }),
+      `Update ${updated.name}`
+    );
+    showToast(`Updated ${updated.name}`);
+  };
+
+  const handleDeleteAttendee = (id: string) => {
+    const target = attendees.find((a) => a.id === id);
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: p.attendees.filter((a) => a.id !== id),
+      }),
+      `Remove ${target?.name || 'guest'}`
+    );
+    showToast(`Removed guest from roster`);
+  };
+
+  const handleImportAttendees = (imported: Attendee[]) => {
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: [...p.attendees, ...imported],
+      }),
+      `Import ${imported.length} guests`
+    );
+    showToast(`Imported ${imported.length} guests successfully`);
+  };
+
+  const handleAddVolunteer = (vol: Volunteer) => {
+    plan.commit((p) => ({ ...p, volunteers: [...p.volunteers, vol] }), `Add volunteer ${vol.name}`);
+    showToast(`Added volunteer ${vol.name}`);
+  };
+
+  const handleUpdateVolunteer = (vol: Volunteer) => {
+    plan.commit(
+      (p) => ({
+        ...p,
+        volunteers: p.volunteers.map((v) => (v.id === vol.id ? vol : v)),
+      }),
+      `Update volunteer ${vol.name}`
+    );
+    showToast(`Updated volunteer ${vol.name}`);
+  };
+
+  const handleDeleteVolunteer = (id: string) => {
+    plan.commit(
+      (p) => ({
+        ...p,
+        volunteers: p.volunteers.filter((v) => v.id !== id),
+      }),
+      'Delete volunteer'
+    );
+    showToast('Removed volunteer');
+  };
+
   const handleSelectSeatOnMap = (seatId: string) => {
-    if (!seats.some((s) => s.id === seatId)) return;
     setActiveTab('map');
     setSelectedSeatIds([seatId]);
     setFocusSeatId(seatId);
+  };
+
+  const handleExportJson = () => {
+    exportConfigurationJson(plan.present);
+    showToast('Exported backup configuration file');
+  };
+
+  const handleImportJsonFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    importConfigurationJson(
+      file,
+      (imported) => {
+        plan.commit(() => normalisePlan(imported), `Import ${file.name}`);
+        showToast('Restored backup seating configuration');
+      },
+      (err) => showToast(`Import failed: ${err.message}`, 'error')
+    );
+    e.target.value = '';
   };
 
   const handleJumpToFirstMatch = () => {
@@ -437,6 +497,7 @@ export function App() {
 
       if (e.key === 'Escape') {
         if (isQuestionnaireModalOpen) setIsQuestionnaireModalOpen(false);
+        else if (isSectionManagerOpen) setIsSectionManagerOpen(false);
         else handleClearSelection();
         return;
       }
@@ -444,33 +505,27 @@ export function App() {
       if (e.key === '/' && !isTypingIn(e.target)) {
         e.preventDefault();
         setActiveTab('map');
-        // Wait for the map tab (and its search box) to be on screen.
         window.setTimeout(() => searchInputRef.current?.focus(), 0);
       }
     };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [plan, handleClearSelection, isQuestionnaireModalOpen]);
+  }, [plan, handleClearSelection, isQuestionnaireModalOpen, isSectionManagerOpen]);
 
   const assignedCount = attendees.filter((a) => Boolean(a.seatId)).length;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
-
+      
       <Toast toast={toast} onDismiss={() => setToast(null)} />
 
-      {/* Hidden picker behind the "Open backup file" menu item */}
       <input
         ref={importInputRef}
         type="file"
-        accept="application/json,.json"
+        accept=".json"
+        onChange={handleImportJsonFile}
         className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleImportJsonFile(file);
-          e.target.value = '';
-        }}
       />
 
       <Header
@@ -483,25 +538,25 @@ export function App() {
         rosterCount={attendees.length}
         canUndo={plan.canUndo}
         canRedo={plan.canRedo}
-        undoLabel={plan.undoLabel}
-        redoLabel={plan.redoLabel}
         onUndo={plan.undo}
         onRedo={plan.redo}
-        onApplyPreset={handleApplyPreset}
-        onResetToDefault={handleResetToDefault}
-        onClearAllSeating={handleClearAllSeating}
-        onRegenerateLayout={handleRegenerateLayout}
         onOpenQuestionnaire={() => setIsQuestionnaireModalOpen(true)}
+        onApplyPreset={handleApplyPreset}
+        onResetToDefault={handleResetToDefaultLayout}
         onExportJson={handleExportJson}
         onOpenBackup={() => importInputRef.current?.click()}
       />
 
-      <HowToUseBanner onOpenWizard={() => setIsQuestionnaireModalOpen(true)} />
+      <HowToUseBanner
+        onOpenWizard={() => setIsQuestionnaireModalOpen(true)}
+      />
 
       <StatsBar
         seats={seatsWithPeople}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
+        categories={categories}
+        onOpenSectionManager={() => setIsSectionManagerOpen(true)}
       />
 
       {activeTab === 'map' && (
@@ -510,13 +565,13 @@ export function App() {
             searchInputRef={searchInputRef}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            onJumpToFirstMatch={handleJumpToFirstMatch}
             selectedTier={selectedTier}
             setSelectedTier={setSelectedTier}
             showVolunteers={showVolunteers}
             setShowVolunteers={setShowVolunteers}
             showAisles={showAisles}
             setShowAisles={setShowAisles}
+            onJumpToFirstMatch={handleJumpToFirstMatch}
             highlightedCount={matchingSeatIds.length}
             lowerCount={seats.filter((s) => s.tier === 'LOWER').length}
             upperCount={seats.filter((s) => s.tier === 'UPPER').length}
@@ -563,6 +618,8 @@ export function App() {
                 'Edit Event Details'
               )
             }
+            categories={categories}
+            onOpenSectionManager={() => setIsSectionManagerOpen(true)}
             answers={answers}
             onApplyAnswers={handleApplyQuestionnaireAnswers}
             onAddVolunteer={handleAddVolunteer}
@@ -609,6 +666,7 @@ export function App() {
             onClearAllSeating={handleClearAllSeating}
             onClearSeat={handleClearSeat}
             eventTitle={answers.eventTitle}
+            categories={categories}
           />
         )}
 
@@ -620,10 +678,12 @@ export function App() {
             eventTitle={answers.eventTitle}
             departmentName={answers.departmentName}
             totalSeats={seats.length}
+            categories={categories}
           />
         )}
       </main>
 
+      {/* Auto-Arrange Questionnaire Modal */}
       {isQuestionnaireModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto"
@@ -641,11 +701,24 @@ export function App() {
         </div>
       )}
 
+      {/* Dynamic Section & Colors Manager Modal */}
+      <SectionManagerModal
+        isOpen={isSectionManagerOpen}
+        onClose={() => setIsSectionManagerOpen(false)}
+        categories={categories}
+        onAddCategory={handleAddCategory}
+        onUpdateCategory={handleUpdateCategory}
+        onDeleteCategory={handleDeleteCategory}
+        onResetCategoriesToDefault={handleResetCategoriesToDefault}
+        seatCounts={categorySeatCounts}
+      />
+
       <AddAttendeeModal
         isOpen={isAddAttendeeModalOpen}
         onClose={() => setIsAddAttendeeModalOpen(false)}
         onAdd={handleAddAttendee}
         availableSeats={seatsWithPeople.filter((s) => !s.isBlocked && !s.attendee)}
+        categories={categories}
       />
 
       <CsvImportExport

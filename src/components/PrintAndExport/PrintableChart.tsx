@@ -1,5 +1,5 @@
 import React from 'react';
-import { Seat, Volunteer, CategoryId } from '../../types/seating';
+import { Seat, Volunteer, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 
 interface PrintableChartProps {
@@ -8,6 +8,7 @@ interface PrintableChartProps {
   eventTitle: string;
   departmentName: string;
   totalSeats: number;
+  categories?: Record<string, CategoryInfo>;
 }
 
 export const PrintableChart: React.FC<PrintableChartProps> = ({
@@ -16,6 +17,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
   eventTitle,
   departmentName,
   totalSeats,
+  categories = CATEGORIES,
 }) => {
   const lowerRowList = ['X','W','V','U','T','S','R','Q','P','O','N','M','L','K','J','I','H','G','F','E','D','C','B','A'];
 
@@ -65,6 +67,8 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
     return { x: 0, y: 0, size: seatSize };
   };
 
+  const activeCategories = Object.values(categories).filter((c) => c.id !== 'available');
+
   return (
     <div className="printable-chart bg-white text-slate-900 p-6 max-w-4xl mx-auto rounded-xl shadow-lg border border-slate-300 print:border-0 print:shadow-none print:p-0">
       
@@ -91,90 +95,43 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
             width="870"
             height="155"
             rx="18"
-            fill="#f8fafc"
-            stroke="#475569"
+            fill="none"
+            stroke="#94a3b8"
             strokeWidth="1.5"
+            strokeDasharray="6 4"
           />
-          <text x="187" y="145" textAnchor="middle" fill="#581c87" fontSize="9" fontWeight="bold">
-            5×7=35 seats Reserved for Audience
-          </text>
-          <text x="500" y="102" textAnchor="middle" fill="#581c87" fontSize="8" fontWeight="bold">
-            6+4=10 seats Reserved for Audience
-          </text>
-          <text x="500" y="125" textAnchor="middle" fill="#581c87" fontSize="8" fontWeight="bold">
-            1×13=13 Reserved for Audience
-          </text>
-          <rect x="345" y="132" width="310" height="85" rx="4" fill="#fef9c3" stroke="#ca8a04" strokeWidth="1" />
-          <text x="500" y="175" textAnchor="middle" fill="#854d0e" fontSize="9" fontWeight="bold">
-            3×13=39 seats Reserved for Band Party
-          </text>
-          <text x="802" y="145" textAnchor="middle" fill="#581c87" fontSize="9" fontWeight="bold">
-            5×7=35 seats Reserved for Audience
-          </text>
 
-          {/* Lower Tier Zone Outlines */}
-          <rect x="75" y="285" width="230" height="285" rx="6" fill="#faf5ff" stroke="#7e22ce" strokeWidth="1.2" />
-          <text x="190" y="435" textAnchor="middle" fill="#6b21a8" fontSize="10" fontWeight="bold">
-            11×7=77 Reserved for Audience
-          </text>
+          {/* Clean Dashed Section Boundaries (No Muddy Background Fills) */}
+          <rect x="80" y="85" width="215" height="145" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="340" y="85" width="320" height="145" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="695" y="85" width="215" height="145" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-          <rect x="75" y="575" width="230" height="135" rx="6" fill="#ecfeff" stroke="#0891b2" strokeWidth="1.2" />
-          <text x="190" y="645" textAnchor="middle" fill="#155e75" fontSize="10" fontWeight="bold">
-            5×7=35 seats console
-          </text>
+          {/* Lower Floor Dashed Section Boundaries */}
+          <rect x="75" y="285" width="230" height="285" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="75" y="575" width="230" height="135" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="75" y="715" width="230" height="215" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-          <rect x="75" y="715" width="230" height="215" rx="6" fill="#fff7ed" stroke="#c2410c" strokeWidth="1.2" />
-          <text x="190" y="825" textAnchor="middle" fill="#9a3412" fontSize="10" fontWeight="bold">
-            8×7-2=54 seats Registrar + Senior Faculty
-          </text>
+          <rect x="340" y="285" width="320" height="55" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="340" y="345" width="320" height="365" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="340" y="715" width="320" height="80" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="340" y="785" width="320" height="145" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-          <rect x="340" y="285" width="320" height="55" rx="6" fill="#eff6ff" stroke="#2563eb" strokeWidth="1.2" />
-          <text x="500" y="318" textAnchor="middle" fill="#1e40af" fontSize="9" fontWeight="bold">
-            13×2=26 Reserved for Accompanying Person
-          </text>
-
-          <rect x="340" y="345" width="320" height="365" rx="6" fill="#fefce8" stroke="#ca8a04" strokeWidth="1.2" />
-          <text x="500" y="530" textAnchor="middle" fill="#854d0e" fontSize="11" fontWeight="bold">
-            14×13=182 Reserved for FACULTY
-          </text>
-
-          <rect x="340" y="715" width="320" height="80" rx="6" fill="#f0f9ff" stroke="#0369a1" strokeWidth="1.2" />
-          <text x="500" y="760" textAnchor="middle" fill="#075985" fontSize="10" fontWeight="bold">
-            3×13=39 seats Reporter
-          </text>
-
-          <rect x="340" y="785" width="320" height="145" rx="6" fill="#f0fdf4" stroke="#15803d" strokeWidth="1.2" />
-          <text x="500" y="860" textAnchor="middle" fill="#166534" fontSize="10" fontWeight="bold">
-            4×13=52 seats for VIP
-          </text>
-
-          <rect x="695" y="285" width="230" height="235" rx="6" fill="#eff6ff" stroke="#2563eb" strokeWidth="1.2" />
-          <text x="810" y="405" textAnchor="middle" fill="#1e40af" fontSize="10" fontWeight="bold">
-            7×9=63 Reserved for Accompanying Person
-          </text>
-
-          <rect x="695" y="525" width="230" height="185" rx="6" fill="#f0fdf4" stroke="#d946ef" strokeWidth="1.5" />
-          <text x="810" y="620" textAnchor="middle" fill="#701a75" fontSize="10" fontWeight="bold">
-            7×7=49 seats for Awardees
-          </text>
-
-          <rect x="695" y="715" width="230" height="215" rx="6" fill="#fff1f2" stroke="#e11d48" strokeWidth="1.5" />
-          <text x="810" y="825" textAnchor="middle" fill="#9f1239" fontSize="10" fontWeight="bold">
-            7×8-2=54 seats blocked
-          </text>
+          <rect x="695" y="285" width="230" height="235" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="695" y="525" width="230" height="185" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="695" y="715" width="230" height="215" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
           {/* Row Labels */}
           {lowerRowList.map((rowLetter, idx) => {
             const yPos = 308 + idx * 25.5;
             return (
               <g key={rowLetter}>
-                <text x="315" y={yPos} textAnchor="middle" fill="#475569" fontSize="10" fontWeight="bold">
+                <text x="315" y={yPos} textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="bold">
                   {rowLetter}
                 </text>
-                <text x="670" y={yPos} textAnchor="middle" fill="#475569" fontSize="10" fontWeight="bold">
+                <text x="670" y={yPos} textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="bold">
                   {rowLetter}
                 </text>
-                <text x="935" y={yPos} textAnchor="middle" fill="#475569" fontSize="10" fontWeight="bold">
+                <text x="935" y={yPos} textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="bold">
                   {rowLetter}
                 </text>
               </g>
@@ -184,7 +141,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
           {/* Render Seats */}
           {seats.map((seat) => {
             const { x, y, size } = getSeatCoordinates(seat);
-            const cat = CATEGORIES[seat.categoryId] || { color: '#e2e8f0', borderColor: '#64748b' };
+            const cat = categories[seat.categoryId] || { color: '#e2e8f0', borderColor: '#64748b' };
             const isBlocked = seat.isBlocked || seat.categoryId === 'blocked';
 
             return (
@@ -195,16 +152,16 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
                   width={size}
                   height={size}
                   rx="3"
-                  fill={isBlocked ? '#fecdd3' : cat.color}
-                  stroke={isBlocked ? '#e11d48' : cat.borderColor}
+                  fill={isBlocked ? '#fca5a5' : cat.color}
+                  stroke={isBlocked ? '#e11d48' : cat.borderColor || '#64748b'}
                   strokeWidth="1"
                 />
                 {/* Armchair silhouette */}
                 <g transform={`scale(${size / 24}) translate(2, 2)`}>
-                  <path d="M4 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3z" fill="#1e293b" opacity="0.9" />
-                  <rect x="3" y="11" width="14" height="5" rx="1.5" fill="#0f172a" />
-                  <rect x="1" y="6" width="2" height="8" rx="1" fill="#334155" />
-                  <rect x="17" y="6" width="2" height="8" rx="1" fill="#334155" />
+                  <path d="M4 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3z" fill={isBlocked ? '#e11d48' : '#1e293b'} opacity="0.9" />
+                  <rect x="3" y="11" width="14" height="5" rx="1.5" fill={isBlocked ? '#881337' : '#0f172a'} />
+                  <rect x="1" y="6" width="2" height="8" rx="1" fill={isBlocked ? '#881337' : '#334155'} />
+                  <rect x="17" y="6" width="2" height="8" rx="1" fill={isBlocked ? '#881337' : '#334155'} />
                 </g>
               </g>
             );
@@ -212,7 +169,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
 
           {/* Stage representation at bottom */}
           <g transform="translate(320, 960)">
-            <rect x="0" y="0" width="360" height="28" rx="4" fill="#f1f5f9" stroke="#0284c7" strokeWidth="1.5" />
+            <rect x="0" y="0" width="360" height="28" rx="4" fill="#f8fafc" stroke="#0284c7" strokeWidth="1.5" />
             <text x="180" y="18" textAnchor="middle" fill="#0369a1" fontSize="11" fontWeight="bold">
               ▲ STAGE & PODIUM / DAIS ▲
             </text>
@@ -232,17 +189,18 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
 
       {/* Legend Footer */}
       <div className="mt-4 pt-3 border-t border-slate-300 grid grid-cols-3 sm:grid-cols-5 gap-2 text-[10px]">
-        {Object.values(CATEGORIES).filter(c => c.id !== 'available').map((cat) => (
+        {activeCategories.map((cat) => (
           <div key={cat.id} className="flex items-center gap-1.5">
             <span
-              className="w-3 h-3 rounded border border-slate-400 flex-shrink-0"
-              style={{ backgroundColor: cat.color }}
+              className="w-3 h-3 rounded border border-slate-400 shrink-0"
+              style={{ backgroundColor: cat.color, borderColor: cat.borderColor }}
             />
-            <span className="font-medium text-slate-700 truncate">{cat.name}</span>
+            <span className="truncate font-semibold text-slate-800">
+              {cat.shortName}
+            </span>
           </div>
         ))}
       </div>
-
     </div>
   );
 };

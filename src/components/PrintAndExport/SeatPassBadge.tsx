@@ -1,5 +1,5 @@
 import React from 'react';
-import { Attendee, Seat } from '../../types/seating';
+import { Attendee, Seat, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import { Building2, QrCode, Armchair, MapPin } from 'lucide-react';
 
@@ -8,6 +8,7 @@ interface SeatPassBadgeProps {
   seat?: Seat;
   eventTitle: string;
   departmentName: string;
+  categories?: Record<string, CategoryInfo>;
 }
 
 export const SeatPassBadge: React.FC<SeatPassBadgeProps> = ({
@@ -15,8 +16,9 @@ export const SeatPassBadge: React.FC<SeatPassBadgeProps> = ({
   seat,
   eventTitle,
   departmentName,
+  categories = CATEGORIES,
 }) => {
-  const cat = CATEGORIES[attendee.categoryId] || {
+  const cat = categories[attendee.categoryId] || {
     id: attendee.categoryId,
     name: attendee.categoryId,
     shortName: attendee.categoryId,
@@ -59,55 +61,69 @@ export const SeatPassBadge: React.FC<SeatPassBadgeProps> = ({
           </h4>
         </div>
 
-        {/* Attendee Name & Title */}
+        {/* Guest Name & Category Badge */}
         <div className="mt-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-          <span className="text-[9px] uppercase font-bold text-slate-400">Honourable Guest</span>
-          <h3 className="text-sm font-extrabold text-slate-900 leading-tight">
+          <div className="text-sm font-black text-slate-900 leading-tight">
             {attendee.name}
-          </h3>
+          </div>
           {attendee.designation && (
-            <p className="text-[11px] text-slate-700 font-medium mt-0.5">
+            <div className="text-[11px] text-slate-600 font-medium mt-0.5">
               {attendee.designation}
-            </p>
+            </div>
           )}
           {attendee.department && (
-            <p className="text-[10px] text-slate-500">{attendee.department}</p>
+            <div className="text-[10px] text-slate-500">
+              {attendee.department}
+            </div>
           )}
+
+          <div className="mt-2">
+            <span
+              className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-md border"
+              style={{
+                backgroundColor: cat.color,
+                color: cat.textColor,
+                borderColor: cat.borderColor,
+              }}
+            >
+              {cat.name}
+            </span>
+          </div>
         </div>
 
-        {/* Category Pill */}
-        <div className="mt-2">
-          <span
-            className="px-2.5 py-0.5 rounded-full text-[10px] font-bold inline-block border"
-            style={{
-              backgroundColor: cat.color,
-              color: cat.textColor,
-              borderColor: cat.borderColor,
-            }}
-          >
-            {cat.name}
-          </span>
+        {/* Seat & Door Details */}
+        <div className="mt-3 grid grid-cols-2 gap-2 bg-blue-50/80 p-2.5 rounded-xl border border-blue-200">
+          <div>
+            <div className="text-[9px] font-bold text-blue-950 uppercase tracking-wider flex items-center gap-1">
+              <Armchair className="w-3 h-3 text-blue-600" />
+              <span>Assigned Seat</span>
+            </div>
+            <div className="text-lg font-black text-blue-900 font-mono mt-0.5">
+              {seat ? seat.id : 'UNSEATED'}
+            </div>
+            {seat && (
+              <div className="text-[9px] text-slate-600 font-medium">
+                {seat.blockName} • Row {seat.row}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div className="text-[9px] font-bold text-blue-950 uppercase tracking-wider flex items-center gap-1">
+              <MapPin className="w-3 h-3 text-emerald-600" />
+              <span>Entry Door</span>
+            </div>
+            <div className="text-xs font-black text-emerald-800 mt-1">
+              {seat?.gateRecommendation || 'Main Entrance'}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Seat & Gate Box */}
-      <div className="mt-4 pt-3 border-t border-dashed border-slate-300 flex items-center justify-between">
-        <div>
-          <div className="text-[9px] uppercase font-bold text-slate-400">Assigned Seat</div>
-          <div className="text-xl font-black font-mono text-blue-950 flex items-center gap-1">
-            <Armchair className="w-4 h-4 text-blue-600" />
-            <span>{attendee.seatId || 'OPEN'}</span>
-          </div>
-          <div className="text-[9px] font-bold text-emerald-700 mt-0.5 flex items-center gap-0.5">
-            <MapPin className="w-2.5 h-2.5" />
-            <span>{seat?.gateRecommendation || 'Gate-1 or Gate-2'}</span>
-          </div>
-        </div>
-
-        {/* QR Code representation */}
-        <div className="w-12 h-12 bg-slate-100 border border-slate-300 rounded-lg p-1 flex items-center justify-center">
-          <QrCode className="w-9 h-9 text-slate-800" />
-        </div>
+      {/* Footer */}
+      <div className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between text-[9px] text-slate-400">
+        <span>Auditorium Pass</span>
+        <QrCode className="w-5 h-5 text-slate-700" />
       </div>
     </div>
   );

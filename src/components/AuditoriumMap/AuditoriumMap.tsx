@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Seat, Volunteer, CategoryId, TierType, Attendee, QuestionnaireAnswers } from '../../types/seating';
+import { Seat, Volunteer, CategoryId, TierType, Attendee, QuestionnaireAnswers, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import { SeatNode } from './SeatNode';
 import { VolunteersLayer } from './VolunteersLayer';
@@ -7,7 +7,7 @@ import { GatesAndExitsLayer } from './GatesAndExitsLayer';
 import { MapControls } from './MapControls';
 import { Legend } from './Legend';
 import { SeatInspector } from '../Editor/SeatInspector';
-import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Check } from 'lucide-react';
+import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Settings } from 'lucide-react';
 
 export interface AuditoriumMapProps {
   seats: Seat[];
@@ -34,6 +34,8 @@ export interface AuditoriumMapProps {
   eventTitle: string;
   departmentName: string;
   onUpdateEventMetadata?: (title: string, dept: string) => void;
+  categories?: Record<string, CategoryInfo>;
+  onOpenSectionManager?: () => void;
   answers?: QuestionnaireAnswers;
   onApplyAnswers?: (answers: QuestionnaireAnswers) => void;
   onAddVolunteer?: (vol: Volunteer) => void;
@@ -101,6 +103,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   eventTitle,
   departmentName,
   onUpdateEventMetadata,
+  categories = CATEGORIES,
+  onOpenSectionManager,
   answers,
   onApplyAnswers,
   onAddVolunteer,
@@ -118,23 +122,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
   // Direct Category Paint Brush tool
   const [paintCategory, setPaintCategory] = useState<CategoryId | null>(null);
-
-  // Inline Title Editing state
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [editableTitle, setEditableTitle] = useState(eventTitle);
-  const [editableDept, setEditableDept] = useState(departmentName);
-
-  useEffect(() => {
-    setEditableTitle(eventTitle);
-    setEditableDept(departmentName);
-  }, [eventTitle, departmentName]);
-
-  const handleSaveTitle = () => {
-    if (onUpdateEventMetadata) {
-      onUpdateEventMetadata(editableTitle.trim() || eventTitle, editableDept.trim() || departmentName);
-    }
-    setIsEditingTitle(false);
-  };
 
   /** Either panning the view or dragging a selection box */
   const [drag, setDrag] = useState<
@@ -156,7 +143,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   const matchingIds = useMemo(() => new Set(matchingSeatIds), [matchingSeatIds]);
 
   const seatCounts = useMemo(() => {
-    const counts = {} as Record<CategoryId, number>;
+    const counts = {} as Record<string, number>;
     seats.forEach((s) => {
       counts[s.categoryId] = (counts[s.categoryId] ?? 0) + 1;
     });
@@ -345,7 +332,6 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
   const handleSeatEnter = useCallback(
     (e: React.MouseEvent, seat: Seat) => {
-      // If paintbrush is active and user is holding primary mouse button, paint directly
       if (paintCategory && e.buttons === 1) {
         onUpdateSeatsCategory([seat.id], paintCategory);
       }
@@ -385,7 +371,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           hideTooltip();
         }}
         onWheel={handleWheel}
-        className={`relative flex-1 min-w-0 bg-slate-100/60 overflow-hidden select-none border-b border-slate-200 ${
+        className={`relative flex-1 min-w-0 bg-white overflow-hidden select-none border-b border-slate-200 ${
           drag?.mode === 'pan' ? 'cursor-grabbing' : drag?.mode === 'lasso' ? 'cursor-crosshair' : paintCategory ? 'cursor-cell' : 'cursor-grab'
         }`}
       >
@@ -395,6 +381,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             selectedCategory={selectedCategory}
             onSelectCategory={onSelectCategory}
             seatCounts={seatCounts}
+            categories={categories}
+            onOpenSectionManager={onOpenSectionManager}
           />
         </div>
 
@@ -403,7 +391,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white px-4 py-2 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-xs animate-bounce">
             <Paintbrush className="w-4 h-4 text-amber-400" />
             <span>
-              Painting as: <strong className="text-amber-400">{CATEGORIES[paintCategory]?.name || paintCategory}</strong>
+              Painting as: <strong className="text-amber-400">{categories[paintCategory]?.name || paintCategory}</strong>
             </span>
             <button
               onClick={() => setPaintCategory(null)}
@@ -430,7 +418,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           <MousePointerSquareDashed className="w-4 h-4 text-blue-600 shrink-0" />
           <span>
             {paintCategory
-              ? '🎨 Click or drag over any chair to paint it!'
+              ? '🎨 Click or drag over any chair to paint it directly!'
               : '💡 Click any chair to edit details • Drag to pan • Scroll to zoom'}
           </span>
         </div>
@@ -439,11 +427,11 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
         <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} className="w-full h-full">
           <defs>
             <pattern id="lightGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" strokeWidth="0.8" />
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f1f5f9" strokeWidth="0.8" />
             </pattern>
             <radialGradient id="stageGlowLight" cx="50%" cy="100%" r="60%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+              <stop offset="0%" stopColor="#0284c7" stopOpacity="0.05" />
+              <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
             </radialGradient>
           </defs>
 
@@ -453,7 +441,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             <rect width={VIEW_W} height={VIEW_H} fill="url(#lightGrid)" />
             <rect x="200" y="800" width="600" height="250" fill="url(#stageGlowLight)" />
 
-            {/* Editable Titles */}
+            {/* Event Titles */}
             <text x="500" y="32" textAnchor="middle" fill="#0f172a" fontSize="18" fontWeight="bold" fontFamily="system-ui" letterSpacing="0.5">
               {eventTitle}
             </text>
@@ -473,122 +461,42 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
               <text x="26" y="21" fill="#334155" fontSize="10" fontWeight="bold">Arrangement</text>
             </g>
 
-            {/* Balcony Tier Outlines */}
-            <rect x="65" y="78" width="870" height="160" rx="24" fill="#f8fafc" fillOpacity="0.8" stroke="#94a3b8" strokeWidth="1.5" />
-            <rect x="80" y="85" width="215" height="145" rx="10" fill="#faf5ff" stroke="#a855f7" strokeWidth="1" strokeDasharray="3 3" />
-            {showAisles && (
-              <text x="187" y="150" textAnchor="middle" fill="#6b21a8" fontSize="9" fontWeight="bold">
-                5×7=35 seats Reserved for Audience
-              </text>
-            )}
+            {/* Clean, Non-Overlapping Dashed Boundaries (No Muddy Background Fills) */}
+            {/* Balcony Tier */}
+            <rect x="65" y="78" width="870" height="160" rx="24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 4" />
+            <rect x="80" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="340" y="85" width="320" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="695" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-            <rect x="340" y="85" width="320" height="145" rx="10" fill="#faf5ff" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3 3" />
-            {showAisles && (
-              <>
-                <text x="500" y="106" textAnchor="middle" fill="#6b21a8" fontSize="8" fontWeight="bold">
-                  6+4=10 seats Reserved for Audience
-                </text>
-                <text x="500" y="132" textAnchor="middle" fill="#6b21a8" fontSize="8" fontWeight="bold">
-                  1×13=13 Reserved for Audience
-                </text>
-                <rect x="345" y="138" width="310" height="85" rx="6" fill="#fef08a" fillOpacity="0.35" stroke="#eab308" strokeWidth="1.2" />
-                <text x="500" y="180" textAnchor="middle" fill="#854d0e" fontSize="9" fontWeight="bold">
-                  3×13=39 seats Reserved for Band Party
-                </text>
-              </>
-            )}
+            {/* Lower Floor Dashed Section Dividers */}
+            <rect x="75" y="290" width="230" height="295" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="75" y="590" width="230" height="135" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="75" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-            <rect x="695" y="85" width="215" height="145" rx="10" fill="#faf5ff" stroke="#a855f7" strokeWidth="1" strokeDasharray="3 3" />
-            {showAisles && (
-              <text x="802" y="150" textAnchor="middle" fill="#6b21a8" fontSize="9" fontWeight="bold">
-                5×7=35 seats Reserved for Audience
-              </text>
-            )}
+            <rect x="340" y="290" width="320" height="60" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="340" y="355" width="320" height="375" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="340" y="735" width="320" height="85" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="340" y="805" width="320" height="140" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-            {/* Lower Floor Outlines */}
-            <rect x="75" y="290" width="230" height="295" rx="8" fill="#faf5ff" fillOpacity="0.4" stroke="#9333ea" strokeWidth="1" />
-            {showAisles && (
-              <text x="190" y="445" textAnchor="middle" fill="#7e22ce" fontSize="10" fontWeight="bold">
-                11×7=77 Reserved for Audience
-              </text>
-            )}
+            <rect x="695" y="290" width="230" height="245" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="695" y="540" width="230" height="185" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="695" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-            <rect x="75" y="590" width="230" height="135" rx="8" fill="#ecfeff" fillOpacity="0.5" stroke="#0891b2" strokeWidth="1" />
-            {showAisles && (
-              <text x="190" y="660" textAnchor="middle" fill="#0e7490" fontSize="10" fontWeight="bold">
-                5×7=35 seats console
-              </text>
-            )}
-
-            <rect x="75" y="730" width="230" height="215" rx="8" fill="#fff7ed" fillOpacity="0.6" stroke="#ea580c" strokeWidth="1" />
-            {showAisles && (
-              <text x="190" y="840" textAnchor="middle" fill="#c2410c" fontSize="10" fontWeight="bold">
-                8×7-2=54 seats Registrar + Senior Faculty
-              </text>
-            )}
-
-            <rect x="340" y="290" width="320" height="60" rx="8" fill="#eff6ff" fillOpacity="0.5" stroke="#3b82f6" strokeWidth="1" />
-            {showAisles && (
-              <text x="500" y="325" textAnchor="middle" fill="#1d4ed8" fontSize="9" fontWeight="bold">
-                13×2=26 Reserved for Accompanying Person
-              </text>
-            )}
-
-            <rect x="340" y="355" width="320" height="375" rx="8" fill="#fefce8" fillOpacity="0.5" stroke="#ca8a04" strokeWidth="1" />
-            {showAisles && (
-              <text x="500" y="540" textAnchor="middle" fill="#854d0e" fontSize="11" fontWeight="bold">
-                14×13=182 Reserved for FACULTY
-              </text>
-            )}
-
-            <rect x="340" y="735" width="320" height="85" rx="8" fill="#f0f9ff" fillOpacity="0.6" stroke="#0284c7" strokeWidth="1" />
-            {showAisles && (
-              <text x="500" y="780" textAnchor="middle" fill="#0369a1" fontSize="10" fontWeight="bold">
-                3×13=39 seats Reporter
-              </text>
-            )}
-
-            <rect x="340" y="805" width="320" height="140" rx="8" fill="#f0fdf4" fillOpacity="0.6" stroke="#16a34a" strokeWidth="1" />
-            {showAisles && (
-              <text x="500" y="875" textAnchor="middle" fill="#15803d" fontSize="10" fontWeight="bold">
-                4×13=52 seats for VIP
-              </text>
-            )}
-
-            <rect x="695" y="290" width="230" height="245" rx="8" fill="#eff6ff" fillOpacity="0.5" stroke="#3b82f6" strokeWidth="1" />
-            {showAisles && (
-              <text x="810" y="415" textAnchor="middle" fill="#1d4ed8" fontSize="10" fontWeight="bold">
-                7×9=63 Reserved for Accompanying Person
-              </text>
-            )}
-
-            <rect x="695" y="540" width="230" height="185" rx="8" fill="#f0fdf4" fillOpacity="0.5" stroke="#d946ef" strokeWidth="1.5" />
-            {showAisles && (
-              <text x="810" y="635" textAnchor="middle" fill="#a21caf" fontSize="10" fontWeight="bold">
-                7×7=49 seats for Awardees
-              </text>
-            )}
-
-            <rect x="695" y="730" width="230" height="215" rx="8" fill="#fff1f2" fillOpacity="0.5" stroke="#e11d48" strokeWidth="1.5" />
-            {showAisles && (
-              <text x="810" y="840" textAnchor="middle" fill="#be123c" fontSize="10" fontWeight="bold">
-                7×8-2=54 seats blocked
-              </text>
-            )}
-
+            {/* Row Letter Labels */}
             {LOWER_ROW_LIST.map((rowLetter, idx) => {
               const yPos = 315 + idx * 26.5;
               return (
                 <g key={rowLetter}>
-                  <text x="315" y={yPos} textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="bold">{rowLetter}</text>
-                  <text x="670" y={yPos} textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="bold">{rowLetter}</text>
-                  <text x="935" y={yPos} textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                  <text x="315" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                  <text x="670" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                  <text x="935" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
                 </g>
               );
             })}
 
             <GatesAndExitsLayer />
 
+            {/* Individual Seat Nodes (Pure, crisp, high-contrast colors) */}
             <g className="seats-layer">
               {seats.map((seat) => {
                 const { x, y } = getSeatCoordinates(seat);
@@ -596,6 +504,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
                   <SeatNode
                     key={seat.id}
                     seat={seat}
+                    categoryInfo={categories[seat.categoryId]}
                     x={x}
                     y={y}
                     size={SEAT_SIZE}
@@ -642,7 +551,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span
                       className="w-3 h-3 rounded-full shrink-0 border border-slate-400/40"
-                      style={{ backgroundColor: CATEGORIES[tooltip.seat.categoryId]?.color ?? '#0284c7' }}
+                      style={{ backgroundColor: categories[tooltip.seat.categoryId]?.color ?? '#0284c7' }}
                     />
                     <span className="font-black text-xs text-slate-900 font-mono truncate">
                       Seat {tooltip.seat.id}
@@ -654,7 +563,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
                 </div>
 
                 <div className="space-y-1 text-xs">
-                  <Row label="Zone" value={CATEGORIES[tooltip.seat.categoryId]?.name ?? tooltip.seat.categoryId} strong />
+                  <Row label="Zone" value={categories[tooltip.seat.categoryId]?.name ?? tooltip.seat.categoryId} strong />
                   <Row label="Block" value={tooltip.seat.blockName} />
 
                   {tooltip.seat.attendee ? (
@@ -713,15 +622,28 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             </span>
           </span>
 
-          {selectedSeats.length > 0 && (
-            <button
-              onClick={onClearSelection}
-              aria-label="Deselect"
-              className="text-[11px] px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-white font-bold transition cursor-pointer"
-            >
-              Done (✕)
-            </button>
-          )}
+          <div className="flex items-center gap-1">
+            {onOpenSectionManager && selectedSeats.length === 0 && (
+              <button
+                type="button"
+                onClick={onOpenSectionManager}
+                title="Manage Sections"
+                className="p-1 rounded hover:bg-white/20 text-slate-300 hover:text-white cursor-pointer"
+              >
+                <Settings className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {selectedSeats.length > 0 && (
+              <button
+                onClick={onClearSelection}
+                aria-label="Deselect"
+                className="text-[11px] px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-white font-bold transition cursor-pointer"
+              >
+                Done (✕)
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="p-3">
@@ -736,6 +658,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             onClearSelection={onClearSelection}
             onSelectRow={onSelectRow}
             onSelectZone={onSelectZone}
+            categories={categories}
+            onOpenSectionManager={onOpenSectionManager}
             answers={answers}
             onApplyAnswers={onApplyAnswers}
             paintCategory={paintCategory}

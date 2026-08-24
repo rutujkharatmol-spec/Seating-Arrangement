@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Seat, CategoryId, Attendee, QuestionnaireAnswers, Volunteer } from '../../types/seating';
+import { Seat, CategoryId, Attendee, QuestionnaireAnswers, Volunteer, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import {
   Armchair,
@@ -20,7 +20,9 @@ import {
   Plus,
   MapPin,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Settings,
+  Layers
 } from 'lucide-react';
 import { validateQuestionnaire } from '../../utils/seatAlgorithms';
 
@@ -37,6 +39,8 @@ export interface SeatInspectorProps {
   onSelectZone?: (seat: Seat) => void;
 
   // Direct editing additions
+  categories?: Record<string, CategoryInfo>;
+  onOpenSectionManager?: () => void;
   answers?: QuestionnaireAnswers;
   onApplyAnswers?: (answers: QuestionnaireAnswers) => void;
   paintCategory?: CategoryId | null;
@@ -46,19 +50,6 @@ export interface SeatInspectorProps {
   onUpdateVolunteer?: (vol: Volunteer) => void;
   onDeleteVolunteer?: (id: string) => void;
 }
-
-const CATEGORY_LIST: CategoryId[] = [
-  'vip',
-  'faculty',
-  'senior_faculty',
-  'awardees',
-  'reporters',
-  'accompanying',
-  'band_party',
-  'console',
-  'audience',
-  'blocked',
-];
 
 const EMPTY_FORM = { name: '', title: '', dept: '', email: '', phone: '' };
 
@@ -73,6 +64,8 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
   onClearSelection,
   onSelectRow,
   onSelectZone,
+  categories = CATEGORIES,
+  onOpenSectionManager,
   answers,
   onApplyAnswers,
   paintCategory,
@@ -243,6 +236,8 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
   const set = (key: keyof typeof EMPTY_FORM) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const activeCategoryList = Object.values(categories).filter((c) => c.id !== 'available');
+
   // =========================================================================
   // VIEW 1: SEATS ARE SELECTED (Single or Multi-Seat Inspector)
   // =========================================================================
@@ -296,7 +291,7 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
                 className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition cursor-pointer"
               >
                 <LayoutGrid className="w-3 h-3 text-blue-600" />
-                Select All {CATEGORIES[singleSeat.categoryId]?.shortName ?? 'Zone'}
+                Select All {categories[singleSeat.categoryId]?.shortName ?? 'Zone'}
               </button>
             )}
           </div>
@@ -304,21 +299,32 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
 
         {/* Category Reassignment Buttons */}
         <div>
-          <label className="text-[11px] font-bold text-slate-700 mb-1.5 flex items-center gap-1">
-            <Tag className="w-3 h-3 text-blue-600" />
-            <span>Set Zone for {isMultiple ? `All ${selectedSeats.length} Seats` : 'This Seat'}:</span>
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+              <Tag className="w-3 h-3 text-blue-600" />
+              <span>Set Zone for {isMultiple ? `All ${selectedSeats.length} Seats` : 'This Seat'}:</span>
+            </label>
 
-          <div className="grid grid-cols-2 gap-1">
-            {CATEGORY_LIST.map((catId) => {
-              const cat = CATEGORIES[catId];
-              const isActive = !isMultiple && singleSeat!.categoryId === catId;
+            {onOpenSectionManager && (
+              <button
+                type="button"
+                onClick={onOpenSectionManager}
+                className="text-[10px] text-blue-600 hover:underline font-bold cursor-pointer"
+              >
+                + Custom Section
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-1 max-h-52 overflow-y-auto pr-0.5 scrollbar-thin">
+            {activeCategoryList.map((cat) => {
+              const isActive = !isMultiple && singleSeat!.categoryId === cat.id;
 
               return (
                 <button
-                  key={catId}
+                  key={cat.id}
                   type="button"
-                  onClick={() => onUpdateSeatsCategory(seatIds, catId)}
+                  onClick={() => onUpdateSeatsCategory(seatIds, cat.id)}
                   className={`flex items-center justify-between px-2 py-1.5 rounded-lg text-[11px] font-bold border transition-all cursor-pointer shadow-2xs ${
                     isActive ? 'ring-2 ring-slate-900 scale-[1.02]' : 'hover:opacity-90'
                   }`}
@@ -393,7 +399,7 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
                 <option value="">Choose from {unassignedAttendees.length} unseated guest{unassignedAttendees.length === 1 ? '' : 's'}…</option>
                 {matchingUnassigned.slice(0, 30).map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.name} ({CATEGORIES[a.categoryId]?.shortName ?? a.categoryId})
+                    {a.name} ({categories[a.categoryId]?.shortName ?? a.categoryId})
                   </option>
                 ))}
               </select>
@@ -509,11 +515,10 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
             )}
           </div>
 
-          {/* Stepper Grid */}
-          <div className="grid grid-cols-2 gap-1.5 max-h-[380px] overflow-y-auto pr-0.5 scrollbar-thin">
-            {CATEGORY_LIST.map((catId) => {
-              const cat = CATEGORIES[catId];
-              const keyMap: Partial<Record<CategoryId, keyof QuestionnaireAnswers>> = {
+          {/* Stepper Grid for Default Categories */}
+          <div className="grid grid-cols-2 gap-1.5 max-h-[340px] overflow-y-auto pr-0.5 scrollbar-thin">
+            {activeCategoryList.map((cat) => {
+              const keyMap: Record<string, keyof QuestionnaireAnswers> = {
                 vip: 'numVip',
                 faculty: 'numFaculty',
                 senior_faculty: 'numSeniorFaculty',
@@ -525,46 +530,63 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
                 audience: 'numAudience',
                 blocked: 'numBlocked',
               };
-              const key = keyMap[catId];
-              if (!key) return null;
-              const count = (countForm as any)[key] ?? 0;
+              const key = keyMap[cat.id];
+              const count = key ? (countForm as any)[key] ?? 0 : 0;
 
               return (
                 <div
-                  key={catId}
+                  key={cat.id}
                   className="bg-slate-50 p-2 rounded-xl border border-slate-200 flex flex-col justify-between"
+                  style={{ borderColor: cat.borderColor }}
                 >
                   <div className="flex items-center justify-between text-[11px] font-bold text-slate-800 mb-1">
                     <span className="truncate">{cat.shortName}</span>
-                    <span className="text-[10px] text-slate-400 font-mono">{count}</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{key ? count : 'custom'}</span>
                   </div>
 
-                  <div className="flex items-center justify-between bg-white rounded-lg border border-slate-200 p-0.5">
-                    <button
-                      type="button"
-                      onClick={() => handleCountChange(key, count - 5)}
-                      className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center cursor-pointer"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      value={count}
-                      onChange={(e) => handleCountChange(key, parseInt(e.target.value) || 0)}
-                      className="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleCountChange(key, count + 5)}
-                      className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center cursor-pointer"
-                    >
-                      +
-                    </button>
-                  </div>
+                  {key ? (
+                    <div className="flex items-center justify-between bg-white rounded-lg border border-slate-200 p-0.5">
+                      <button
+                        type="button"
+                        onClick={() => handleCountChange(key, count - 5)}
+                        className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center cursor-pointer"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        value={count}
+                        onChange={(e) => handleCountChange(key, parseInt(e.target.value) || 0)}
+                        className="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleCountChange(key, count + 5)}
+                        className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center cursor-pointer"
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-[10px] text-slate-500 italic py-1">
+                      Use Paint tool on map
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
+
+          {onOpenSectionManager && (
+            <button
+              type="button"
+              onClick={onOpenSectionManager}
+              className="w-full py-1.5 rounded-xl border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Add, Edit or Delete Sections</span>
+            </button>
+          )}
 
           <button
             type="submit"
@@ -584,19 +606,18 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
               <Paintbrush className="w-3.5 h-3.5 text-blue-600" />
               <span>Direct Click-to-Paint Tool</span>
             </p>
-            Pick a category brush below, then click any chair on the map to instantly change its zone!
+            Pick a section below, then click any chair on the map to instantly change its zone!
           </div>
 
-          <div className="grid grid-cols-2 gap-1.5">
-            {CATEGORY_LIST.map((catId) => {
-              const cat = CATEGORIES[catId];
-              const isBrushActive = paintCategory === catId;
+          <div className="grid grid-cols-2 gap-1.5 max-h-56 overflow-y-auto pr-0.5 scrollbar-thin">
+            {activeCategoryList.map((cat) => {
+              const isBrushActive = paintCategory === cat.id;
 
               return (
                 <button
-                  key={catId}
+                  key={cat.id}
                   type="button"
-                  onClick={() => onSetPaintCategory && onSetPaintCategory(isBrushActive ? null : catId)}
+                  onClick={() => onSetPaintCategory && onSetPaintCategory(isBrushActive ? null : cat.id)}
                   className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-2xs ${
                     isBrushActive ? 'ring-2 ring-slate-900 scale-105 font-black shadow-md' : 'hover:opacity-90'
                   }`}
@@ -613,13 +634,24 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
             })}
           </div>
 
+          {onOpenSectionManager && (
+            <button
+              type="button"
+              onClick={onOpenSectionManager}
+              className="w-full py-1.5 rounded-xl border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Create New Custom Section</span>
+            </button>
+          )}
+
           {paintCategory && (
             <button
               type="button"
               onClick={() => onSetPaintCategory && onSetPaintCategory(null)}
               className="w-full py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-300 transition cursor-pointer"
             >
-              Turn Off Paintbrush (Normal Selection Mode)
+              Turn Off Paintbrush (Normal Mode)
             </button>
           )}
         </div>

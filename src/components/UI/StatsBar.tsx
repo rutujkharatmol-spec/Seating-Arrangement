@@ -1,35 +1,27 @@
 import React from 'react';
-import { Seat, CategoryId } from '../../types/seating';
+import { Seat, CategoryId, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
+import { Settings, Plus } from 'lucide-react';
 
 interface StatsBarProps {
   seats: Seat[];
   selectedCategory: CategoryId | 'all';
   onSelectCategory: (cat: CategoryId | 'all') => void;
+  categories?: Record<string, CategoryInfo>;
+  onOpenSectionManager?: () => void;
 }
 
 export const StatsBar: React.FC<StatsBarProps> = ({
   seats,
   selectedCategory,
   onSelectCategory,
+  categories = CATEGORIES,
+  onOpenSectionManager,
 }) => {
   const categoryCounts = seats.reduce((acc, seat) => {
     acc[seat.categoryId] = (acc[seat.categoryId] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-
-  const categoryOrder: CategoryId[] = [
-    'vip',
-    'faculty',
-    'senior_faculty',
-    'awardees',
-    'reporters',
-    'accompanying',
-    'band_party',
-    'console',
-    'audience',
-    'blocked',
-  ];
 
   const categoryIcons: Record<string, string> = {
     vip: '👑',
@@ -43,6 +35,8 @@ export const StatsBar: React.FC<StatsBarProps> = ({
     audience: '👥',
     blocked: '🚫',
   };
+
+  const catList = Object.values(categories).filter((c) => c.id !== 'available');
 
   return (
     <div className="no-print bg-slate-100/80 border-b border-slate-200 py-2 px-4 overflow-x-auto scrollbar-none">
@@ -67,17 +61,15 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         </button>
 
         {/* Specific Category Chips */}
-        {categoryOrder.map((catId) => {
-          const cat = CATEGORIES[catId];
-          if (!cat) return null;
-          const count = categoryCounts[catId] || 0;
-          const isSelected = selectedCategory === catId;
-          const icon = categoryIcons[catId] || '🏷️';
+        {catList.map((cat) => {
+          const count = categoryCounts[cat.id] || 0;
+          const isSelected = selectedCategory === cat.id;
+          const icon = categoryIcons[cat.id] || '🏷️';
 
           return (
             <button
-              key={catId}
-              onClick={() => onSelectCategory(isSelected ? 'all' : catId)}
+              key={cat.id}
+              onClick={() => onSelectCategory(isSelected ? 'all' : cat.id)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-2xs border ${
                 isSelected
                   ? 'ring-2 ring-slate-900 scale-105 font-black'
@@ -102,6 +94,19 @@ export const StatsBar: React.FC<StatsBarProps> = ({
             </button>
           );
         })}
+
+        {/* Manage / Add Sections Button */}
+        {onOpenSectionManager && (
+          <button
+            type="button"
+            onClick={onOpenSectionManager}
+            className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-bold bg-white hover:bg-blue-50 text-blue-700 border border-blue-300 shadow-2xs transition cursor-pointer ml-1"
+            title="Add, Edit or Delete Seating Sections"
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span>Manage Sections</span>
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 export type TierType = 'UPPER' | 'LOWER';
 export type BlockType = 'UPPER_LEFT' | 'UPPER_CENTER' | 'UPPER_RIGHT' | 'LOWER_LEFT' | 'LOWER_CENTER' | 'LOWER_RIGHT';
 
-export type CategoryId = 
+export type BuiltinCategoryId = 
   | 'vip'
   | 'senior_faculty'
   | 'faculty'
@@ -14,17 +14,20 @@ export type CategoryId =
   | 'blocked'
   | 'available';
 
+export type CategoryId = string;
+
 export interface CategoryInfo {
-  id: CategoryId;
+  id: string;
   name: string;
   shortName: string;
-  color: string;           // Hex or Tailwind bg
+  color: string;           // Hex color
   textColor: string;
   borderColor: string;
   description: string;
-  defaultCount: number;
-  priority: number;
+  defaultCount?: number;
+  priority?: number;
   recommendedGate?: string;
+  isCustom?: boolean;
 }
 
 export interface Attendee {
