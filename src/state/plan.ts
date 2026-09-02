@@ -16,13 +16,13 @@ export interface PlanState {
   categories: Record<string, CategoryInfo>;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v5';
+const STORAGE_KEY = 'aiims_seating_plan_v7';
 
 export function createDefaultPlan(): PlanState {
   return {
     answers: INITIAL_QUESTIONNAIRE_ANSWERS,
     seats: generateDefaultSeats(),
-    attendees: [],
+    attendees: [...INITIAL_ATTENDEES],
     volunteers: DEFAULT_VOLUNTEERS,
     categories: { ...CATEGORIES },
   };
@@ -52,7 +52,7 @@ export function normalisePlan(plan: Partial<PlanState>): PlanState {
 
   // One seat can hold one person; if a file has duplicates, the first wins.
   const claimed = new Set<string>();
-  const rawAttendees = plan.attendees || [];
+  const rawAttendees = plan.attendees !== undefined ? plan.attendees : [...INITIAL_ATTENDEES];
   const attendees = rawAttendees.map((a) => {
     const catId = categories[a.categoryId] ? a.categoryId : 'faculty';
     if (!a.seatId) return { ...a, categoryId: catId };

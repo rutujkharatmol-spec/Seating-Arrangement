@@ -55,7 +55,7 @@ export interface SeatInspectorProps {
 
 const EMPTY_FORM = { name: '', title: '', dept: '', email: '', phone: '' };
 
-export const SeatInspector: React.FC<SeatInspectorProps> = ({
+const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
   selectedSeats,
   unassignedAttendees,
   onUpdateSeatsCategory,
@@ -808,3 +808,7 @@ export const SeatInspector: React.FC<SeatInspectorProps> = ({
     </div>
   );
 };
+
+// Memoized: while the map is panned/zoomed the parent re-renders every frame,
+// but this large panel only needs to re-render when its own props change.
+export const SeatInspector = React.memo(SeatInspectorComponent);

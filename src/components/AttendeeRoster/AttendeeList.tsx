@@ -14,8 +14,10 @@ import {
   Eraser,
   AlertTriangle,
   CircleSlash,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { exportSeatingToCsv } from '../../utils/exportHelpers';
+import { exportRosterToExcel } from '../../utils/excelHelpers';
 import { PlanIssue } from '../../utils/autoSeat';
 
 interface AttendeeListProps {
@@ -60,7 +62,10 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
         a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (a.designation && a.designation.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (a.department && a.department.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (a.seatId && a.seatId.toLowerCase().includes(searchTerm.toLowerCase()));
+        (a.seatId && a.seatId.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (a.notes && a.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (a.email && a.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (a.phone && a.phone.includes(searchTerm));
 
       const matchCat = selectedCategoryFilter === 'ALL' || a.categoryId === selectedCategoryFilter;
       const matchStatus =
@@ -77,6 +82,10 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
 
   const handleExportCsv = () => {
     exportSeatingToCsv(seats, attendees, eventTitle);
+  };
+
+  const handleExportExcel = () => {
+    exportRosterToExcel(seats, attendees, eventTitle);
   };
 
   return (
@@ -108,17 +117,28 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
 
           <button
             onClick={onOpenCsvModal}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-xs transition cursor-pointer"
+            title="Upload Excel (.xlsx, .xls) or CSV spreadsheet"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs transition cursor-pointer"
           >
-            <Upload className="w-3.5 h-3.5 text-slate-600" />
-            <span>Import CSV</span>
+            <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
+            <span>Upload Excel / CSV</span>
+          </button>
+
+          <button
+            onClick={handleExportExcel}
+            title="Export master workbook as Excel (.xlsx)"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-xs transition cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Export Excel</span>
           </button>
 
           <button
             onClick={handleExportCsv}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-xs transition cursor-pointer"
+            title="Export roster as CSV"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-xs transition cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-slate-600" />
+            <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>Export CSV</span>
           </button>
 

@@ -15,7 +15,8 @@ import {
   Trash2,
   X,
   Compass,
-  QrCode
+  QrCode,
+  FileSpreadsheet
 } from 'lucide-react';
 import { PRESET_TEMPLATES } from '../data/presetTemplates';
 import { SeatingPreset } from '../types/seating';
@@ -39,6 +40,7 @@ export interface HeaderProps {
   onClearAllSeating?: () => void;
   onRegenerateLayout?: () => void;
   onOpenQuestionnaire: () => void;
+  onOpenSpreadsheetModal?: () => void;
   onExportJson: () => void;
   onOpenBackup?: () => void;
   onLaunchKiosk?: () => void;
@@ -63,6 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
   onClearAllSeating,
   onRegenerateLayout,
   onOpenQuestionnaire,
+  onOpenSpreadsheetModal,
   onExportJson,
   onOpenBackup,
   onLaunchKiosk,
@@ -180,6 +183,18 @@ export const Header: React.FC<HeaderProps> = ({
               <Redo2 className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Upload Excel Button */}
+          {onOpenSpreadsheetModal && (
+            <button
+              onClick={onOpenSpreadsheetModal}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-xs shadow-2xs transition active:scale-98 cursor-pointer"
+              title="Upload student list or guest roster spreadsheet (.xlsx, .xls, .csv)"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700" />
+              <span className="hidden sm:inline">Upload Excel</span>
+            </button>
+          )}
 
           {/* Quick Auto-Arrange Wizard */}
           <button

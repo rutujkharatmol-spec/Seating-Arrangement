@@ -3,10 +3,14 @@ export type BlockType = 'UPPER_LEFT' | 'UPPER_CENTER' | 'UPPER_RIGHT' | 'LOWER_L
 
 export type BuiltinCategoryId = 
   | 'vip'
-  | 'senior_faculty'
-  | 'faculty'
-  | 'awardees'
   | 'reporters'
+  | 'faculty'
+  | 'senior_faculty'
+  | 'mbbs'
+  | 'nursing'
+  | 'pg'
+  | 'pdcc'
+  | 'awardees'
   | 'accompanying'
   | 'audience'
   | 'band_party'

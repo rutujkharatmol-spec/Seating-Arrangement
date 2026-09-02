@@ -61,11 +61,19 @@ const LOWER_ROW_LIST = [
 
 const UPPER_ROW_ORDER = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
 
+// Row -> index lookup built once, so getSeatCoordinates is O(1) per seat
+// instead of an Array.indexOf scan. It runs 763 times per map render and once
+// per seat in the Kiosk, so the constant factor matters.
+const LOWER_ROW_INDEX: Record<string, number> = {};
+LOWER_ROW_LIST.forEach((r, i) => { LOWER_ROW_INDEX[r] = i; });
+const UPPER_ROW_INDEX: Record<string, number> = {};
+UPPER_ROW_ORDER.forEach((r, i) => { UPPER_ROW_INDEX[r] = i; });
+
 const SEAT_SIZE = 20;
 
 export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
   if (seat.tier === 'UPPER') {
-    const y = 90 + Math.max(0, UPPER_ROW_ORDER.indexOf(seat.row)) * 25;
+    const y = 90 + (UPPER_ROW_INDEX[seat.row] ?? 0) * 25;
     if (seat.block === 'UPPER_LEFT') return { x: 90 + (seat.col - 1) * 28, y };
     if (seat.block === 'UPPER_RIGHT') return { x: 705 + (seat.col - 1) * 28, y };
     return seat.row === 'UB5'
@@ -73,7 +81,7 @@ export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
       : { x: 350 + (seat.col - 1) * 23, y };
   }
 
-  const y = 300 + Math.max(0, LOWER_ROW_LIST.indexOf(seat.row)) * 26.5;
+  const y = 300 + (LOWER_ROW_INDEX[seat.row] ?? 0) * 26.5;
   if (seat.block === 'LOWER_LEFT') return { x: 85 + (seat.col - 1) * 28, y };
   if (seat.block === 'LOWER_RIGHT') return { x: 705 + (seat.col - 1) * 28, y };
   return { x: 350 + (seat.col - 1) * 23, y };
@@ -117,6 +125,10 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<SVGGElement>(null);
+  // The screen->drawing inverse matrix, captured once at drag start. The map's
+  // transform is fixed for the duration of a drag, so reusing it avoids a
+  // getScreenCTM() layout read on every mousemove.
+  const dragMatrixRef = useRef<DOMMatrix | null>(null);
 
   const [view, setView] = useState({ zoom: 1, x: 0, y: 0 });
   const { zoom } = view;
@@ -127,7 +139,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
   /** Either panning the view or dragging a selection box */
   const [drag, setDrag] = useState<
-    | { mode: 'pan'; startClient: { x: number; y: number }; startPan: { x: number; y: number } }
+    | { mode: 'pan'; startClient: { x: number; y: number }; startPan: { x: number; y: number }; scale: number }
     | { mode: 'lasso'; origin: { x: number; y: number }; current: { x: number; y: number }; additive: boolean }
     | null
   >(null);
@@ -151,6 +163,13 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     });
     return counts;
   }, [seats]);
+
+  // Seat positions depend only on seat identity, so compute them once per seats
+  // change rather than on every pan/zoom frame. Reused by lasso hit-testing.
+  const seatLayout = useMemo(
+    () => seats.map((seat) => ({ seat, ...getSeatCoordinates(seat) })),
+    [seats]
+  );
 
   const isSeatDimmed = useCallback(
     (seat: Seat) => {
@@ -215,18 +234,26 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     return () => document.removeEventListener('fullscreenchange', onChange);
   }, []);
 
+  // Uses the matrix cached at drag start where possible; falls back to a live
+  // read (e.g. focus-to-seat) when no drag is in progress.
   const toDrawingPoint = useCallback((clientX: number, clientY: number) => {
-    const g = viewportRef.current;
-    const ctm = g?.getScreenCTM();
-    if (!g || !ctm) return null;
-    const pt = new DOMPoint(clientX, clientY).matrixTransform(ctm.inverse());
+    let inverse = dragMatrixRef.current;
+    if (!inverse) {
+      const ctm = viewportRef.current?.getScreenCTM();
+      if (!ctm) return null;
+      inverse = ctm.inverse();
+    }
+    const pt = new DOMPoint(clientX, clientY).matrixTransform(inverse);
     return { x: pt.x, y: pt.y };
   }, []);
 
-  const screenToDrawingScale = useCallback(() => {
+  // Capture the transform once per drag: the inverse matrix (for lasso point
+  // mapping) and the screen->drawing scale (for pan deltas).
+  const beginDrag = () => {
     const ctm = viewportRef.current?.getScreenCTM();
+    dragMatrixRef.current = ctm ? ctm.inverse() : null;
     return ctm && ctm.a !== 0 ? ctm.a / zoom : 1;
-  }, [zoom]);
+  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     // In paintbrush mode: never pan the viewport on left click.
@@ -234,10 +261,12 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     if (paintCategory) {
       if (e.button === 1 || e.altKey) {
         // Allow intentional pan if middle mouse button or Alt key is held
-        setDrag({ mode: 'pan', startClient: { x: e.clientX, y: e.clientY }, startPan: { x: view.x, y: view.y } });
+        const scale = beginDrag();
+        setDrag({ mode: 'pan', startClient: { x: e.clientX, y: e.clientY }, startPan: { x: view.x, y: view.y }, scale });
         return;
       }
       if (e.button === 0) {
+        beginDrag();
         const origin = toDrawingPoint(e.clientX, e.clientY);
         if (!origin) return;
         setDrag({ mode: 'lasso', origin, current: origin, additive: true });
@@ -249,6 +278,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     if (e.button !== 0) return;
 
     if (e.shiftKey) {
+      beginDrag();
       const origin = toDrawingPoint(e.clientX, e.clientY);
       if (!origin) return;
       e.preventDefault();
@@ -256,7 +286,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
       return;
     }
 
-    setDrag({ mode: 'pan', startClient: { x: e.clientX, y: e.clientY }, startPan: { x: view.x, y: view.y } });
+    const scale = beginDrag();
+    setDrag({ mode: 'pan', startClient: { x: e.clientX, y: e.clientY }, startPan: { x: view.x, y: view.y }, scale });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -268,15 +299,16 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
       return;
     }
 
-    const scale = screenToDrawingScale();
+    const { scale, startPan, startClient } = drag;
     setView((v) => ({
       ...v,
-      x: drag.startPan.x + (e.clientX - drag.startClient.x) / scale,
-      y: drag.startPan.y + (e.clientY - drag.startClient.y) / scale,
+      x: startPan.x + (e.clientX - startClient.x) / scale,
+      y: startPan.y + (e.clientY - startClient.y) / scale,
     }));
   };
 
   const finishDrag = () => {
+    dragMatrixRef.current = null;
     if (drag?.mode === 'lasso') {
       const { origin, current, additive } = drag;
       const left = Math.min(origin.x, current.x);
@@ -285,15 +317,15 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
       const bottom = Math.max(origin.y, current.y);
 
       if (right - left > 4 || bottom - top > 4) {
-        const ids = seats
-          .filter((s) => {
-            if (isSeatDimmed(s)) return false;
-            const { x, y } = getSeatCoordinates(s);
-            const cx = x + SEAT_SIZE / 2;
-            const cy = y + SEAT_SIZE / 2;
-            return cx >= left && cx <= right && cy >= top && cy <= bottom;
-          })
-          .map((s) => s.id);
+        // Hit-test against the precomputed layout instead of recomputing
+        // coordinates for all 763 seats here.
+        const ids: string[] = [];
+        for (const { seat, x, y } of seatLayout) {
+          if (isSeatDimmed(seat)) continue;
+          const cx = x + SEAT_SIZE / 2;
+          const cy = y + SEAT_SIZE / 2;
+          if (cx >= left && cx <= right && cy >= top && cy <= bottom) ids.push(seat.id);
+        }
 
         if (ids.length > 0) {
           if (paintCategory) {
@@ -367,6 +399,34 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   );
 
   const labelMode: 'icon' | 'number' = zoom >= LABEL_ZOOM ? 'number' : 'icon';
+
+  // The 763 seat nodes are the map's heaviest subtree. Building them in a memo
+  // that excludes pan/zoom (`view`) means a pan or zoom keeps the exact same
+  // element reference, so React skips reconciling all 763 children and only
+  // updates the one transform attribute on the parent <g>. This is what keeps
+  // panning smooth. It rebuilds only when something that actually affects a
+  // seat's appearance changes (data, selection, search, dimming, label mode).
+  const seatNodes = useMemo(
+    () =>
+      seatLayout.map(({ seat, x, y }) => (
+        <SeatNode
+          key={seat.id}
+          seat={seat}
+          categoryInfo={categories[seat.categoryId]}
+          x={x}
+          y={y}
+          size={SEAT_SIZE}
+          isSelected={selectedIds.has(seat.id)}
+          isHighlighted={matchingIds.has(seat.id)}
+          dimmed={isSeatDimmed(seat)}
+          labelMode={labelMode}
+          onClick={handleSeatClick}
+          onMouseEnter={handleSeatEnter}
+          onMouseLeave={hideTooltip}
+        />
+      )),
+    [seatLayout, categories, selectedIds, matchingIds, isSeatDimmed, labelMode, handleSeatClick, handleSeatEnter, hideTooltip]
+  );
 
   const lassoRect =
     drag?.mode === 'lasso'
@@ -553,28 +613,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             <GatesAndExitsLayer />
 
             {/* Individual Seat Nodes (Pure, crisp, high-contrast colors) */}
-            <g className="seats-layer">
-              {seats.map((seat) => {
-                const { x, y } = getSeatCoordinates(seat);
-                return (
-                  <SeatNode
-                    key={seat.id}
-                    seat={seat}
-                    categoryInfo={categories[seat.categoryId]}
-                    x={x}
-                    y={y}
-                    size={SEAT_SIZE}
-                    isSelected={selectedIds.has(seat.id)}
-                    isHighlighted={matchingIds.has(seat.id)}
-                    dimmed={isSeatDimmed(seat)}
-                    labelMode={labelMode}
-                    onClick={handleSeatClick}
-                    onMouseEnter={handleSeatEnter}
-                    onMouseLeave={hideTooltip}
-                  />
-                );
-              })}
-            </g>
+            <g className="seats-layer">{seatNodes}</g>
 
             {showVolunteers && (
               <VolunteersLayer

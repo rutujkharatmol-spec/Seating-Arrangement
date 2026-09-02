@@ -36,7 +36,7 @@ import { QuestionnaireWizard } from './components/Editor/QuestionnaireWizard';
 import { SectionManagerModal } from './components/Editor/SectionManagerModal';
 import { AttendeeList } from './components/AttendeeRoster/AttendeeList';
 import { AddAttendeeModal } from './components/AttendeeRoster/AddAttendeeModal';
-import { CsvImportExport } from './components/AttendeeRoster/CsvImportExport';
+import { SpreadsheetImportModal } from './components/AttendeeRoster/SpreadsheetImportModal';
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
 import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
 
@@ -137,15 +137,63 @@ export function App() {
           s.categoryId.toLowerCase().includes(q) ||
           s.attendee?.name?.toLowerCase().includes(q) ||
           (s.attendee?.designation && s.attendee.designation.toLowerCase().includes(q)) ||
-          (s.attendee?.department && s.attendee.department.toLowerCase().includes(q))
+          (s.attendee?.department && s.attendee.department.toLowerCase().includes(q)) ||
+          (s.attendee?.notes && s.attendee.notes.toLowerCase().includes(q)) ||
+          (s.attendee?.email && s.attendee.email.toLowerCase().includes(q)) ||
+          (s.attendee?.phone && s.attendee.phone.includes(q))
       )
       .map((s) => s.id);
   }, [seatsWithPeople, searchQuery]);
 
-  // Persist plan changes
+  // These small aggregates were recomputed on every render (including each
+  // keystroke in search). Memoize them so they only recompute when their
+  // source data actually changes. One pass over `seats` covers both tiers.
+  const tierCounts = useMemo(() => {
+    let lower = 0;
+    let upper = 0;
+    for (const s of seats) {
+      if (s.tier === 'LOWER') lower++;
+      else if (s.tier === 'UPPER') upper++;
+    }
+    return { lower, upper, total: seats.length };
+  }, [seats]);
+
+  const assignedCount = useMemo(
+    () => attendees.reduce((n, a) => (a.seatId ? n + 1 : n), 0),
+    [attendees]
+  );
+
+  const availableSeats = useMemo(
+    () => seatsWithPeople.filter((s) => !s.isBlocked && !s.attendee),
+    [seatsWithPeople]
+  );
+
+  // Persist plan changes, debounced. Serialising the whole plan (763 seats +
+  // roster + volunteers + categories) to JSON and writing localStorage is a
+  // synchronous main-thread cost, so coalesce bursts of edits (e.g. dragging a
+  // paint selection, typing) into a single write once activity settles.
+  const latestPlanRef = useRef(plan.present);
+  latestPlanRef.current = plan.present;
+
   useEffect(() => {
-    savePlan(plan.present);
+    const id = window.setTimeout(() => savePlan(plan.present), 500);
+    return () => window.clearTimeout(id);
   }, [plan.present]);
+
+  // Flush a pending write when the tab is hidden or closed, so an in-flight
+  // debounce window can never drop the last edit.
+  useEffect(() => {
+    const flush = () => savePlan(latestPlanRef.current);
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') flush();
+    };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   // ---------------------------------------------------------------------
   // Section Management Handlers
@@ -455,15 +503,15 @@ export function App() {
     showToast(`Removed guest from roster`);
   };
 
-  const handleImportAttendees = (imported: Attendee[]) => {
+  const handleImportAttendees = (imported: Attendee[], replace: boolean = false) => {
     plan.commit(
       (p) => ({
         ...p,
-        attendees: [...p.attendees, ...imported],
+        attendees: replace ? imported : [...p.attendees, ...imported],
       }),
-      `Import ${imported.length} guests`
+      `${replace ? 'Replace roster with' : 'Import'} ${imported.length} guests`
     );
-    showToast(`Imported ${imported.length} guests successfully`);
+    showToast(`${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`);
   };
 
   const handleAddVolunteer = (vol: Volunteer) => {
@@ -574,8 +622,6 @@ export function App() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [plan, handleClearSelection, isQuestionnaireModalOpen, isSectionManagerOpen]);
 
-  const assignedCount = attendees.filter((a) => Boolean(a.seatId)).length;
-
   // ---------------------------------------------------------------------
   // If in Kiosk Mode (/seattracker) -> Render Dedicated Fullscreen Kiosk
   // ---------------------------------------------------------------------
@@ -622,6 +668,7 @@ export function App() {
         onUndo={plan.undo}
         onRedo={plan.redo}
         onOpenQuestionnaire={() => setIsQuestionnaireModalOpen(true)}
+        onOpenSpreadsheetModal={() => setIsCsvModalOpen(true)}
         onApplyPreset={handleApplyPreset}
         onResetToDefault={handleResetToDefaultLayout}
         onExportJson={handleExportJson}
@@ -658,9 +705,9 @@ export function App() {
             setShowAisles={setShowAisles}
             onJumpToFirstMatch={handleJumpToFirstMatch}
             highlightedCount={matchingSeatIds.length}
-            lowerCount={seats.filter((s) => s.tier === 'LOWER').length}
-            upperCount={seats.filter((s) => s.tier === 'UPPER').length}
-            totalCount={seats.length}
+            lowerCount={tierCounts.lower}
+            upperCount={tierCounts.upper}
+            totalCount={tierCounts.total}
           />
           <PlanHealthBar
             issues={planIssues}
@@ -804,14 +851,16 @@ export function App() {
         isOpen={isAddAttendeeModalOpen}
         onClose={() => setIsAddAttendeeModalOpen(false)}
         onAdd={handleAddAttendee}
-        availableSeats={seatsWithPeople.filter((s) => !s.isBlocked && !s.attendee)}
+        availableSeats={availableSeats}
         categories={categories}
       />
 
-      <CsvImportExport
+      <SpreadsheetImportModal
         isOpen={isCsvModalOpen}
         onClose={() => setIsCsvModalOpen(false)}
         onImportAttendees={handleImportAttendees}
+        currentAttendeeCount={attendees.length}
+        categories={categories}
       />
 
     </div>

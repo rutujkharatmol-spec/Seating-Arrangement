@@ -81,7 +81,9 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
       const matchDept = a.department && a.department.toLowerCase().includes(q);
       const matchTitle = (a.designation || a.title) && (a.designation || a.title || '').toLowerCase().includes(q);
       const matchSeat = a.seatId && a.seatId.toLowerCase().includes(q);
-      return Boolean(matchName || matchPhone || matchDept || matchTitle || matchSeat);
+      const matchNotes = a.notes && a.notes.toLowerCase().includes(q);
+      const matchEmail = a.email && a.email.toLowerCase().includes(q);
+      return Boolean(matchName || matchPhone || matchDept || matchTitle || matchSeat || matchNotes || matchEmail);
     });
 
     // Also search in seats (by seat ID like "C-A7", "A7")

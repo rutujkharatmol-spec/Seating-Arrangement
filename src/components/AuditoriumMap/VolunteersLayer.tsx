@@ -8,7 +8,7 @@ interface VolunteersLayerProps {
   onLeaveVolunteer?: () => void;
 }
 
-export const VolunteersLayer: React.FC<VolunteersLayerProps> = ({
+const VolunteersLayerComponent: React.FC<VolunteersLayerProps> = ({
   volunteers,
   onSelectVolunteer,
   onHoverVolunteer,
@@ -64,3 +64,7 @@ export const VolunteersLayer: React.FC<VolunteersLayerProps> = ({
     </g>
   );
 };
+
+// Memoized: the volunteer set and handlers are stable during pan/zoom, so this
+// SVG layer should not re-render on every frame.
+export const VolunteersLayer = React.memo(VolunteersLayerComponent);

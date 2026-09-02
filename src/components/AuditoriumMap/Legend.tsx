@@ -11,7 +11,7 @@ interface LegendProps {
   onOpenSectionManager?: () => void;
 }
 
-export const Legend: React.FC<LegendProps> = ({
+const LegendComponent: React.FC<LegendProps> = ({
   selectedCategory,
   onSelectCategory,
   seatCounts,
@@ -92,3 +92,7 @@ export const Legend: React.FC<LegendProps> = ({
     </div>
   );
 };
+
+// Memoized so panning/zooming the map (which re-renders AuditoriumMap) does not
+// re-render the legend; its props are stable except when seat counts change.
+export const Legend = React.memo(LegendComponent);
