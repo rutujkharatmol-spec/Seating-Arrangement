@@ -84,5 +84,8 @@ export default defineConfig({
   server: {
     host: true, // Listen on 0.0.0.0 so phones on the same WiFi/hotspot can connect
     port: 5173,
+    watch: {
+      ignored: ['**/public/**', '**/live-seating-plan.json'],
+    },
   },
 })

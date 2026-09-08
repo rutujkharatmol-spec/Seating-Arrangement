@@ -53,18 +53,20 @@ export async function publishPlanToCloud(plan: PlanState): Promise<{ success: bo
     lastError = err?.message || 'Neon cloud save failed';
   }
 
-  // 2. Local network / dev server (/api/plan) fallback
-  try {
-    const res = await fetch('/api/plan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: jsonStr,
-    });
-    if (res.ok) {
-      success = true;
+  // 2. Local network / dev server (/api/plan) fallback (only if Neon cloud was unreachable)
+  if (!success) {
+    try {
+      const res = await fetch('/api/plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: jsonStr,
+      });
+      if (res.ok) {
+        success = true;
+      }
+    } catch {
+      // Expected on static deployments or offline
     }
-  } catch {
-    // Expected on static deployments or offline
   }
 
   // 3. Cache locally in current browser

@@ -88,8 +88,6 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
 
   useDismissOnEscape(isOpen, onClose);
 
-  if (!isOpen) return null;
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -141,12 +139,13 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
     setSelectedSheets(updated);
   };
 
-  // Get active list of attendees based on selected sheets
-  const activeAttendeesToImport = parseResult
-    ? parseResult.sheets
-        .filter((s) => selectedSheets[s.sheetName])
-        .flatMap((s) => s.attendees)
-    : [];
+  // Get active list of attendees based on selected sheets (memoized to prevent render loops)
+  const activeAttendeesToImport = useMemo(() => {
+    if (!parseResult) return [];
+    return parseResult.sheets
+      .filter((s) => selectedSheets[s.sheetName])
+      .flatMap((s) => s.attendees);
+  }, [parseResult, selectedSheets]);
 
   // Detect unique designations from active attendees
   const detectedDesignationGroups = useMemo(() => {
@@ -159,18 +158,20 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
       setOrderedDesignations(detectedDesignationGroups.map((g) => g.designation));
 
       // Intelligent auto-detection of Target Category
-      if (!targetCategory) {
+      setTargetCategory((prevCat) => {
+        if (prevCat) return prevCat;
         const combined = detectedDesignationGroups.map((g) => g.designation.toLowerCase()).join(' ');
         if (combined.includes('prof') || combined.includes('faculty') || combined.includes('dean')) {
-          setTargetCategory('faculty');
+          return 'faculty';
         } else if (combined.includes('mbbs')) {
-          setTargetCategory('mbbs');
+          return 'mbbs';
         } else if (combined.includes('nurs')) {
-          setTargetCategory('nursing');
+          return 'nursing';
         } else if (combined.includes('resident') || combined.includes('pg') || combined.includes('fellow')) {
-          setTargetCategory('pg');
+          return 'pg';
         }
-      }
+        return prevCat;
+      });
     }
   }, [detectedDesignationGroups]);
 
@@ -232,18 +233,19 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
     });
   }, [autoSeat, activeAttendeesToImport, seats, orderedDesignations, withinSort, seatPattern, targetCategory]);
 
-  const filteredPreviewAttendees = activeAttendeesToImport.filter((a) => {
-    if (!previewFilter.trim()) return true;
+  const filteredPreviewAttendees = useMemo(() => {
+    if (!previewFilter.trim()) return activeAttendeesToImport;
     const q = previewFilter.toLowerCase();
-    return (
-      a.name.toLowerCase().includes(q) ||
-      (a.department && a.department.toLowerCase().includes(q)) ||
-      (a.designation && a.designation.toLowerCase().includes(q)) ||
-      (a.notes && a.notes.toLowerCase().includes(q)) ||
-      (a.email && a.email.toLowerCase().includes(q)) ||
-      (a.phone && a.phone.includes(q))
+    return activeAttendeesToImport.filter(
+      (a) =>
+        a.name.toLowerCase().includes(q) ||
+        (a.department && a.department.toLowerCase().includes(q)) ||
+        (a.designation && a.designation.toLowerCase().includes(q)) ||
+        (a.notes && a.notes.toLowerCase().includes(q)) ||
+        (a.email && a.email.toLowerCase().includes(q)) ||
+        (a.phone && a.phone.includes(q))
     );
-  });
+  }, [activeAttendeesToImport, previewFilter]);
 
   const handleCommitFileImport = () => {
     if (activeAttendeesToImport.length === 0) {
@@ -310,6 +312,8 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
       setError(err?.message || 'Error processing CSV.');
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div
