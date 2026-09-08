@@ -37,6 +37,8 @@ import { SectionManagerModal } from './components/Editor/SectionManagerModal';
 import { AttendeeList } from './components/AttendeeRoster/AttendeeList';
 import { AddAttendeeModal } from './components/AttendeeRoster/AddAttendeeModal';
 import { SpreadsheetImportModal } from './components/AttendeeRoster/SpreadsheetImportModal';
+import { AutoSeatByDesignationModal } from './components/AttendeeRoster/AutoSeatByDesignationModal';
+import { assignSeatsByDesignationOrder } from './utils/designationHierarchy';
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
 import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
 import { CloudSyncModal } from './components/UI/CloudSyncModal';
@@ -90,6 +92,7 @@ export function App() {
   const [isSectionManagerOpen, setIsSectionManagerOpen] = useState(false);
   const [isAddAttendeeModalOpen, setIsAddAttendeeModalOpen] = useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+  const [isAutoSeatDesignationOpen, setIsAutoSeatDesignationOpen] = useState(false);
   const [isCloudSyncModalOpen, setIsCloudSyncModalOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; kind: ToastKind } | null>(null);
 
@@ -616,9 +619,14 @@ export function App() {
     imported: Attendee[],
     replace: boolean = false,
     targetCategory?: string,
-    autoSeat?: boolean
+    autoSeat?: boolean,
+    designationPriority?: string[],
+    withinSort?: 'alphabetical' | 'department' | 'original',
+    seatPattern?: 'sequential' | 'center_out'
   ) => {
     let committedPlan: PlanState | null = null;
+    let seatedCount = 0;
+
     plan.commit((p) => {
       // 1. Process imported attendees to enforce target category if requested
       const processedImport = targetCategory
@@ -627,25 +635,19 @@ export function App() {
 
       let nextAttendees = replace ? processedImport : [...p.attendees, ...processedImport];
 
-      // 2. Auto-Seat logic
-      if (targetCategory && autoSeat) {
-        // Find empty seats that match this target category
-        // Maintain the natural order of seats in p.seats (which is front-to-back per block)
-        const occupiedSeatIds = new Set(nextAttendees.map((a) => a.seatId).filter(Boolean));
-        const emptyTargetSeats = p.seats.filter(
-          (s) => s.categoryId === targetCategory && !s.isBlocked && !occupiedSeatIds.has(s.id)
-        );
-
-        // Assign unassigned newly imported attendees to empty seats
-        let seatIdx = 0;
-        nextAttendees = nextAttendees.map((a) => {
-          // If this attendee was just imported and needs a seat, and we have one available
-          if (processedImport.some((imp) => imp.id === a.id) && !a.seatId && seatIdx < emptyTargetSeats.length) {
-            const assignedSeat = emptyTargetSeats[seatIdx++];
-            return { ...a, seatId: assignedSeat.id };
-          }
-          return a;
+      // 2. Front-to-Back Auto-Seat logic according to designation priority
+      if (autoSeat) {
+        const result = assignSeatsByDesignationOrder({
+          attendees: nextAttendees,
+          seats: p.seats,
+          designationPriority,
+          withinSort: withinSort || 'alphabetical',
+          seatPattern: seatPattern || 'sequential',
+          targetCategory: targetCategory || undefined,
+          onlyUnseated: !replace,
         });
+        nextAttendees = result.updatedAttendees;
+        seatedCount = result.seatedCount;
       }
 
       committedPlan = {
@@ -655,7 +657,12 @@ export function App() {
       return committedPlan;
     }, `${replace ? 'Replace roster with' : 'Import'} ${imported.length} guests`);
 
-    showToast(`${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`, 'success');
+    showToast(
+      autoSeat && seatedCount > 0
+        ? `${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests & assigned ${seatedCount} seats front-to-back!`
+        : `${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`,
+      'success'
+    );
 
     // Immediately push to Neon cloud database so all accounts & devices get the update
     if (committedPlan) {
@@ -965,6 +972,7 @@ export function App() {
             onOpenCsvModal={() => setIsCsvModalOpen(true)}
             onSelectSeatOnMap={handleSelectSeatOnMap}
             onAutoSeat={handleAutoSeat}
+            onOpenAutoSeatDesignation={() => setIsAutoSeatDesignationOpen(true)}
             onClearAllSeating={handleClearAllSeating}
             onClearSeat={handleClearSeat}
             eventTitle={answers.eventTitle}
@@ -1029,6 +1037,26 @@ export function App() {
         onImportAttendees={handleImportAttendees}
         currentAttendeeCount={attendees.length}
         categories={categories}
+        seats={seatsWithPeople}
+      />
+
+      <AutoSeatByDesignationModal
+        isOpen={isAutoSeatDesignationOpen}
+        onClose={() => setIsAutoSeatDesignationOpen(false)}
+        attendees={attendees}
+        seats={seatsWithPeople}
+        categories={categories}
+        onApplySeating={(newAttendees, summary) => {
+          let committedPlan: PlanState | null = null;
+          plan.commit((p) => {
+            committedPlan = { ...p, attendees: newAttendees };
+            return committedPlan;
+          }, 'Auto-seat from front-to-back by designation');
+          showToast(summary || 'Assigned seats front-to-back according to designation hierarchy!', 'success');
+          if (committedPlan) {
+            publishPlanToCloud(committedPlan).catch(() => {});
+          }
+        }}
       />
 
       <CloudSyncModal

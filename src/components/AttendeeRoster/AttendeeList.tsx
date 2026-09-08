@@ -16,6 +16,7 @@ import {
   CircleSlash,
   FileSpreadsheet,
   Users,
+  GraduationCap,
 } from 'lucide-react';
 import { exportSeatingToCsv } from '../../utils/exportHelpers';
 import { exportRosterToExcel } from '../../utils/excelHelpers';
@@ -33,6 +34,7 @@ interface AttendeeListProps {
   onOpenCsvModal: () => void;
   onSelectSeatOnMap: (seatId: string) => void;
   onAutoSeat: () => void;
+  onOpenAutoSeatDesignation?: () => void;
   onClearAllSeating: () => void;
   onClearSeat: (seatId: string) => void;
   eventTitle: string;
@@ -51,6 +53,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   onOpenCsvModal,
   onSelectSeatOnMap,
   onAutoSeat,
+  onOpenAutoSeatDesignation,
   onClearAllSeating,
   onClearSeat,
   eventTitle,
@@ -224,6 +227,17 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
                 : 'Everyone is seated'}
             </span>
           </button>
+
+          {onOpenAutoSeatDesignation && (
+            <button
+              onClick={onOpenAutoSeatDesignation}
+              title="Assign seats strictly front-to-back according to custom designation priority (e.g. Professor in front rows)"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition cursor-pointer"
+            >
+              <GraduationCap className="w-4 h-4 text-indigo-200" />
+              <span>Auto-Seat by Designation</span>
+            </button>
+          )}
         </div>
       </div>
 
