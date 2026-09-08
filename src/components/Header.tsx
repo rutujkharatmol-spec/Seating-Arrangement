@@ -17,7 +17,8 @@ import {
   Compass,
   QrCode,
   FileSpreadsheet,
-  Cloud
+  Cloud,
+  Lock,
 } from 'lucide-react';
 import { PRESET_TEMPLATES } from '../data/presetTemplates';
 import { SeatingPreset } from '../types/seating';
@@ -46,6 +47,7 @@ export interface HeaderProps {
   onOpenBackup?: () => void;
   onLaunchKiosk?: () => void;
   onOpenCloudSync?: () => void;
+  onLockDashboard?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -72,6 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenBackup,
   onLaunchKiosk,
   onOpenCloudSync,
+  onLockDashboard,
 }) => {
   const [showPresetDropdown, setShowPresetDropdown] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -305,6 +308,17 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Download className="w-4 h-4" />
           </button>
+
+          {/* Lock Dashboard */}
+          {onLockDashboard && (
+            <button
+              onClick={onLockDashboard}
+              className="p-2 rounded-xl text-slate-600 hover:text-amber-600 bg-slate-100 hover:bg-amber-50 border border-slate-200 transition cursor-pointer"
+              title="Lock Organizer Portal (Requires PIN 0907 to re-enter)"
+            >
+              <Lock className="w-4 h-4" />
+            </button>
+          )}
 
         </div>
       </div>

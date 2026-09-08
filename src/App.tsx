@@ -41,6 +41,7 @@ import { AutoSeatByDesignationModal } from './components/AttendeeRoster/AutoSeat
 import { assignSeatsByDesignationOrder } from './utils/designationHierarchy';
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
 import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
+import { AdminPinGate } from './components/Auth/AdminPinGate';
 import { CloudSyncModal } from './components/UI/CloudSyncModal';
 import { publishPlanToCloud, fetchLiveCloudPlan } from './services/cloudSync';
 
@@ -94,6 +95,13 @@ export function App() {
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [isAutoSeatDesignationOpen, setIsAutoSeatDesignationOpen] = useState(false);
   const [isCloudSyncModalOpen, setIsCloudSyncModalOpen] = useState(false);
+  const [isAdminUnlocked, setIsAdminUnlocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('aiims_admin_unlocked') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [toast, setToast] = useState<{ message: string; kind: ToastKind } | null>(null);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -809,6 +817,27 @@ export function App() {
     );
   }
 
+  // ---------------------------------------------------------------------
+  // Main Organizer Page -> Protected with PIN 0907
+  // ---------------------------------------------------------------------
+  if (!isAdminUnlocked) {
+    return (
+      <AdminPinGate
+        onUnlock={() => {
+          setIsAdminUnlocked(true);
+          try {
+            sessionStorage.setItem('aiims_admin_unlocked', 'true');
+          } catch {}
+          showToast('Organizer portal unlocked successfully', 'success');
+        }}
+        onOpenGuestKiosk={() => {
+          window.location.hash = '#seattracker';
+          setIsKioskMode(true);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
       
@@ -845,6 +874,13 @@ export function App() {
           setIsKioskMode(true);
         }}
         onOpenCloudSync={() => setIsCloudSyncModalOpen(true)}
+        onLockDashboard={() => {
+          setIsAdminUnlocked(false);
+          try {
+            sessionStorage.removeItem('aiims_admin_unlocked');
+          } catch {}
+          showToast('Organizer portal locked', 'info');
+        }}
       />
 
       <div className="no-print print:hidden">
