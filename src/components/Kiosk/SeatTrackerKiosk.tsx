@@ -22,8 +22,14 @@ import {
   Copy,
   Layers,
   HelpCircle,
-  QrCode
+  Share2,
+  RefreshCw,
+  Cloud,
+  ChevronRight,
+  Send,
+  Navigation
 } from 'lucide-react';
+import { fetchLiveCloudPlan } from '../../services/cloudSync';
 
 interface SeatTrackerKioskProps {
   seats: Seat[];
@@ -33,6 +39,7 @@ interface SeatTrackerKioskProps {
   eventTitle?: string;
   departmentName?: string;
   onNavigateToAdmin?: () => void;
+  onApplyCloudPlan?: (cloudPlan: any) => void;
 }
 
 const VIEW_W = 1000;
@@ -40,42 +47,81 @@ const VIEW_H = 1050;
 const SEAT_SIZE = 20;
 
 export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
-  seats,
-  attendees,
+  seats: propSeats,
+  attendees: propAttendees,
   volunteers = [],
   categories = CATEGORIES,
   eventTitle = 'AIIMS Kalyani Auditorium',
   departmentName = 'Annual Event / Convocation',
   onNavigateToAdmin,
+  onApplyCloudPlan,
 }) => {
+  // Local state for seats and attendees (can be hydrated from cloud)
+  const [liveSeats, setLiveSeats] = useState<Seat[]>(propSeats);
+  const [liveAttendees, setLiveAttendees] = useState<Attendee[]>(propAttendees);
+  const [isCloudFetching, setIsCloudFetching] = useState(false);
+  const [cloudSyncedAt, setCloudSyncedAt] = useState<string | null>(null);
+
+  // Synchronize when props update
+  useEffect(() => {
+    setLiveSeats(propSeats);
+    setLiveAttendees(propAttendees);
+  }, [propSeats, propAttendees]);
+
+  // Automatic cloud fetch on initial mount (especially helpful on mobile phones with empty localStorage)
+  const loadCloudData = useCallback(async () => {
+    setIsCloudFetching(true);
+    try {
+      const result = await fetchLiveCloudPlan();
+      if (result && result.plan) {
+        if (result.plan.seats?.length) setLiveSeats(result.plan.seats);
+        if (result.plan.attendees?.length) setLiveAttendees(result.plan.attendees);
+        setCloudSyncedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        if (onApplyCloudPlan) onApplyCloudPlan(result.plan);
+      }
+    } catch {
+      // Graceful fallback to prop data
+    } finally {
+      setIsCloudFetching(false);
+    }
+  }, [onApplyCloudPlan]);
+
+  useEffect(() => {
+    // If attendees are empty on phone, automatically fetch from cloud
+    if (liveAttendees.length === 0) {
+      loadCloudData();
+    }
+  }, [liveAttendees.length, loadCloudData]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const [copied, setCopied] = useState(false);
-  const [showVolunteersList, setShowVolunteersList] = useState(false);
+  const [activeMobileTab, setActiveMobileTab] = useState<'pass' | 'map' | 'help'>('pass');
+  const [filterCategory, setFilterCategory] = useState<string>('ALL');
 
   // SVG Pan and Zoom
   const [view, setView] = useState({ zoom: 1, x: 0, y: 0 });
   const viewportRef = useRef<SVGGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Join attendees with seats
+  // Map attendees with seats
   const attendeeMap = useMemo(() => {
     const map = new Map<string, Seat>();
-    seats.forEach((s) => {
+    liveSeats.forEach((s) => {
       if (s.attendeeId) map.set(s.attendeeId, s);
       if (s.attendee?.id) map.set(s.attendee.id, s);
     });
     return map;
-  }, [seats]);
+  }, [liveSeats]);
 
   // Search filter
   const matchingResults = useMemo<{ attendees: Attendee[]; seats: Seat[] }>(() => {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return { attendees: [], seats: [] };
 
-    // Search in attendees
-    const matchedAttendees = attendees.filter((a) => {
+    const matchedAttendees = liveAttendees.filter((a) => {
+      if (filterCategory !== 'ALL' && a.categoryId !== filterCategory) return false;
       const matchName = a.name.toLowerCase().includes(q);
       const matchPhone = a.phone && a.phone.includes(q);
       const matchDept = a.department && a.department.toLowerCase().includes(q);
@@ -86,17 +132,15 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
       return Boolean(matchName || matchPhone || matchDept || matchTitle || matchSeat || matchNotes || matchEmail);
     });
 
-    // Also search in seats (by seat ID like "C-A7", "A7")
-    const matchedSeats = seats.filter((s) => {
-      const matchId = s.id.toLowerCase().includes(q) || s.seatNumber.toLowerCase().includes(q);
-      return matchId;
+    const matchedSeats = liveSeats.filter((s) => {
+      return s.id.toLowerCase().includes(q) || s.seatNumber.toLowerCase().includes(q);
     });
 
     return {
       attendees: matchedAttendees,
       seats: matchedSeats.slice(0, 10),
     };
-  }, [searchTerm, attendees, seats]);
+  }, [searchTerm, liveAttendees, liveSeats, filterCategory]);
 
   // Center on seat
   const centerOnSeat = useCallback((seat: Seat) => {
@@ -111,7 +155,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
 
   const handleSelectAttendee = (att: Attendee) => {
     setSelectedAttendee(att);
-    const seat = att.seatId ? seats.find((s) => s.id === att.seatId) : attendeeMap.get(att.id) || null;
+    const seat = att.seatId ? liveSeats.find((s) => s.id === att.seatId) : attendeeMap.get(att.id) || null;
     setSelectedSeat(seat || null);
 
     if (seat) {
@@ -121,13 +165,25 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
 
   const handleSelectSeatOnly = (seat: Seat) => {
     setSelectedSeat(seat);
-    const att = attendees.find((a) => a.seatId === seat.id);
+    const att = liveAttendees.find((a) => a.seatId === seat.id);
     setSelectedAttendee(att || null);
     centerOnSeat(seat);
   };
 
   const handleResetZoom = () => {
     setView({ zoom: 1, x: 0, y: 0 });
+  };
+
+  const handleQuickZoom = (zone: 'center' | 'left' | 'right' | 'balcony') => {
+    if (zone === 'center') {
+      setView({ zoom: 1.6, x: -140, y: -450 });
+    } else if (zone === 'left') {
+      setView({ zoom: 1.8, x: 50, y: -450 });
+    } else if (zone === 'right') {
+      setView({ zoom: 1.8, x: -650, y: -450 });
+    } else if (zone === 'balcony') {
+      setView({ zoom: 1.8, x: -280, y: 50 });
+    }
   };
 
   const handleCopyPass = () => {
@@ -139,50 +195,59 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     });
   };
 
-  const selectedCoordinates = selectedSeat ? getSeatCoordinates(selectedSeat) : null;
+  const handleShareWhatsApp = () => {
+    if (!selectedSeat) return;
+    const text = `*AIIMS Kalyani Seating Pass*\n👤 *Guest:* ${selectedAttendee?.name || 'Guest'}\n🪑 *Seat:* ${selectedSeat.id} (${selectedSeat.blockName}, Row ${selectedSeat.row}, Seat ${selectedSeat.col})\n🚪 *Entry Gate:* ${selectedSeat.gateRecommendation}\n🏛️ *Event:* ${eventTitle}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
   const selectedCat = selectedSeat ? categories[selectedSeat.categoryId] : null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white pb-16 lg:pb-0">
       
-      {/* -------------------- Top Brand Header (Light Theme) -------------------- */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-3 sticky top-0 z-40 shadow-2xs">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      {/* -------------------- Top Mobile-First Brand Header -------------------- */}
+      <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 sm:px-4 py-2.5 sticky top-0 z-40 shadow-2xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-md shadow-blue-500/20 shrink-0">
-              <Building2 className="w-6 h-6" />
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-md shadow-blue-500/20 shrink-0">
+              <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black tracking-widest text-blue-700 uppercase">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] sm:text-xs font-black tracking-widest text-blue-700 uppercase">
                   AIIMS KALYANI
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                  Guest Self-Service Kiosk
+                <span className="text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 flex items-center gap-1 shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live Mobile Tracker
                 </span>
               </div>
-              <h1 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight truncate max-w-xs sm:max-w-md md:max-w-xl">
-                🔍 Find My Seat & Entry Door Navigator
+              <h1 className="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight truncate">
+                Find My Seat & Gate Guide
               </h1>
             </div>
           </div>
 
-          {/* Quick links & Admin switcher */}
-          <div className="flex items-center gap-2">
+          {/* Cloud Sync Status & Actions */}
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
-              onClick={() => setShowVolunteersList(!showVolunteersList)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition cursor-pointer"
+              onClick={loadCloudData}
+              disabled={isCloudFetching}
+              title="Refresh live cloud seating data"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold border border-slate-200 transition cursor-pointer disabled:opacity-50"
             >
-              <Shield className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Gate Helpdesk</span>
+              <RefreshCw className={`w-3.5 h-3.5 text-blue-600 ${isCloudFetching ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">
+                {cloudSyncedAt ? `Synced ${cloudSyncedAt}` : 'Sync'}
+              </span>
             </button>
 
             {onNavigateToAdmin && (
               <button
                 onClick={onNavigateToAdmin}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200 transition cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-[11px] font-bold border border-blue-200 transition cursor-pointer"
                 title="Return to Coordinator Admin Dashboard"
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -198,14 +263,14 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
       <div className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         
         {/* -------------------- LEFT PANEL: Search & Guest Info (5 Cols) -------------------- */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className={`space-y-4 lg:col-span-5 ${activeMobileTab !== 'pass' ? 'hidden lg:block' : 'block'}`}>
           
           {/* Big Search Input Box */}
           <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-xs space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
                 <Search className="w-4 h-4 text-blue-600" />
-                <span>Search Your Name or Seat:</span>
+                <span>Type Your Name to Find Seat:</span>
               </label>
               {searchTerm && (
                 <button
@@ -215,7 +280,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                     setSelectedSeat(null);
                     handleResetZoom();
                   }}
-                  className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 cursor-pointer font-bold"
                 >
                   <X className="w-3.5 h-3.5" />
                   <span>Clear</span>
@@ -227,88 +292,132 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Type your name (e.g. Dr. Rajesh), phone, or seat (e.g. C-A7)..."
-                className="w-full bg-slate-50 focus:bg-white border-2 border-slate-200 focus:border-blue-600 rounded-2xl px-4 py-3.5 text-sm sm:text-base font-semibold text-slate-900 placeholder-slate-400 focus:outline-none shadow-xs transition"
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (selectedAttendee) setSelectedAttendee(null);
+                }}
+                placeholder="Type your name, roll no, or seat (e.g. C-H7)..."
+                className="w-full bg-slate-50 focus:bg-white border-2 border-slate-200 focus:border-blue-600 rounded-2xl px-4 py-3.5 text-base font-semibold text-slate-900 placeholder-slate-400 focus:outline-none shadow-xs transition"
                 autoFocus
               />
               {searchTerm && (
-                <div className="absolute right-3 top-3.5 text-xs text-slate-500 font-mono font-bold">
+                <div className="absolute right-3 top-3.5 text-xs text-slate-500 font-mono font-bold bg-white px-2 py-0.5 rounded-lg border border-slate-200">
                   {matchingResults.attendees.length} match(es)
                 </div>
               )}
             </div>
 
-            {/* Quick Helper Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
-              <span className="font-semibold">Quick search:</span>
+            {/* Quick Helper Category Filter Chips */}
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 pt-0.5">
               <button
                 type="button"
-                onClick={() => setSearchTerm('VIP')}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium cursor-pointer transition"
+                onClick={() => setFilterCategory('ALL')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  filterCategory === 'ALL'
+                    ? 'bg-slate-900 text-white shadow-2xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
               >
-                👑 VIP
+                All Zones
               </button>
               <button
                 type="button"
-                onClick={() => setSearchTerm('Faculty')}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium cursor-pointer transition"
+                onClick={() => setFilterCategory('mbbs')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  filterCategory === 'mbbs'
+                    ? 'bg-blue-600 text-white shadow-2xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
               >
-                🎓 Faculty
+                MBBS
               </button>
               <button
                 type="button"
-                onClick={() => setSearchTerm('Awardees')}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium cursor-pointer transition"
+                onClick={() => setFilterCategory('nursing')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  filterCategory === 'nursing'
+                    ? 'bg-pink-600 text-white shadow-2xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
               >
-                🏆 Awardees
+                Nursing
               </button>
               <button
                 type="button"
-                onClick={() => setSearchTerm('C-A')}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono font-medium cursor-pointer transition"
+                onClick={() => setFilterCategory('faculty')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  filterCategory === 'faculty'
+                    ? 'bg-amber-600 text-white shadow-2xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
               >
-                Row A
+                Faculty
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterCategory('accompanying')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  filterCategory === 'accompanying'
+                    ? 'bg-indigo-600 text-white shadow-2xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                Parents
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterCategory('vip')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  filterCategory === 'vip'
+                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                VIP
               </button>
             </div>
           </div>
 
           {/* Search Dropdown / Live Results List */}
           {searchTerm && matchingResults.attendees.length > 0 && !selectedAttendee && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-3 shadow-xl max-h-80 overflow-y-auto space-y-1.5 scrollbar-thin">
-              <div className="text-[11px] font-bold text-slate-500 px-2 py-1 uppercase tracking-wider">
-                Select Your Name from the List:
+            <div className="bg-white border-2 border-blue-300 rounded-3xl p-3 shadow-xl max-h-80 overflow-y-auto space-y-1.5 scrollbar-thin">
+              <div className="text-[11px] font-extrabold text-blue-900 px-2 py-1 uppercase tracking-wider flex items-center justify-between">
+                <span>Select Your Name from Results:</span>
+                <span className="font-mono text-[10px] text-slate-400">Tap name to view pass</span>
               </div>
               {matchingResults.attendees.map((att) => {
-                const seat = att.seatId ? seats.find((s) => s.id === att.seatId) : null;
-                const cat = categories[att.categoryId] || { name: att.categoryId, color: '#3b82f6' };
+                const seat = att.seatId ? liveSeats.find((s) => s.id === att.seatId) : null;
+                const cat = categories[att.categoryId] || { name: att.categoryId, shortName: att.categoryId, color: '#3b82f6', textColor: '#ffffff' };
 
                 return (
                   <button
                     key={att.id}
                     onClick={() => handleSelectAttendee(att)}
-                    className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-blue-50/80 border border-slate-200/80 hover:border-blue-300 text-left transition flex items-center justify-between gap-3 cursor-pointer group"
+                    className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-blue-50/90 border border-slate-200 hover:border-blue-300 text-left transition flex items-center justify-between gap-3 cursor-pointer group active:scale-98"
                   >
                     <div className="min-w-0">
                       <div className="font-extrabold text-sm text-slate-900 group-hover:text-blue-700 truncate">
                         {att.name}
                       </div>
                       <div className="text-xs text-slate-500 truncate mt-0.5">
-                        {att.designation || att.department || 'Guest'}
+                        {att.designation || att.department || 'Guest Attendee'}
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
-                      {seat ? (
-                        <div className="font-mono font-black text-sm text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
-                          {seat.id}
-                        </div>
-                      ) : (
-                        <span className="text-[10px] text-amber-600 font-bold">Unseated</span>
-                      )}
-                      <span className="text-[10px] text-slate-500 block mt-0.5 font-medium">
-                        {cat.name}
-                      </span>
+                    <div className="text-right shrink-0 flex items-center gap-2">
+                      <div>
+                        {seat ? (
+                          <div className="font-mono font-black text-sm text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
+                            {seat.id}
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">Unseated</span>
+                        )}
+                        <span className="text-[9px] text-slate-500 block mt-0.5 font-bold truncate max-w-[90px]">
+                          {cat.shortName || cat.name}
+                        </span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600" />
                     </div>
                   </button>
                 );
@@ -316,22 +425,22 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
             </div>
           )}
 
-          {/* -------------------- SPOTLIGHT SEAT CARD (Light Theme) -------------------- */}
+          {/* -------------------- SPOTLIGHT SEAT PASS CARD -------------------- */}
           {selectedSeat && (
-            <div className="bg-white border-2 border-blue-500 rounded-3xl p-5 shadow-xl space-y-4 animate-fade-in relative overflow-hidden">
+            <div className="bg-white border-2 border-blue-500 rounded-3xl p-4 sm:p-6 shadow-xl space-y-4 animate-fade-in relative overflow-hidden">
               
-              {/* Guest & Status Header */}
-              <div className="flex items-start justify-between gap-2 relative z-10">
-                <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 flex items-center gap-1 mb-1">
+              {/* Boarding-Pass Style Header */}
+              <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
+                <div className="min-w-0">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 flex items-center gap-1 mb-1">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Seat Confirmed</span>
+                    <span>Official Seating Pass</span>
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight truncate">
                     {selectedAttendee ? selectedAttendee.name : 'Reserved Seat'}
                   </h2>
                   {selectedAttendee?.designation && (
-                    <p className="text-xs text-slate-600 font-medium mt-0.5">
+                    <p className="text-xs text-slate-600 font-medium mt-0.5 truncate">
                       {selectedAttendee.designation}
                       {selectedAttendee.department ? ` • ${selectedAttendee.department}` : ''}
                     </p>
@@ -340,78 +449,78 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
 
                 {selectedCat && (
                   <span
-                    className="px-3 py-1 rounded-xl text-xs font-extrabold border shadow-xs shrink-0"
+                    className="px-3 py-1 rounded-xl text-xs font-black border shadow-xs shrink-0"
                     style={{
                       backgroundColor: selectedCat.color,
                       color: selectedCat.textColor,
                       borderColor: selectedCat.borderColor,
                     }}
                   >
-                    {selectedCat.name}
+                    {selectedCat.shortName || selectedCat.name}
                   </span>
                 )}
               </div>
 
-              {/* Huge Seat Code & Entrance Door Pill Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
+              {/* Big Seat Code & Entrance Door Pill Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 
-                {/* Seat Code */}
-                <div className="bg-blue-50/60 border border-blue-100 p-3.5 rounded-2xl flex flex-col justify-between">
+                {/* Seat Code Box */}
+                <div className="bg-blue-50/70 border border-blue-200 p-3.5 rounded-2xl flex flex-col justify-between">
                   <div className="text-[10px] font-bold text-blue-800 uppercase tracking-wider flex items-center gap-1.5">
                     <Armchair className="w-4 h-4 text-blue-600" />
-                    <span>Your Seat Code</span>
+                    <span>Your Confirmed Seat</span>
                   </div>
-                  <div className="my-1">
-                    <span className="text-2xl sm:text-3xl font-black text-blue-950 font-mono tracking-tight">
+                  <div className="my-1.5">
+                    <span className="text-3xl font-black text-blue-950 font-mono tracking-tight">
                       {selectedSeat.id}
                     </span>
                   </div>
-                  <div className="text-xs text-blue-900 font-medium">
+                  <div className="text-xs text-blue-900 font-semibold">
                     {selectedSeat.blockName} • <strong className="text-blue-950">Row {selectedSeat.row}</strong>, Chair {selectedSeat.col}
                   </div>
                 </div>
 
-                {/* Entry Gate */}
-                <div className="bg-emerald-50/60 border border-emerald-100 p-3.5 rounded-2xl flex flex-col justify-between">
+                {/* Entry Gate Box */}
+                <div className="bg-emerald-50/70 border border-emerald-200 p-3.5 rounded-2xl flex flex-col justify-between">
                   <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
                     <DoorOpen className="w-4 h-4 text-emerald-600" />
-                    <span>Recommended Entry</span>
+                    <span>Designated Entrance Door</span>
                   </div>
-                  <div className="my-1">
-                    <span className="text-xl sm:text-2xl font-black text-emerald-900">
+                  <div className="my-1.5">
+                    <span className="text-2xl font-black text-emerald-950">
                       {selectedSeat.gateRecommendation}
                     </span>
                   </div>
-                  <div className="text-xs text-emerald-800 font-medium">
+                  <div className="text-xs text-emerald-800 font-semibold">
                     {selectedSeat.gateRecommendation === 'Gate-1'
-                      ? 'Right Wing Entrance Lobby'
+                      ? 'Right Wing Lobby Entrance'
                       : selectedSeat.gateRecommendation === 'Gate-2'
-                      ? 'Left Wing Entrance Lobby'
-                      : 'Upper Floor Balcony Stairs'}
+                      ? 'Left Wing Lobby Entrance'
+                      : 'Upper Floor Balcony Staircase'}
                   </div>
                 </div>
 
               </div>
 
               {/* Step-by-Step Walking Directions */}
-              <div className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl space-y-2 relative z-10 text-xs">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl space-y-2 text-xs">
                 <div className="font-extrabold text-slate-900 flex items-center gap-1.5">
                   <Compass className="w-4 h-4 text-amber-600" />
-                  <span>How to Reach Your Seat:</span>
+                  <span>How to Reach Your Chair:</span>
                 </div>
                 <ol className="space-y-1.5 text-slate-700 list-decimal list-inside pl-1 leading-relaxed">
-                  <li>Enter the auditorium building through <strong className="text-emerald-700">{selectedSeat.gateRecommendation}</strong>.</li>
+                  <li>Enter the building through <strong className="text-emerald-700 font-bold">{selectedSeat.gateRecommendation}</strong>.</li>
                   <li>Walk towards the <strong className="text-slate-900">{selectedSeat.blockName}</strong> aisle.</li>
-                  <li>Find <strong className="text-amber-700">Row {selectedSeat.row}</strong>, and proceed to <strong className="text-slate-900">Seat {selectedSeat.col}</strong>.</li>
+                  <li>Locate <strong className="text-amber-700 font-bold">Row {selectedSeat.row}</strong>, and proceed to <strong className="text-slate-900 font-bold">Seat {selectedSeat.col}</strong>.</li>
                 </ol>
               </div>
 
-              {/* Actions: Save Pass / Copy */}
-              <div className="flex items-center gap-2 pt-1 relative z-10">
+              {/* Mobile Actions: Copy Pass, View Map, Share on WhatsApp */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 <button
                   type="button"
                   onClick={handleCopyPass}
-                  className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xs transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   {copied ? (
                     <>
@@ -421,18 +530,31 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                   ) : (
                     <>
                       <Copy className="w-4 h-4" />
-                      <span>Copy Seating Pass</span>
+                      <span>Copy Pass Details</span>
                     </>
                   )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => centerOnSeat(selectedSeat)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200 transition cursor-pointer flex items-center gap-1.5"
+                  onClick={handleShareWhatsApp}
+                  className="py-2.5 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+                  title="Share seating pass via WhatsApp"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span className="hidden sm:inline">WhatsApp</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    centerOnSeat(selectedSeat);
+                    setActiveMobileTab('map');
+                  }}
+                  className="py-2.5 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200 transition cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <MapPin className="w-4 h-4 text-emerald-600" />
-                  <span>Spotlight on Map</span>
+                  <span>View on Map</span>
                 </button>
               </div>
 
@@ -451,75 +573,86 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
               </p>
               <button
                 type="button"
-                onClick={() => setShowVolunteersList(true)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-emerald-700 text-xs font-bold border border-slate-200 transition cursor-pointer inline-flex items-center gap-1.5"
+                onClick={() => setActiveMobileTab('help')}
+                className="px-4 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition cursor-pointer inline-flex items-center gap-1.5"
               >
                 <Phone className="w-3.5 h-3.5" />
-                <span>Contact On-Duty Gate Volunteers</span>
+                <span>Contact Gate Volunteers</span>
               </button>
             </div>
           )}
 
-          {/* On-Duty Volunteers Helpdesk Accordion */}
-          {showVolunteersList && volunteers.length > 0 && (
-            <div className="bg-white border border-emerald-300 rounded-3xl p-4 shadow-md space-y-2.5 animate-fade-in">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <span className="font-extrabold text-xs text-emerald-800 flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-emerald-600" />
-                  <span>On-Duty Ushers & Gate Volunteer Helpdesk</span>
-                </span>
-                <button
-                  onClick={() => setShowVolunteersList(false)}
-                  className="text-xs text-slate-400 hover:text-slate-700 p-1"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin text-xs">
-                {volunteers.map((vol) => (
-                  <div
-                    key={vol.id}
-                    className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2"
-                  >
-                    <div>
-                      <div className="font-bold text-slate-900">{vol.name}</div>
-                      <div className="text-[10px] text-emerald-700">{vol.role} • {vol.location}</div>
-                    </div>
-                    {vol.phone && (
-                      <a
-                        href={`tel:${vol.phone.replace(/[^0-9+]/g, '')}`}
-                        className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-mono font-bold border border-emerald-200 shrink-0 flex items-center gap-1"
-                      >
-                        <Phone className="w-3 h-3" />
-                        <span>{vol.phone}</span>
-                      </a>
-                    )}
-                  </div>
-                ))}
-              </div>
+          {/* Initial Helper Card when no search query is typed */}
+          {!searchTerm && !selectedSeat && (
+            <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-3">
+              <h3 className="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>Quick Instructions for Guests:</span>
+              </h3>
+              <ul className="text-xs text-slate-600 space-y-2 leading-relaxed list-disc list-inside">
+                <li>Type your <strong>first name or surname</strong> in the search box above.</li>
+                <li>Tap your name from the search suggestions to open your <strong>Digital Seat Pass</strong>.</li>
+                <li>Check your <strong>Designated Entry Gate</strong> (Gate 1 on Right, Gate 2 on Left, or Balcony).</li>
+                <li>Switch to the <strong>Hall Map</strong> tab to see an animated beacon pin on your exact chair.</li>
+              </ul>
             </div>
           )}
 
         </div>
 
         {/* -------------------- RIGHT PANEL: Interactive Light Blueprint Map (7 Cols) -------------------- */}
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-3 sm:p-4 shadow-xs flex flex-col h-[650px] relative overflow-hidden">
+        <div className={`lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-3 sm:p-4 shadow-xs flex flex-col relative overflow-hidden ${activeMobileTab !== 'map' ? 'hidden lg:flex h-[620px]' : 'flex h-[calc(100vh-140px)] sm:h-[620px]'}`}>
           
-          {/* Map Title & Controls */}
-          <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-100 text-xs shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-800">
-                Auditorium Floor Blueprint
+          {/* Map Title & Section Quick Zoom Pills */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-100 text-xs shrink-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-slate-900 flex items-center gap-1">
+                <Navigation className="w-3.5 h-3.5 text-blue-600" />
+                <span>Hall Map</span>
               </span>
-              {selectedSeat && (
-                <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-bold font-mono border border-blue-200">
+              {selectedSeat ? (
+                <span className="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold font-mono border border-emerald-200 text-[11px]">
                   Target: {selectedSeat.id}
                 </span>
+              ) : (
+                <span className="text-[11px] text-slate-400 font-medium">Tap any chair to inspect</span>
               )}
             </div>
 
-            <div className="flex items-center gap-1.5">
+            {/* Quick Section Jump Pills */}
+            <div className="flex items-center gap-1 flex-wrap">
+              <button
+                type="button"
+                onClick={() => handleQuickZoom('left')}
+                className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer"
+              >
+                Left Wing
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickZoom('center')}
+                className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer"
+              >
+                Center
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickZoom('right')}
+                className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer"
+              >
+                Right Wing
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickZoom('balcony')}
+                className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer"
+              >
+                Balcony
+              </button>
+            </div>
+
+            {/* Zoom Controls */}
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => setView((v) => ({ ...v, zoom: Math.min(4, v.zoom * 1.25) }))}
@@ -547,10 +680,10 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
             </div>
           </div>
 
-          {/* Interactive SVG Canvas (Light Blueprint) */}
+          {/* Interactive SVG Canvas */}
           <div
             ref={containerRef}
-            className="flex-1 min-h-0 relative bg-slate-50 rounded-2xl overflow-hidden border border-slate-200"
+            className="flex-1 min-h-0 relative bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 touch-none"
           >
             <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} className="w-full h-full">
               <defs>
@@ -598,103 +731,184 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                 <rect x="75" y="590" width="230" height="135" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
                 <rect x="75" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-                <rect x="340" y="290" width="320" height="60" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-                <rect x="340" y="355" width="320" height="375" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-                <rect x="340" y="735" width="320" height="85" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-                <rect x="340" y="805" width="320" height="140" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="290" width="320" height="55" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="350" width="320" height="375" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="730" width="320" height="85" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="820" width="320" height="125" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
                 <rect x="695" y="290" width="230" height="245" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
                 <rect x="695" y="540" width="230" height="185" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
                 <rect x="695" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
-                {/* Render All Seats with Pure Colors */}
-                {seats.map((seat) => {
+                {/* Render All Seats */}
+                {liveSeats.map((seat) => {
                   const { x, y } = getSeatCoordinates(seat);
-                  const isTarget = selectedSeat?.id === seat.id;
-                  const cat = categories[seat.categoryId] || { name: seat.categoryId, color: '#e2e8f0', borderColor: '#94a3b8', textColor: '#0f172a' };
+                  const size = SEAT_SIZE;
+                  const isSelected = selectedSeat?.id === seat.id;
+                  const cat = categories[seat.categoryId] || { color: '#e2e8f0', borderColor: '#64748b' };
+                  const isBlocked = seat.isBlocked || seat.categoryId === 'blocked';
 
                   return (
                     <g
                       key={seat.id}
                       transform={`translate(${x}, ${y})`}
                       onClick={() => handleSelectSeatOnly(seat)}
-                      className="cursor-pointer"
+                      className="cursor-pointer group"
                     >
                       <rect
                         x="0"
                         y="0"
-                        width={SEAT_SIZE}
-                        height={SEAT_SIZE}
-                        rx="4"
-                        fill={isTarget ? '#2563eb' : cat.color}
-                        stroke={isTarget ? '#1d4ed8' : cat.borderColor}
-                        strokeWidth={isTarget ? 2.5 : 1}
-                        opacity={selectedSeat && !isTarget ? 0.38 : 1}
+                        width={size}
+                        height={size}
+                        rx="3"
+                        fill={isSelected ? '#3b82f6' : isBlocked ? '#fca5a5' : cat.color}
+                        stroke={isSelected ? '#1d4ed8' : isBlocked ? '#e11d48' : cat.borderColor || '#64748b'}
+                        strokeWidth={isSelected ? '2.5' : '1'}
                       />
-                      <text
-                        x={SEAT_SIZE / 2}
-                        y={SEAT_SIZE / 2}
-                        textAnchor="middle"
-                        dominantBaseline="central"
-                        fontSize={8}
-                        fontWeight="bold"
-                        fill={isTarget ? '#ffffff' : cat.textColor || '#0f172a'}
-                        pointerEvents="none"
-                      >
-                        {seat.col}
-                      </text>
+                      
+                      {/* Armchair silhouette */}
+                      <g transform={`scale(${size / 24}) translate(2, 2)`}>
+                        <path
+                          d="M4 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3z"
+                          fill={isSelected ? '#ffffff' : isBlocked ? '#e11d48' : '#1e293b'}
+                          opacity={isSelected ? 1 : 0.85}
+                        />
+                      </g>
+
+                      {/* Animated Spotlight Beacon Ring on target seat */}
+                      {isSelected && (
+                        <g>
+                          <circle
+                            cx={size / 2}
+                            cy={size / 2}
+                            r={size * 1.5}
+                            fill="none"
+                            stroke="#2563eb"
+                            strokeWidth="2.5"
+                            className="animate-ping opacity-75"
+                          />
+                          <circle
+                            cx={size / 2}
+                            cy={size / 2}
+                            r={size * 2.2}
+                            fill="none"
+                            stroke="#60a5fa"
+                            strokeWidth="1.5"
+                            className="animate-pulse"
+                          />
+                        </g>
+                      )}
                     </g>
                   );
                 })}
-
-                {/* Animated Pulsing Pin Locator on Target Seat */}
-                {selectedSeat && selectedCoordinates && (
-                  <g transform={`translate(${selectedCoordinates.x + SEAT_SIZE / 2}, ${selectedCoordinates.y + SEAT_SIZE / 2})`}>
-                    {/* Animated Pulsing Radar Rings */}
-                    <circle r="22" fill="#2563eb" fillOpacity="0.2" className="animate-ping" />
-                    <circle r="36" fill="none" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 2" className="animate-pulse" />
-                    
-                    {/* Glowing Pin Marker */}
-                    <g transform="translate(0, -28)">
-                      <rect
-                        x="-55"
-                        y="-26"
-                        width="110"
-                        height="24"
-                        rx="12"
-                        fill="#1e40af"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        filter="drop-shadow(0px 4px 8px rgba(0,0,0,0.25))"
-                      />
-                      <text
-                        x="0"
-                        y="-10"
-                        textAnchor="middle"
-                        fill="#ffffff"
-                        fontSize="10"
-                        fontWeight="900"
-                        fontFamily="ui-monospace, monospace"
-                      >
-                        YOUR SEAT: {selectedSeat.id}
-                      </text>
-                      <polygon points="0,0 -6,-6 6,-6" fill="#1e40af" />
-                    </g>
-                  </g>
-                )}
 
               </g>
             </svg>
           </div>
 
-          {/* Footer instruction */}
-          <div className="mt-2 text-center text-[11px] text-slate-500 font-medium">
-            💡 Click or tap any chair on the map to inspect its seat number and entry door.
-          </div>
+          {/* Floating Back to Pass button on mobile map */}
+          {selectedSeat && (
+            <div className="lg:hidden absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+              <button
+                onClick={() => setActiveMobileTab('pass')}
+                className="px-4 py-2 rounded-full bg-blue-600 text-white font-bold text-xs shadow-lg flex items-center gap-1.5 cursor-pointer"
+              >
+                <Armchair className="w-3.5 h-3.5" />
+                <span>Return to Pass ({selectedSeat.id})</span>
+              </button>
+            </div>
+          )}
 
         </div>
 
+        {/* -------------------- VOLUNTEERS HELPDESK VIEW (Mobile Tab 'help') -------------------- */}
+        <div className={`space-y-4 lg:col-span-12 ${activeMobileTab !== 'help' ? 'hidden' : 'block'}`}>
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4 max-w-2xl mx-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-emerald-100 text-emerald-800">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900">Gate Ushers & Volunteer Helpdesk</h3>
+                  <p className="text-xs text-slate-500">Need assistance reaching your seat? Tap to call on-duty volunteers</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              {volunteers.map((vol) => (
+                <div
+                  key={vol.id}
+                  className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3 hover:bg-slate-100 transition"
+                >
+                  <div>
+                    <div className="font-bold text-slate-900 text-sm">{vol.name}</div>
+                    <div className="text-xs text-emerald-700 font-medium">{vol.role}</div>
+                    <div className="text-[11px] text-slate-500">{vol.location} ({vol.gate || 'Main Lobby'})</div>
+                  </div>
+                  {vol.phone && (
+                    <a
+                      href={`tel:${vol.phone.replace(/[^0-9+]/g, '')}`}
+                      className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shrink-0 shadow-xs active:scale-95"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Call Volunteer</span>
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-xs text-blue-900 space-y-1">
+              <p className="font-bold">📍 Physical Helpdesk Locations:</p>
+              <p>• <strong>Gate-1 Entrance</strong>: Ground floor right lobby near main auditorium entrance.</p>
+              <p>• <strong>Gate-2 Entrance</strong>: Ground floor left lobby near academic block connector.</p>
+              <p>• <strong>Balcony Helpdesk</strong>: 1st floor elevator exit and stairs foyer.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      {/* -------------------- Fixed Mobile Bottom Navigation Bar -------------------- */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2 flex items-center justify-around shadow-lg">
+        <button
+          onClick={() => setActiveMobileTab('pass')}
+          className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition cursor-pointer ${
+            activeMobileTab === 'pass'
+              ? 'text-blue-600 font-extrabold'
+              : 'text-slate-500 hover:text-slate-900 font-medium'
+          }`}
+        >
+          <Armchair className="w-5 h-5" />
+          <span className="text-[10px]">{selectedSeat ? 'My Pass' : 'Search'}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveMobileTab('map')}
+          className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition cursor-pointer ${
+            activeMobileTab === 'map'
+              ? 'text-blue-600 font-extrabold'
+              : 'text-slate-500 hover:text-slate-900 font-medium'
+          }`}
+        >
+          <Navigation className="w-5 h-5" />
+          <span className="text-[10px]">Hall Map</span>
+        </button>
+
+        <button
+          onClick={() => setActiveMobileTab('help')}
+          className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition cursor-pointer ${
+            activeMobileTab === 'help'
+              ? 'text-blue-600 font-extrabold'
+              : 'text-slate-500 hover:text-slate-900 font-medium'
+          }`}
+        >
+          <Shield className="w-5 h-5" />
+          <span className="text-[10px]">Gate Help</span>
+        </button>
+      </nav>
 
     </div>
   );

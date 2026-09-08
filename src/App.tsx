@@ -39,6 +39,8 @@ import { AddAttendeeModal } from './components/AttendeeRoster/AddAttendeeModal';
 import { SpreadsheetImportModal } from './components/AttendeeRoster/SpreadsheetImportModal';
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
 import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
+import { CloudSyncModal } from './components/UI/CloudSyncModal';
+import { publishPlanToCloud } from './services/cloudSync';
 
 type TabId = 'map' | 'editor' | 'roster' | 'print';
 
@@ -88,6 +90,7 @@ export function App() {
   const [isSectionManagerOpen, setIsSectionManagerOpen] = useState(false);
   const [isAddAttendeeModalOpen, setIsAddAttendeeModalOpen] = useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+  const [isCloudSyncModalOpen, setIsCloudSyncModalOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; kind: ToastKind } | null>(null);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -590,6 +593,9 @@ export function App() {
       };
     }, `${replace ? 'Replace roster with' : 'Import'} ${imported.length} guests`);
     showToast(`${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`);
+    setTimeout(() => {
+      publishPlanToCloud(plan.present).catch(() => {});
+    }, 600);
   };
 
   const handleAddVolunteer = (vol: Volunteer) => {
@@ -716,6 +722,9 @@ export function App() {
           window.history.pushState({}, '', '/');
           setIsKioskMode(false);
         }}
+        onApplyCloudPlan={(cloudPlan) => {
+          plan.commit(() => cloudPlan, 'Sync from Online Cloud');
+        }}
       />
     );
   }
@@ -755,6 +764,7 @@ export function App() {
           window.history.pushState({}, '', '/seattracker');
           setIsKioskMode(true);
         }}
+        onOpenCloudSync={() => setIsCloudSyncModalOpen(true)}
       />
 
       <div className="no-print print:hidden">
@@ -946,6 +956,13 @@ export function App() {
         onImportAttendees={handleImportAttendees}
         currentAttendeeCount={attendees.length}
         categories={categories}
+      />
+
+      <CloudSyncModal
+        isOpen={isCloudSyncModalOpen}
+        onClose={() => setIsCloudSyncModalOpen(false)}
+        plan={plan.present}
+        onPlanPublished={() => showToast('Seating plan successfully published online for mobile guests!', 'success')}
       />
 
     </div>

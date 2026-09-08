@@ -16,7 +16,8 @@ import {
   X,
   Compass,
   QrCode,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Cloud
 } from 'lucide-react';
 import { PRESET_TEMPLATES } from '../data/presetTemplates';
 import { SeatingPreset } from '../types/seating';
@@ -44,6 +45,7 @@ export interface HeaderProps {
   onExportJson: () => void;
   onOpenBackup?: () => void;
   onLaunchKiosk?: () => void;
+  onOpenCloudSync?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -69,6 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
   onExportJson,
   onOpenBackup,
   onLaunchKiosk,
+  onOpenCloudSync,
 }) => {
   const [showPresetDropdown, setShowPresetDropdown] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -216,6 +219,18 @@ export const Header: React.FC<HeaderProps> = ({
               <Compass className="w-3.5 h-3.5 text-emerald-400" />
               <span className="hidden sm:inline">Guest Kiosk</span>
               <span className="text-[10px] font-mono text-emerald-300">/seattracker</span>
+            </button>
+          )}
+
+          {/* Online Cloud Sync & Mobile QR Code */}
+          {onOpenCloudSync && (
+            <button
+              onClick={onOpenCloudSync}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 font-extrabold text-xs shadow-2xs transition active:scale-98 cursor-pointer"
+              title="Publish seating plan online & generate Mobile QR Code for guests"
+            >
+              <Cloud className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+              <span className="hidden sm:inline">Online Sync & QR</span>
             </button>
           )}
 
