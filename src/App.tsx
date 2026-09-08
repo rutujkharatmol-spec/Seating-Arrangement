@@ -40,7 +40,7 @@ import { SpreadsheetImportModal } from './components/AttendeeRoster/SpreadsheetI
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
 import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
 import { CloudSyncModal } from './components/UI/CloudSyncModal';
-import { publishPlanToCloud } from './services/cloudSync';
+import { publishPlanToCloud, fetchLiveCloudPlan } from './services/cloudSync';
 
 type TabId = 'map' | 'editor' | 'roster' | 'print';
 
@@ -178,16 +178,76 @@ export function App() {
   // paint selection, typing) into a single write once activity settles.
   const latestPlanRef = useRef(plan.present);
   latestPlanRef.current = plan.present;
+  const lastKnownCloudTimeRef = useRef<string | undefined>(undefined);
 
+  // ---------------------------------------------------------------------
+  // Cloud Database Sync: Load latest plan on startup for all Google accounts / devices
+  // ---------------------------------------------------------------------
   useEffect(() => {
-    const id = window.setTimeout(() => savePlan(plan.present), 500);
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await fetchLiveCloudPlan();
+        if (cancelled || !result || !result.plan) return;
+
+        const cloudPlan = result.plan;
+        const cloudAttendeeCount = cloudPlan.attendees?.length ?? 0;
+        const localAttendeeCount = plan.present.attendees?.length ?? 0;
+
+        // If cloud database has attendees or local state is default/empty, load cloud plan
+        if (cloudAttendeeCount > 0 || (localAttendeeCount === 0 && result.source === 'cloud')) {
+          plan.reset(cloudPlan, 'Loaded from cloud database');
+          lastKnownCloudTimeRef.current = result.updatedAt;
+          if (cloudAttendeeCount > 0) {
+            showToast(`Loaded ${cloudAttendeeCount} guests from online cloud database`, 'info');
+          }
+        }
+      } catch (err) {
+        console.warn('Initial cloud plan fetch error:', err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Check for newer cloud updates when returning to the tab (e.g. changes made from another account)
+  useEffect(() => {
+    const handleFocus = async () => {
+      try {
+        const result = await fetchLiveCloudPlan();
+        if (result && result.plan && result.updatedAt && result.updatedAt !== lastKnownCloudTimeRef.current) {
+          lastKnownCloudTimeRef.current = result.updatedAt;
+          plan.reset(result.plan, 'Synced latest updates from cloud');
+          showToast(`Synced latest updates from cloud (${result.plan.attendees?.length || 0} guests)`, 'info');
+        }
+      } catch {}
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [plan]);
+
+  // Persist plan changes: saves to localStorage AND publishes to Neon cloud database
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      savePlan(plan.present);
+      // Auto-publish to cloud so all other devices and accounts receive updates
+      publishPlanToCloud(plan.present).catch((err) => {
+        console.warn('Background cloud sync error:', err);
+      });
+    }, 600);
     return () => window.clearTimeout(id);
   }, [plan.present]);
 
   // Flush a pending write when the tab is hidden or closed, so an in-flight
   // debounce window can never drop the last edit.
   useEffect(() => {
-    const flush = () => savePlan(latestPlanRef.current);
+    const flush = () => {
+      savePlan(latestPlanRef.current);
+      publishPlanToCloud(latestPlanRef.current).catch(() => {});
+    };
     const onVisibility = () => {
       if (document.visibilityState === 'hidden') flush();
     };
@@ -558,6 +618,7 @@ export function App() {
     targetCategory?: string,
     autoSeat?: boolean
   ) => {
+    let committedPlan: PlanState | null = null;
     plan.commit((p) => {
       // 1. Process imported attendees to enforce target category if requested
       const processedImport = targetCategory
@@ -587,15 +648,27 @@ export function App() {
         });
       }
 
-      return {
+      committedPlan = {
         ...p,
         attendees: nextAttendees,
       };
+      return committedPlan;
     }, `${replace ? 'Replace roster with' : 'Import'} ${imported.length} guests`);
-    showToast(`${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`);
-    setTimeout(() => {
-      publishPlanToCloud(plan.present).catch(() => {});
-    }, 600);
+
+    showToast(`${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`, 'success');
+
+    // Immediately push to Neon cloud database so all accounts & devices get the update
+    if (committedPlan) {
+      publishPlanToCloud(committedPlan)
+        .then((res) => {
+          if (res.success) {
+            showToast('Saved to cloud database — live on all accounts & mobile!', 'success');
+          } else {
+            showToast(`Saved locally. Cloud sync: ${res.error || 'Will retry automatically'}`, 'error');
+          }
+        })
+        .catch(() => {});
+    }
   };
 
   const handleAddVolunteer = (vol: Volunteer) => {

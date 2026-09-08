@@ -87,11 +87,16 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
   }, [onApplyCloudPlan]);
 
   useEffect(() => {
-    // If attendees are empty on phone, automatically fetch from cloud
-    if (liveAttendees.length === 0) {
+    // Always fetch latest cloud data on mount for all mobile devices
+    loadCloudData();
+
+    // Auto-poll cloud every 25 seconds to receive live seating assignments
+    const pollInterval = window.setInterval(() => {
       loadCloudData();
-    }
-  }, [liveAttendees.length, loadCloudData]);
+    }, 25000);
+
+    return () => window.clearInterval(pollInterval);
+  }, [loadCloudData]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(null);

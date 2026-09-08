@@ -1,19 +1,20 @@
 import { PlanState, normalisePlan } from '../state/plan';
+import { neon } from '@neondatabase/serverless';
 
 /**
  * Cloud Synchronization Service for AIIMS Kalyani Seating Arrangement
  *
- * Provides a resilient multi-tier cloud sync engine:
- * 1. Cloud REST Endpoint: Global real-time cloud storage accessible by any smartphone.
- * 2. Local/WiFi Dev Server: `/api/plan` served by Vite dev server when running on local network.
- * 3. Static Snapshot Fallback: `./live-seating-plan.json` bundled with web deployment.
- * 4. Local Offline Cache: LocalStorage for instant zero-latency loading.
+ * Backed by Neon PostgreSQL Serverless Database (Global HTTPS, Zero Cost, Free Tier):
+ * - Works across ALL Google accounts, browsers, operating systems, and mobile phones.
+ * - Saves complete seating arrangements and guest rosters to PostgreSQL `seating_plan` table.
+ * - Dual-layer fallback: Local Vite /api/plan + LocalStorage offline cache.
  */
 
-// A dedicated persistent key on KVdb (free, HTTPS, zero-setup public key-value store)
-const CLOUD_KV_BUCKET = '6V472w51eXqA5C5tEwS1Lq';
-const CLOUD_KV_KEY = 'aiims_kalyani_live_plan';
-const CLOUD_URL = `https://kvdb.io/${CLOUD_KV_BUCKET}/${CLOUD_KV_KEY}`;
+// Dedicated Neon PostgreSQL cloud database for AIIMS Kalyani Seating Arrangement
+const NEON_CONNECTION_STRING =
+  'postgresql://neondb_owner:npg_rOokcM6j3msS@ep-wispy-tree-azlp3u6k-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require';
+
+const sql = neon(NEON_CONNECTION_STRING, { disableWarningInBrowsers: true });
 
 export interface CloudSyncStatus {
   isOnline: boolean;
@@ -25,63 +26,99 @@ export interface CloudSyncStatus {
 }
 
 /**
- * Publishes the current plan to the cloud so all mobile guests see it.
+ * Publishes the current seating plan and guest roster to the cloud database.
+ * Every device and Google account will immediately receive this plan.
  */
 export async function publishPlanToCloud(plan: PlanState): Promise<{ success: boolean; error?: string }> {
   const payload = {
     ...plan,
     _publishedAt: new Date().toISOString(),
   };
-  const bodyStr = JSON.stringify(payload);
+  const jsonStr = JSON.stringify(payload);
 
   let success = false;
   let lastError: string | undefined;
 
-  // 1. Publish to local dev/network server (/api/plan)
+  // 1. Neon PostgreSQL Cloud Database (Global sync for all Google accounts & phones)
+  try {
+    await sql`
+      INSERT INTO seating_plan (key, data, updated_at)
+      VALUES ('active_plan', ${jsonStr}::jsonb, NOW())
+      ON CONFLICT (key) DO UPDATE
+      SET data = EXCLUDED.data, updated_at = NOW();
+    `;
+    success = true;
+  } catch (err: any) {
+    console.warn('[CloudSync] Neon publish error:', err);
+    lastError = err?.message || 'Neon cloud save failed';
+  }
+
+  // 2. Local network / dev server (/api/plan) fallback
   try {
     const res = await fetch('/api/plan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: bodyStr,
+      body: jsonStr,
     });
     if (res.ok) {
       success = true;
     }
   } catch {
-    // /api/plan may not exist if deployed statically (GitHub Pages), continue to cloud
+    // Expected on static deployments or offline
   }
 
-  // 2. Publish to Global Cloud Endpoint (KVdb)
-  try {
-    const cloudRes = await fetch(CLOUD_URL, {
-      method: 'POST',
-      body: bodyStr,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (cloudRes.ok) {
-      success = true;
-    } else {
-      lastError = `Cloud responded with status ${cloudRes.status}`;
+  // 3. Cache locally in current browser
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.setItem('aiims_seating_plan_v10', jsonStr);
+      localStorage.setItem('aiims_kalyani_mobile_cached_plan', jsonStr);
+      localStorage.setItem('aiims_last_cloud_publish', new Date().toISOString());
+    } catch (e) {
+      console.warn('[CloudSync] Local cache write error:', e);
     }
-  } catch (err: any) {
-    lastError = err?.message || 'Network error syncing to cloud';
-  }
-
-  // Record published timestamp in localStorage
-  if (success) {
-    localStorage.setItem('aiims_last_cloud_publish', new Date().toISOString());
   }
 
   return { success, error: success ? undefined : lastError };
 }
 
 /**
- * Fetches the latest published plan from the cloud for mobile users.
+ * Fetches the latest published plan from the cloud database.
+ * Called on startup by all users, devices, and /seattracker mobile guests.
  */
-export async function fetchLiveCloudPlan(): Promise<{ plan: PlanState; source: 'cloud' | 'local_api' | 'static' | 'cache' } | null> {
-  // 1. Try local dev/network server (/api/plan)
+export async function fetchLiveCloudPlan(): Promise<{
+  plan: PlanState;
+  source: 'cloud' | 'local_api' | 'static' | 'cache';
+  updatedAt?: string;
+} | null> {
+  // 1. Primary: Neon PostgreSQL Cloud Database
+  try {
+    const rows = await sql`SELECT key, data, updated_at FROM seating_plan WHERE key = 'active_plan'`;
+    if (rows && rows.length > 0 && rows[0].data) {
+      const rawData = typeof rows[0].data === 'string' ? JSON.parse(rows[0].data) : rows[0].data;
+      if (rawData && rawData.seats && Array.isArray(rawData.seats)) {
+        const normalised = normalisePlan(rawData);
+        // Update local browser cache so subsequent loads are instant
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            const cacheStr = JSON.stringify(normalised);
+            localStorage.setItem('aiims_seating_plan_v10', cacheStr);
+            localStorage.setItem('aiims_kalyani_mobile_cached_plan', cacheStr);
+            localStorage.setItem('aiims_last_cloud_fetch', new Date().toISOString());
+          } catch {}
+        }
+
+        return {
+          plan: normalised,
+          source: 'cloud',
+          updatedAt: rows[0].updated_at ? String(rows[0].updated_at) : undefined,
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('[CloudSync] Neon cloud fetch failed, trying fallbacks:', err);
+  }
+
+  // 2. Secondary: Local dev / network server (/api/plan)
   try {
     const res = await fetch('/api/plan', {
       method: 'GET',
@@ -94,26 +131,10 @@ export async function fetchLiveCloudPlan(): Promise<{ plan: PlanState; source: '
       }
     }
   } catch {
-    // Continue to cloud
-  }
-
-  // 2. Try Global Cloud Endpoint (KVdb)
-  try {
-    const cloudRes = await fetch(`${CLOUD_URL}?t=${Date.now()}`, {
-      method: 'GET',
-      headers: { 'Cache-Control': 'no-cache' },
-    });
-    if (cloudRes.ok) {
-      const data = await cloudRes.json();
-      if (data && data.seats && Array.isArray(data.seats)) {
-        return { plan: normalisePlan(data), source: 'cloud' };
-      }
-    }
-  } catch {
     // Continue to static file
   }
 
-  // 3. Try bundled static file (./live-seating-plan.json)
+  // 3. Tertiary: Bundled static snapshot (./live-seating-plan.json)
   try {
     const staticRes = await fetch('./live-seating-plan.json', {
       method: 'GET',
@@ -126,7 +147,22 @@ export async function fetchLiveCloudPlan(): Promise<{ plan: PlanState; source: '
       }
     }
   } catch {
-    // Fall back to null (caller uses local cache)
+    // Fall back to local cache
+  }
+
+  // 4. Quaternary: LocalStorage cache
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const cached =
+        localStorage.getItem('aiims_seating_plan_v10') ||
+        localStorage.getItem('aiims_kalyani_mobile_cached_plan');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && parsed.seats && Array.isArray(parsed.seats)) {
+          return { plan: normalisePlan(parsed), source: 'cache' };
+        }
+      }
+    } catch {}
   }
 
   return null;
