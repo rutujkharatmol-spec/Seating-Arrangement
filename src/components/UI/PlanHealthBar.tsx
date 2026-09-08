@@ -5,6 +5,7 @@ import { PlanIssue } from '../../utils/autoSeat';
 interface PlanHealthBarProps {
   issues: PlanIssue[];
   unassignedCount: number;
+  totalAttendeesCount?: number;
   onAutoSeat: () => void;
   onOpenRoster: () => void;
 }
@@ -17,9 +18,28 @@ interface PlanHealthBarProps {
 export const PlanHealthBar: React.FC<PlanHealthBarProps> = ({
   issues,
   unassignedCount,
+  totalAttendeesCount,
   onAutoSeat,
   onOpenRoster,
 }) => {
+  if (totalAttendeesCount === 0) {
+    return (
+      <div className="no-print bg-slate-50 border-b border-slate-200 px-4 py-1.5 flex items-center justify-between text-xs text-slate-600 font-medium">
+        <div className="flex items-center gap-2">
+          <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span>Guest list is currently empty (0 guests). Upload Excel/CSV or add guests to begin seating.</span>
+        </div>
+        <button
+          onClick={onOpenRoster}
+          className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition cursor-pointer"
+        >
+          <Users className="w-3 h-3 text-slate-500" />
+          Open guest list
+        </button>
+      </div>
+    );
+  }
+
   if (issues.length === 0) {
     return (
       <div className="no-print bg-emerald-50 border-b border-emerald-200 px-4 py-1.5 flex items-center gap-2 text-xs text-emerald-900 font-semibold">

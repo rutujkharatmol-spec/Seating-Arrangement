@@ -29,19 +29,70 @@
 
 /* Print Specific Rules */
 @media print {
-  body {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 6mm;
+  }
+
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
   header,
   nav,
+  aside,
   .no-print,
+  [data-no-print],
   button:not(.print-include) {
     display: none !important;
   }
 
-  .printable-content {
+  .printable-chart {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    height: 100% !important;
+    max-height: 98vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .printable-chart-svg-container {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 72vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .printable-chart-svg-container svg {
+    height: 100% !important;
+    max-height: 72vh !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .printable-content,
+  .print-surface {
     display: block !important;
     width: 100% !important;
     margin: 0 !important;
@@ -52,11 +103,6 @@
     break-inside: avoid;
     page-break-inside: avoid;
     margin-bottom: 20px;
-  }
-
-  @page {
-    size: auto;
-    margin: 10mm;
   }
 }
 

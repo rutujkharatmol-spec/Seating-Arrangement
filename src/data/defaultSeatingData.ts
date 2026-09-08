@@ -9,23 +9,10 @@ export function generateDefaultSeats(): Seat[] {
   // ==========================================
 
   // --- Upper Left Block (5 rows x 7 cols = 35 seats) ---
-  // UB1 (7 seats): Nursing
-  // UB2 (7 seats): Nursing
-  // UB3: cols 1-5 (5 seats) Nursing, cols 6-7 (2 seats) PG Residents
-  // UB4 (7 seats): PG Residents
-  // UB5 (7 seats): PG Residents
+  // Rows UB1-UB5: All 35 seats -> Nursing Graduates
   const upperLeftRows = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
   upperLeftRows.forEach((rName) => {
     for (let c = 1; c <= 7; c++) {
-      let cat: CategoryId = 'nursing';
-      if (rName === 'UB1' || rName === 'UB2') {
-        cat = 'nursing';
-      } else if (rName === 'UB3') {
-        cat = c <= 5 ? 'nursing' : 'pg';
-      } else if (rName === 'UB4' || rName === 'UB5') {
-        cat = 'pg';
-      }
-
       const id = `UL-${rName}-${c}`;
       seats.push({
         id,
@@ -35,7 +22,7 @@ export function generateDefaultSeats(): Seat[] {
         row: rName,
         col: c,
         seatNumber: `${rName}-${c}`,
-        categoryId: cat,
+        categoryId: 'nursing',
         isBlocked: false,
         gateRecommendation: 'Balcony Gate',
       });
@@ -43,7 +30,7 @@ export function generateDefaultSeats(): Seat[] {
   });
 
   // --- Upper Center Block (62 seats) ---
-  // Row UB5 (Topmost): 10 seats -> PDCC & Post-Doctoral Fellows
+  // - Row UB5 (10 seats): PDCC & Post-Doctoral Fellows
   for (let c = 1; c <= 10; c++) {
     const id = `UC-UB5-${c}`;
     seats.push({
@@ -60,10 +47,9 @@ export function generateDefaultSeats(): Seat[] {
     });
   }
 
-  // Row UB4: 13 seats (cols 1-3: PG Residents [completing 19 PG], cols 4-13: PDCC & Fellows)
+  // - Row UB4 (13 seats): PDCC & Post-Doctoral Fellows
   for (let c = 1; c <= 13; c++) {
     const id = `UC-UB4-${c}`;
-    const cat: CategoryId = c <= 3 ? 'pg' : 'pdcc';
     seats.push({
       id,
       tier: 'UPPER',
@@ -72,30 +58,63 @@ export function generateDefaultSeats(): Seat[] {
       row: 'UB4',
       col: c,
       seatNumber: `UB4-${c}`,
-      categoryId: cat,
+      categoryId: 'pdcc',
       isBlocked: false,
       gateRecommendation: 'Balcony Gate',
     });
   }
 
-  // Rows UB3, UB2, UB1: 3 rows x 13 cols = 39 seats -> Band Party & Orchestra
-  ['UB3', 'UB2', 'UB1'].forEach((rName) => {
-    for (let c = 1; c <= 13; c++) {
-      const id = `UC-${rName}-${c}`;
-      seats.push({
-        id,
-        tier: 'UPPER',
-        block: 'UPPER_CENTER',
-        blockName: 'Upper Center Balcony',
-        row: rName,
-        col: c,
-        seatNumber: `${rName}-${c}`,
-        categoryId: 'band_party',
-        isBlocked: false,
-        gateRecommendation: 'Balcony Gate',
-      });
-    }
-  });
+  // - Row UB3 (13 seats): PDCC & Post-Doctoral Fellows
+  for (let c = 1; c <= 13; c++) {
+    const id = `UC-UB3-${c}`;
+    seats.push({
+      id,
+      tier: 'UPPER',
+      block: 'UPPER_CENTER',
+      blockName: 'Upper Center Balcony',
+      row: 'UB3',
+      col: c,
+      seatNumber: `UB3-${c}`,
+      categoryId: 'pdcc',
+      isBlocked: false,
+      gateRecommendation: 'Balcony Gate',
+    });
+  }
+
+  // - Row UB2 (13 seats): PG Residents
+  for (let c = 1; c <= 13; c++) {
+    const id = `UC-UB2-${c}`;
+    seats.push({
+      id,
+      tier: 'UPPER',
+      block: 'UPPER_CENTER',
+      blockName: 'Upper Center Balcony',
+      row: 'UB2',
+      col: c,
+      seatNumber: `UB2-${c}`,
+      categoryId: 'pg',
+      isBlocked: false,
+      gateRecommendation: 'Balcony Gate',
+    });
+  }
+
+  // - Row UB1 (13 seats): cols 1-10 Nursing Graduates (10 seats), cols 11-13 PG Residents (3 seats)
+  for (let c = 1; c <= 13; c++) {
+    const id = `UC-UB1-${c}`;
+    const cat: CategoryId = c <= 10 ? 'nursing' : 'pg';
+    seats.push({
+      id,
+      tier: 'UPPER',
+      block: 'UPPER_CENTER',
+      blockName: 'Upper Center Balcony',
+      row: 'UB1',
+      col: c,
+      seatNumber: `UB1-${c}`,
+      categoryId: cat,
+      isBlocked: false,
+      gateRecommendation: 'Balcony Gate',
+    });
+  }
 
   // --- Upper Right Block (5 rows x 7 cols = 35 seats: Parents & Family Guests) ---
   const upperRightRows = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
@@ -120,7 +139,7 @@ export function generateDefaultSeats(): Seat[] {
   // ==========================================
   // 2. LOWER TIER (Main Floor)
   // Rows A (Front) to X (Back)
-  // Total Seats = 618
+  // Total Seats = 631
   // ==========================================
 
   const lowerRows = [
@@ -131,17 +150,23 @@ export function generateDefaultSeats(): Seat[] {
   ];
 
   // --- LOWER LEFT WING (166 seats) ---
-  // Order: MBBS on front seats, then Nursing, then PG, then PDCC
-  // - Rows A-Q (117 seats) + Row R cols 1-2 (2 seats) = 119 seats -> MBBS Graduates
-  // - Row R cols 3-7 (5 seats) + Rows S-X (42 seats) = 47 seats -> Nursing Graduates
+  // - Row A cols 3-7 (5 seats) -> AV & Technical Console
+  // - Row B cols 1-7 (7 seats) -> Awardees & Medalists
+  // - Rows C & D cols 1-7 (14 seats) -> IT Dept Staff
+  // - Rows E through U (17 rows x 7 cols = 119 seats) -> MBBS Graduates
+  // - Rows V, W, X (3 rows x 7 cols = 21 seats) -> Nursing Graduates
   lowerRows.forEach((rowLetter) => {
     const startCol = rowLetter === 'A' ? 3 : 1;
     for (let c = startCol; c <= 7; c++) {
       let cat: CategoryId = 'mbbs';
-      if (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'].includes(rowLetter)) {
+      if (rowLetter === 'A') {
+        cat = 'console';
+      } else if (rowLetter === 'B') {
+        cat = 'awardees';
+      } else if (rowLetter === 'C' || rowLetter === 'D') {
+        cat = 'it_staff';
+      } else if (['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U'].includes(rowLetter)) {
         cat = 'mbbs';
-      } else if (rowLetter === 'R') {
-        cat = c <= 2 ? 'mbbs' : 'nursing';
       } else {
         cat = 'nursing';
       }
@@ -163,21 +188,21 @@ export function generateDefaultSeats(): Seat[] {
   });
 
   // --- LOWER CENTER BLOCK (299 seats) ---
-  // - Rows A-D (4 rows x 13 cols = 52 seats) -> VIP & Dignitaries
-  // - Rows E-G (3 rows x 13 cols = 39 seats) -> Media & Press Reporters
-  // - Rows H-W (16 rows x 13 cols = 208 seats) -> Faculty Members & Academic Leaders
+  // - Rows A-B (2 rows x 13 cols = 26 seats) -> VVIP Dignitaries
+  // - Rows C-G (5 rows x 13 cols = 65 seats) -> VIP & Dignitaries
+  // - Rows H-W (16 rows x 13 cols = 208 seats) -> Faculty Members & Academic Staff
   const centerRows = [
-    'A', 'B', 'C', 'D',
-    'E', 'F', 'G',
+    'A', 'B',
+    'C', 'D', 'E', 'F', 'G',
     'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'
   ];
 
   centerRows.forEach((rowLetter) => {
     let cat: CategoryId = 'faculty';
-    if (['A', 'B', 'C', 'D'].includes(rowLetter)) {
+    if (rowLetter === 'A' || rowLetter === 'B') {
+      cat = 'vvip';
+    } else if (['C', 'D', 'E', 'F', 'G'].includes(rowLetter)) {
       cat = 'vip';
-    } else if (['E', 'F', 'G'].includes(rowLetter)) {
-      cat = 'reporters';
     } else {
       cat = 'faculty';
     }
@@ -194,16 +219,33 @@ export function generateDefaultSeats(): Seat[] {
         seatNumber: `${rowLetter}${c}`,
         categoryId: cat,
         isBlocked: false,
-        gateRecommendation: cat === 'vip' || cat === 'reporters' ? 'Gate-2' : 'Gate-1',
+        gateRecommendation: c <= 6 ? 'Gate-2' : 'Gate-1',
       });
     }
   });
 
   // --- LOWER RIGHT WING (166 seats) ---
-  // - ALL Rows A-X (166 seats) -> Parents & Guardians (Accompanying Persons)
+  // - Row A cols 1-5 (5 seats) -> Blocked Seats (camera/stage buffer)
+  // - Rows B-C cols 1-7 (14 seats) -> Media & Press Reporters
+  // - Rows D-E cols 1-7 (14 seats) -> VIP & Dignitaries
+  // - Rows F-H cols 1-7 (21 seats) -> Administrative Staff
+  // - Rows I through X cols 1-7 (16 rows x 7 cols = 112 seats) -> Parents & Guardians
   lowerRows.forEach((rowLetter) => {
     const endCol = rowLetter === 'A' ? 5 : 7;
     for (let c = 1; c <= endCol; c++) {
+      let cat: CategoryId = 'accompanying';
+      if (rowLetter === 'A') {
+        cat = 'blocked';
+      } else if (rowLetter === 'B' || rowLetter === 'C') {
+        cat = 'reporters';
+      } else if (rowLetter === 'D' || rowLetter === 'E') {
+        cat = 'vip';
+      } else if (rowLetter === 'F' || rowLetter === 'G' || rowLetter === 'H') {
+        cat = 'admin_staff';
+      } else {
+        cat = 'accompanying';
+      }
+
       const id = `R-${rowLetter}${c}`;
       seats.push({
         id,
@@ -213,8 +255,8 @@ export function generateDefaultSeats(): Seat[] {
         row: rowLetter,
         col: c,
         seatNumber: `${rowLetter}${c}`,
-        categoryId: 'accompanying',
-        isBlocked: false,
+        categoryId: cat,
+        isBlocked: cat === 'blocked',
         gateRecommendation: 'Gate-1',
       });
     }
@@ -226,16 +268,16 @@ export function generateDefaultSeats(): Seat[] {
 export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   eventTitle: 'Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)',
   departmentName: 'Convocation Organizing Committee',
-  numVip: 52,             // 4 rows x 13 = 52 VIP seats (Rows A, B, C, D Center)
-  numSeniorFaculty: 30,
+  numVip: 79,             // 65 Center Rows C-G + 14 Right Rows D-E
+  numSeniorFaculty: 26,   // 26 VVIP seats (Center Rows A-B)
   numFaculty: 208,        // Rows H-W Center
-  numAwardees: 35,
-  numReporters: 39,       // Rows E-G Center
-  numAccompanying: 201,   // 166 Right Ground Floor + 35 Upper Right Balcony (Parents & Guardians)
-  numBandParty: 39,       // Rows UB1-UB3 Upper Center
-  numConsole: 25,
-  numBlocked: 0,
-  numAudience: 204,       // 119 MBBS + 66 Nursing + 19 PG Residents on Left Side
+  numAwardees: 7,         // Left Row B
+  numReporters: 14,       // Right Rows B-C
+  numAccompanying: 147,   // 112 Right Rows I-X + 35 Upper Right Balcony (Parents & Guardians)
+  numBandParty: 14,       // 14 IT Dept Staff (Left Rows C-D)
+  numConsole: 5,          // 5 Console (Left Row A)
+  numBlocked: 5,          // 5 Blocked seats (Right Row A cols 1-5)
+  numAudience: 258,       // 119 MBBS + 66 Nursing + 36 PDCC + 16 PG + 21 Admin Staff
   totalSeats: 763,
-  notes: 'Official AIIMS Kalyani Convocation Blueprint: Left Side (MBBS -> Nursing -> PG -> PDCC), Middle (VIP & Reporters), Right Side (Parents)',
+  notes: 'Official AIIMS Kalyani Convocation Master Blueprint',
 };

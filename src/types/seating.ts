@@ -15,6 +15,9 @@ export type BuiltinCategoryId =
   | 'audience'
   | 'band_party'
   | 'console'
+  | 'admin_staff'
+  | 'it_staff'
+  | 'vvip'
   | 'blocked'
   | 'available';
 

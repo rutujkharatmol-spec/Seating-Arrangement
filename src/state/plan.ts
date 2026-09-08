@@ -16,7 +16,7 @@ export interface PlanState {
   categories: Record<string, CategoryInfo>;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v7';
+const STORAGE_KEY = 'aiims_seating_plan_v10';
 
 export function createDefaultPlan(): PlanState {
   return {
@@ -96,7 +96,18 @@ export function loadPlan(): PlanState {
     // Corrupt storage should never block the app from opening.
   }
 
-  return createDefaultPlan();
+  // Clear older versions
+  try {
+    localStorage.removeItem('aiims_seating_plan_v7');
+    localStorage.removeItem('aiims_seating_plan_v8');
+    localStorage.removeItem('aiims_seating_plan_v9');
+  } catch {
+    // Ignore storage errors
+  }
+
+  const defaultPlan = createDefaultPlan();
+  savePlan(defaultPlan);
+  return defaultPlan;
 }
 
 export function savePlan(plan: PlanState) {

@@ -7,7 +7,9 @@ import { Attendee } from '../types/seating';
  * - PG Residents (MD/MS/MDS Balcony Left & Center): 19 seats (UL-UB3-6 to UC-UB4-3)
  * Total: 204 Graduating Students
  */
-export const INITIAL_ATTENDEES: Attendee[] = [
+export const INITIAL_ATTENDEES: Attendee[] = [];
+
+export const SAMPLE_CONVOCATION_ATTENDEES: Attendee[] = [
   {
     "id": "att-mbbs-20200151",
     "name": "Abhilasha Saboth",

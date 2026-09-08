@@ -72,7 +72,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6 print:p-0 print:m-0 print:max-w-none print:w-full print:space-y-0">
       
       {/* Non-Printable Header & Mode Selector */}
       <div className="no-print bg-white border border-slate-300 p-5 rounded-3xl shadow-sm space-y-4">

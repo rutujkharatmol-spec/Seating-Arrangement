@@ -39,6 +39,8 @@ export interface SeatInspectorProps {
   onSelectRow?: (seat: Seat) => void;
   onSelectZone?: (seat: Seat) => void;
   onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
+  onInitiateSwap?: (seatId: string) => void;
+  swapSourceSeatId?: string | null;
 
   // Direct editing additions
   categories?: Record<string, CategoryInfo>;
@@ -77,6 +79,8 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
   onUpdateVolunteer,
   onDeleteVolunteer,
   onSwapSeats,
+  onInitiateSwap,
+  swapSourceSeatId,
 }) => {
   const singleSeat = selectedSeats.length === 1 ? selectedSeats[0] : null;
   const isMultiple = selectedSeats.length > 1;
@@ -437,14 +441,30 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
                 <span>Guest Assignment:</span>
               </label>
               {singleSeat.attendee && (
-                <button
-                  type="button"
-                  onClick={() => onClearSeat(singleSeat.id)}
-                  className="text-[10px] text-rose-600 hover:underline flex items-center gap-1 font-bold cursor-pointer"
-                >
-                  <Trash2 className="w-2.5 h-2.5" />
-                  Clear
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (swapSourceSeatId === singleSeat.id) {
+                        onInitiateSwap?.('');
+                      } else {
+                        onInitiateSwap?.(singleSeat.id);
+                      }
+                    }}
+                    className={`text-[10px] ${swapSourceSeatId === singleSeat.id ? 'text-amber-600' : 'text-blue-600'} hover:underline flex items-center gap-1 font-bold cursor-pointer`}
+                  >
+                    <ArrowLeftRight className="w-2.5 h-2.5" />
+                    {swapSourceSeatId === singleSeat.id ? 'Cancel Swap' : 'Swap Seat'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onClearSeat(singleSeat.id)}
+                    className="text-[10px] text-rose-600 hover:underline flex items-center gap-1 font-bold cursor-pointer"
+                  >
+                    <Trash2 className="w-2.5 h-2.5" />
+                    Unassign
+                  </button>
+                </div>
               )}
             </div>
 

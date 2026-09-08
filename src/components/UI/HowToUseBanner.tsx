@@ -12,7 +12,7 @@ export const HowToUseBanner: React.FC<HowToUseBannerProps> = ({ onOpenWizard }) 
 
   if (!isOpen) {
     return (
-      <div className="bg-blue-50 border-b border-blue-100 px-4 py-1.5 flex items-center justify-between text-xs text-blue-900">
+      <div className="no-print print:hidden bg-blue-50 border-b border-blue-100 px-4 py-1.5 flex items-center justify-between text-xs text-blue-900">
         <span className="flex items-center gap-1.5 font-medium">
           <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
           <span>New to this seating system?</span>
@@ -36,7 +36,7 @@ export const HowToUseBanner: React.FC<HowToUseBannerProps> = ({ onOpenWizard }) 
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-b border-blue-200 px-4 py-3 text-slate-800 relative shadow-xs">
+    <div className="no-print print:hidden bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-b border-blue-200 px-4 py-3 text-slate-800 relative shadow-xs">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         
         {/* Title */}

@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   CircleSlash,
   FileSpreadsheet,
+  Users,
 } from 'lucide-react';
 import { exportSeatingToCsv } from '../../utils/exportHelpers';
 import { exportRosterToExcel } from '../../utils/excelHelpers';
@@ -26,6 +27,8 @@ interface AttendeeListProps {
   issues: PlanIssue[];
   onUpdateAttendee: (attendee: Attendee) => void;
   onDeleteAttendee: (id: string) => void;
+  onDeleteSelectedAttendees?: (ids: string[]) => void;
+  onRemoveAllAttendees?: () => void;
   onOpenAddModal: () => void;
   onOpenCsvModal: () => void;
   onSelectSeatOnMap: (seatId: string) => void;
@@ -42,6 +45,8 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   issues,
   onUpdateAttendee,
   onDeleteAttendee,
+  onDeleteSelectedAttendees,
+  onRemoveAllAttendees,
   onOpenAddModal,
   onOpenCsvModal,
   onSelectSeatOnMap,
@@ -54,6 +59,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<CategoryId | 'ALL'>('ALL');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<'ALL' | 'ASSIGNED' | 'UNASSIGNED'>('ALL');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const filteredAttendees = useMemo(() => {
     return attendees.filter((a) => {
@@ -80,6 +86,50 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   const seatedCount = useMemo(() => attendees.filter((a) => a.seatId).length, [attendees]);
   const unseatedCount = attendees.length - seatedCount;
 
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredAttendees.length && filteredAttendees.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredAttendees.map((a) => a.id)));
+    }
+  };
+
+  const toggleSelectOne = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleDeleteAll = () => {
+    if (attendees.length === 0) return;
+    if (
+      window.confirm(
+        `Are you sure you want to delete ALL ${attendees.length} guests from the roster? This will permanently delete the entire guest list and unseat them.`
+      )
+    ) {
+      onRemoveAllAttendees?.();
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedIds.size === 0) return;
+    if (
+      window.confirm(
+        `Are you sure you want to delete the ${selectedIds.size} selected guest${selectedIds.size === 1 ? '' : 's'}?`
+      )
+    ) {
+      onDeleteSelectedAttendees?.(Array.from(selectedIds));
+      setSelectedIds(new Set());
+    }
+  };
+
   const handleExportCsv = () => {
     exportSeatingToCsv(seats, attendees, eventTitle);
   };
@@ -100,7 +150,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
           </h2>
           <p className="text-xs text-slate-500">
             {seatedCount} of {attendees.length} guests have a seat
-            {unseatedCount > 0 ? ` \u2014 ${unseatedCount} still waiting` : ''}.
+            {unseatedCount > 0 ? ` — ${unseatedCount} still waiting` : ''}.
           </p>
         </div>
 
@@ -113,6 +163,17 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
           >
             <Eraser className="w-3.5 h-3.5 text-amber-600" />
             <span>Empty all seats</span>
+          </button>
+
+          {/* Delete All Guests Button */}
+          <button
+            onClick={handleDeleteAll}
+            disabled={attendees.length === 0}
+            title="Delete all guests from the roster entirely"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 shadow-xs transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+            <span>Delete all guests</span>
           </button>
 
           <button
@@ -224,25 +285,89 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
 
       </div>
 
+      {/* Bulk Action Bar when guests are selected */}
+      {selectedIds.size > 0 && (
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-rose-950 text-xs">
+              {selectedIds.size} of {attendees.length} guest{selectedIds.size === 1 ? '' : 's'} selected
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDeleteSelected}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Delete selected ({selectedIds.size})</span>
+            </button>
+            <button
+              onClick={handleDeleteAll}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 shadow-xs transition cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+              <span>Delete all ({attendees.length})</span>
+            </button>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="text-xs text-slate-500 hover:text-slate-800 font-bold px-2 py-1 cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Attendee Table */}
       <div className="bg-white border border-slate-300 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-800">
             <thead className="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200">
               <tr>
+                <th className="py-3 px-3 w-10 text-center">
+                  <input
+                    type="checkbox"
+                    checked={filteredAttendees.length > 0 && selectedIds.size === filteredAttendees.length}
+                    onChange={toggleSelectAll}
+                    title="Select all"
+                    className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                  />
+                </th>
                 <th className="py-3 px-4">Guest</th>
                 <th className="py-3 px-4">Role & department</th>
                 <th className="py-3 px-4">Zone</th>
                 <th className="py-3 px-4">Seat</th>
                 <th className="py-3 px-4">Entry gate</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+                <th className="py-3 px-4 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <span>Actions</span>
+                    {attendees.length > 0 && (
+                      <button
+                        onClick={handleDeleteAll}
+                        title="Delete all guests from list"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-300 transition cursor-pointer"
+                      >
+                        <Trash2 className="w-3 h-3 text-rose-600" />
+                        <span>Delete all</span>
+                      </button>
+                    )}
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               {filteredAttendees.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500">
-                    No guests match your search.
+                  <td colSpan={7} className="py-12 text-center text-slate-500">
+                    {attendees.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <Users className="w-8 h-8 text-slate-300" />
+                        <p className="font-semibold text-slate-700 text-sm">No guests on the roster</p>
+                        <p className="text-xs text-slate-400">Click "Upload Excel / CSV" to import guests or "Add guest" to add individuals.</p>
+                      </div>
+                    ) : (
+                      'No guests match your search or filter.'
+                    )}
                   </td>
                 </tr>
               ) : (
@@ -263,7 +388,16 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
 
                   return (
                     <tr key={att.id} className="hover:bg-slate-50 transition">
-                      
+                      {/* Selection Checkbox */}
+                      <td className="py-3 px-3 text-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(att.id)}
+                          onChange={() => toggleSelectOne(att.id)}
+                          className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                        />
+                      </td>
+
                       {/* Name & Contact */}
                       <td className="py-3 px-4">
                         <div className="font-bold text-slate-900 text-sm flex items-center gap-1.5">

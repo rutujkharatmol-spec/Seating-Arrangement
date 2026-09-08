@@ -82,6 +82,7 @@ export function App() {
   const [showVolunteers, setShowVolunteers] = useState(true);
   const [showAisles, setShowAisles] = useState(true);
   const [focusSeatId, setFocusSeatId] = useState<string | null>(null);
+  const [swapSourceSeatId, setSwapSourceSeatId] = useState<string | null>(null);
 
   const [isQuestionnaireModalOpen, setIsQuestionnaireModalOpen] = useState(false);
   const [isSectionManagerOpen, setIsSectionManagerOpen] = useState(false);
@@ -263,6 +264,21 @@ export function App() {
   // ---------------------------------------------------------------------
 
   const handleToggleSelectSeat = (seat: Seat, multi: boolean) => {
+    // If we're in swap mode, handle swapping instead of normal selection
+    if (swapSourceSeatId) {
+      if (swapSourceSeatId === seat.id) {
+        // Cancel swap
+        setSwapSourceSeatId(null);
+        showToast('Swap cancelled');
+        return;
+      }
+      
+      // Perform Swap
+      handleSwapSeats(swapSourceSeatId, seat.id);
+      setSwapSourceSeatId(null);
+      return;
+    }
+
     setSelectedSeatIds((prev) => {
       if (!multi) {
         return prev.length === 1 && prev[0] === seat.id ? [] : [seat.id];
@@ -503,14 +519,76 @@ export function App() {
     showToast(`Removed guest from roster`);
   };
 
-  const handleImportAttendees = (imported: Attendee[], replace: boolean = false) => {
+  const handleRemoveAllAttendees = () => {
+    if (attendees.length === 0) return;
     plan.commit(
       (p) => ({
         ...p,
-        attendees: replace ? imported : [...p.attendees, ...imported],
+        attendees: [],
       }),
-      `${replace ? 'Replace roster with' : 'Import'} ${imported.length} guests`
+      'Delete all guests'
     );
+    showToast('Deleted all guests from roster');
+  };
+
+  const handleDeleteSelectedAttendees = (ids: string[]) => {
+    if (ids.length === 0) return;
+    const idSet = new Set(ids);
+    plan.commit(
+      (p) => ({
+        ...p,
+        attendees: p.attendees.filter((a) => !idSet.has(a.id)),
+      }),
+      `Delete ${ids.length} guests`
+    );
+    showToast(`Deleted ${ids.length} guest${ids.length === 1 ? '' : 's'}`);
+  };
+
+  const handleInitiateSwap = (seatId: string) => {
+    setSwapSourceSeatId(seatId);
+    showToast(`Select another seat to swap with`, 'success');
+  };
+
+  const handleImportAttendees = (
+    imported: Attendee[],
+    replace: boolean = false,
+    targetCategory?: string,
+    autoSeat?: boolean
+  ) => {
+    plan.commit((p) => {
+      // 1. Process imported attendees to enforce target category if requested
+      const processedImport = targetCategory
+        ? imported.map((a) => ({ ...a, categoryId: targetCategory as CategoryId }))
+        : imported;
+
+      let nextAttendees = replace ? processedImport : [...p.attendees, ...processedImport];
+
+      // 2. Auto-Seat logic
+      if (targetCategory && autoSeat) {
+        // Find empty seats that match this target category
+        // Maintain the natural order of seats in p.seats (which is front-to-back per block)
+        const occupiedSeatIds = new Set(nextAttendees.map((a) => a.seatId).filter(Boolean));
+        const emptyTargetSeats = p.seats.filter(
+          (s) => s.categoryId === targetCategory && !s.isBlocked && !occupiedSeatIds.has(s.id)
+        );
+
+        // Assign unassigned newly imported attendees to empty seats
+        let seatIdx = 0;
+        nextAttendees = nextAttendees.map((a) => {
+          // If this attendee was just imported and needs a seat, and we have one available
+          if (processedImport.some((imp) => imp.id === a.id) && !a.seatId && seatIdx < emptyTargetSeats.length) {
+            const assignedSeat = emptyTargetSeats[seatIdx++];
+            return { ...a, seatId: assignedSeat.id };
+          }
+          return a;
+        });
+      }
+
+      return {
+        ...p,
+        attendees: nextAttendees,
+      };
+    }, `${replace ? 'Replace roster with' : 'Import'} ${imported.length} guests`);
     showToast(`${replace ? 'Replaced roster with' : 'Imported'} ${imported.length} guests successfully`);
   };
 
@@ -679,9 +757,11 @@ export function App() {
         }}
       />
 
-      <HowToUseBanner
-        onOpenWizard={() => setIsQuestionnaireModalOpen(true)}
-      />
+      <div className="no-print print:hidden">
+        <HowToUseBanner
+          onOpenWizard={() => setIsQuestionnaireModalOpen(true)}
+        />
+      </div>
 
       <StatsBar
         seats={seatsWithPeople}
@@ -712,6 +792,7 @@ export function App() {
           <PlanHealthBar
             issues={planIssues}
             unassignedCount={unassignedAttendees.length}
+            totalAttendeesCount={attendees.length}
             onAutoSeat={handleAutoSeat}
             onOpenRoster={() => setActiveTab('roster')}
           />
@@ -760,6 +841,8 @@ export function App() {
             onSwapSeats={handleSwapSeats}
             focusSeatId={focusSeatId}
             onFocusHandled={() => setFocusSeatId(null)}
+            onInitiateSwap={handleInitiateSwap}
+            swapSourceSeatId={swapSourceSeatId}
           />
         )}
 
@@ -793,6 +876,8 @@ export function App() {
             issues={planIssues}
             onUpdateAttendee={handleUpdateAttendee}
             onDeleteAttendee={handleDeleteAttendee}
+            onDeleteSelectedAttendees={handleDeleteSelectedAttendees}
+            onRemoveAllAttendees={handleRemoveAllAttendees}
             onOpenAddModal={() => setIsAddAttendeeModalOpen(true)}
             onOpenCsvModal={() => setIsCsvModalOpen(true)}
             onSelectSeatOnMap={handleSelectSeatOnMap}

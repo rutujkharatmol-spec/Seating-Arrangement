@@ -44,6 +44,8 @@ export interface AuditoriumMapProps {
   onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
   focusSeatId: string | null;
   onFocusHandled: () => void;
+  onInitiateSwap?: (seatId: string) => void;
+  swapSourceSeatId?: string | null;
 }
 
 const VIEW_W = 1000;
@@ -122,6 +124,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   onSwapSeats,
   focusSeatId,
   onFocusHandled,
+  onInitiateSwap,
+  swapSourceSeatId,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<SVGGElement>(null);
@@ -764,6 +768,8 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             onUpdateVolunteer={onUpdateVolunteer}
             onDeleteVolunteer={onDeleteVolunteer}
             onSwapSeats={onSwapSeats}
+            onInitiateSwap={onInitiateSwap}
+            swapSourceSeatId={swapSourceSeatId}
           />
         </div>
       </aside>

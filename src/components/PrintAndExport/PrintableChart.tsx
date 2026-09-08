@@ -69,25 +69,33 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
 
   const activeCategories = Object.values(categories).filter((c) => c.id !== 'available');
 
+  const categoryCounts = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const seat of seats) {
+      counts[seat.categoryId] = (counts[seat.categoryId] || 0) + 1;
+    }
+    return counts;
+  }, [seats]);
+
   return (
-    <div className="printable-chart bg-white text-slate-900 p-6 max-w-4xl mx-auto rounded-xl shadow-lg border border-slate-300 print:border-0 print:shadow-none print:p-0">
+    <div className="printable-chart bg-white text-slate-900 p-6 max-w-4xl mx-auto rounded-xl shadow-lg border border-slate-300 print:border-0 print:shadow-none print:p-0 print:m-0 print:max-w-none print:w-full">
       
       {/* Printable Header */}
-      <div className="text-center mb-4 border-b-2 border-slate-800 pb-3">
-        <h1 className="text-2xl font-black tracking-tight text-slate-900 font-serif">
+      <div className="text-center mb-3 border-b-2 border-slate-800 pb-2.5 print:mb-2 print:pb-1.5 shrink-0">
+        <h1 className="text-2xl font-black tracking-tight text-slate-900 font-serif print:text-xl">
           {eventTitle}
         </h1>
-        <h2 className="text-sm font-bold text-slate-700 mt-0.5">
+        <h2 className="text-sm font-bold text-slate-700 mt-0.5 print:text-xs">
           {departmentName}
         </h2>
-        <div className="inline-block mt-1 px-3 py-0.5 bg-slate-100 border border-slate-400 rounded-full text-xs font-bold text-slate-800 font-mono">
+        <div className="inline-block mt-1 px-3 py-0.5 bg-slate-100 border border-slate-400 rounded-full text-xs font-bold text-slate-800 font-mono print:text-[10px] print:py-0">
           Total Seats – {totalSeats}
         </div>
       </div>
 
       {/* SVG Chart */}
-      <div className="w-full aspect-[1/1.05] border border-slate-300 rounded-lg overflow-hidden bg-white p-2">
-        <svg viewBox="0 0 1000 1040" className="w-full h-full">
+      <div className="printable-chart-svg-container w-full aspect-[1/1.05] print:aspect-auto print:flex-1 print:max-h-[72vh] border border-slate-300 rounded-lg overflow-hidden bg-white p-2 print:p-1 flex items-center justify-center">
+        <svg viewBox="0 0 1000 1040" className="w-full h-full object-contain">
           {/* Upper Balcony Outline */}
           <rect
             x="65"
@@ -187,19 +195,25 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
         </svg>
       </div>
 
-      {/* Legend Footer */}
-      <div className="mt-4 pt-3 border-t border-slate-300 grid grid-cols-3 sm:grid-cols-5 gap-2 text-[10px]">
-        {activeCategories.map((cat) => (
-          <div key={cat.id} className="flex items-center gap-1.5">
-            <span
-              className="w-3 h-3 rounded border border-slate-400 shrink-0"
-              style={{ backgroundColor: cat.color, borderColor: cat.borderColor }}
-            />
-            <span className="truncate font-semibold text-slate-800">
-              {cat.shortName}
-            </span>
-          </div>
-        ))}
+      {/* Legend Footer with exact seat counts */}
+      <div className="mt-3 pt-2.5 border-t border-slate-300 grid grid-cols-3 sm:grid-cols-5 gap-x-2 gap-y-1.5 text-[10px] print:text-[9.5px] print:gap-x-2 print:gap-y-1 print:mt-2 print:pt-1.5 shrink-0">
+        {activeCategories.map((cat) => {
+          const count = categoryCounts[cat.id] || 0;
+          return (
+            <div key={cat.id} className="flex items-center gap-1.5 min-w-0">
+              <span
+                className="w-3.5 h-3.5 rounded border border-slate-400 shrink-0"
+                style={{ backgroundColor: cat.color, borderColor: cat.borderColor }}
+              />
+              <span className="truncate font-semibold text-slate-800">
+                {cat.shortName}
+              </span>
+              <span className="font-extrabold text-slate-900 font-mono shrink-0 text-[10px] print:text-[9.5px]">
+                ({count})
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

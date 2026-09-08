@@ -26,7 +26,7 @@ import {
 interface SpreadsheetImportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onImportAttendees: (attendees: Attendee[], replace: boolean) => void;
+  onImportAttendees: (attendees: Attendee[], replace: boolean, targetCategory?: string, autoSeat?: boolean) => void;
   currentAttendeeCount?: number;
   categories?: Record<string, CategoryInfo>;
 }
@@ -51,6 +51,10 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
 
   // Manual CSV text state
   const [csvText, setCsvText] = useState('');
+
+  // Target Category & Auto-Seat state
+  const [targetCategory, setTargetCategory] = useState<string>('');
+  const [autoSeat, setAutoSeat] = useState<boolean>(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -135,7 +139,7 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
       return;
     }
 
-    onImportAttendees(activeAttendeesToImport, importMode === 'replace');
+    onImportAttendees(activeAttendeesToImport, importMode === 'replace', targetCategory || undefined, autoSeat);
     setSuccessMessage(
       `Successfully ${importMode === 'replace' ? 'replaced list with' : 'added'} ${activeAttendeesToImport.length} guests!`
     );
@@ -174,7 +178,7 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
         isVip: p.categoryId === 'vip',
       }));
 
-      onImportAttendees(attendees, importMode === 'replace');
+      onImportAttendees(attendees, importMode === 'replace', targetCategory || undefined, autoSeat);
       setSuccessMessage(`Successfully imported ${attendees.length} guests!`);
 
       setTimeout(() => {
@@ -457,8 +461,38 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
                   </div>
 
                   {/* Import Mode Radio selection */}
-                  <div className="pt-2 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-4">
+                  <div className="pt-4 border-t border-slate-200 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-4">
+                        <label className="font-extrabold text-slate-800">Target Category:</label>
+                        <select
+                          value={targetCategory}
+                          onChange={(e) => setTargetCategory(e.target.value)}
+                          className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                        >
+                          <option value="">Auto-Detect from File</option>
+                          {Object.values(categories).map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {targetCategory && (
+                        <label className="flex items-center gap-2 cursor-pointer font-bold text-slate-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                          <input
+                            type="checkbox"
+                            checked={autoSeat}
+                            onChange={(e) => setAutoSeat(e.target.checked)}
+                            className="accent-emerald-600 w-4 h-4 cursor-pointer"
+                          />
+                          <span>Auto-Seat Guests from Front to Back</span>
+                        </label>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                       <label className="font-extrabold text-slate-800">Import Mode:</label>
                       <label className="flex items-center gap-1.5 cursor-pointer font-bold text-slate-700">
                         <input
@@ -501,30 +535,62 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
                 className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 font-mono text-slate-900 text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none shadow-2xs"
               />
 
-              <div className="flex items-center gap-4 pt-1">
-                <label className="font-extrabold text-slate-800">Import Mode:</label>
-                <label className="flex items-center gap-1.5 cursor-pointer font-bold text-slate-700">
-                  <input
-                    type="radio"
-                    name="pasteImportMode"
-                    value="replace"
-                    checked={importMode === 'replace'}
-                    onChange={() => setImportMode('replace')}
-                    className="accent-emerald-600 cursor-pointer"
-                  />
-                  <span>Replace existing roster</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer font-bold text-slate-700">
-                  <input
-                    type="radio"
-                    name="pasteImportMode"
-                    value="append"
-                    checked={importMode === 'append'}
-                    onChange={() => setImportMode('append')}
-                    className="accent-emerald-600 cursor-pointer"
-                  />
-                  <span>Append to roster</span>
-                </label>
+              <div className="pt-4 border-t border-slate-200 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-4">
+                    <label className="font-extrabold text-slate-800">Target Category:</label>
+                    <select
+                      value={targetCategory}
+                      onChange={(e) => setTargetCategory(e.target.value)}
+                      className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                    >
+                      <option value="">Auto-Detect from CSV</option>
+                      {Object.values(categories).map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {targetCategory && (
+                    <label className="flex items-center gap-2 cursor-pointer font-bold text-slate-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                      <input
+                        type="checkbox"
+                        checked={autoSeat}
+                        onChange={(e) => setAutoSeat(e.target.checked)}
+                        className="accent-emerald-600 w-4 h-4 cursor-pointer"
+                      />
+                      <span>Auto-Seat Guests from Front to Back</span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label className="font-extrabold text-slate-800">Import Mode:</label>
+                  <label className="flex items-center gap-1.5 cursor-pointer font-bold text-slate-700">
+                    <input
+                      type="radio"
+                      name="pasteImportMode"
+                      value="replace"
+                      checked={importMode === 'replace'}
+                      onChange={() => setImportMode('replace')}
+                      className="accent-emerald-600 cursor-pointer"
+                    />
+                    <span>Replace existing roster</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer font-bold text-slate-700">
+                    <input
+                      type="radio"
+                      name="pasteImportMode"
+                      value="append"
+                      checked={importMode === 'append'}
+                      onChange={() => setImportMode('append')}
+                      className="accent-emerald-600 cursor-pointer"
+                    />
+                    <span>Append to roster</span>
+                  </label>
+                </div>
               </div>
             </div>
           )}
