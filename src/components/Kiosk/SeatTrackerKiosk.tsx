@@ -74,10 +74,14 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     try {
       const result = await fetchLiveCloudPlan();
       if (result && result.plan) {
-        if (result.plan.seats?.length) setLiveSeats(result.plan.seats);
-        if (result.plan.attendees?.length) setLiveAttendees(result.plan.attendees);
-        setCloudSyncedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-        if (onApplyCloudPlan) onApplyCloudPlan(result.plan);
+        const seatedCount = result.plan.attendees?.filter((a) => Boolean(a.seatId))?.length || 0;
+        // Never overwrite with unseated or empty plan
+        if (seatedCount >= 500) {
+          if (result.plan.seats?.length) setLiveSeats(result.plan.seats);
+          if (result.plan.attendees?.length) setLiveAttendees(result.plan.attendees);
+          setCloudSyncedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+          if (onApplyCloudPlan) onApplyCloudPlan(result.plan);
+        }
       }
     } catch {
       // Graceful fallback to prop data
@@ -123,7 +127,14 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
   // Search filter
   const matchingResults = useMemo<{ attendees: Attendee[]; seats: Seat[] }>(() => {
     const q = searchTerm.trim().toLowerCase();
-    if (!q) return { attendees: [], seats: [] };
+
+    if (!q) {
+      if (filterCategory !== 'ALL') {
+        const filtered = liveAttendees.filter((a) => a.categoryId === filterCategory);
+        return { attendees: filtered, seats: [] };
+      }
+      return { attendees: [], seats: [] };
+    }
 
     const matchedAttendees = liveAttendees.filter((a) => {
       if (filterCategory !== 'ALL' && a.categoryId !== filterCategory) return false;
@@ -384,10 +395,14 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
           </div>
 
           {/* Search Dropdown / Live Results List */}
-          {searchTerm && matchingResults.attendees.length > 0 && !selectedAttendee && (
+          {(searchTerm || filterCategory !== 'ALL') && matchingResults.attendees.length > 0 && !selectedAttendee && (
             <div className="bg-white border-2 border-blue-300 rounded-3xl p-3 shadow-xl max-h-80 overflow-y-auto space-y-1.5 scrollbar-thin">
               <div className="text-[11px] font-extrabold text-blue-900 px-2 py-1 uppercase tracking-wider flex items-center justify-between">
-                <span>Select Your Name from Results:</span>
+                <span>
+                  {filterCategory !== 'ALL' && !searchTerm
+                    ? `Showing ${categories[filterCategory]?.name || filterCategory} (${matchingResults.attendees.length}):`
+                    : 'Select Your Name from Results:'}
+                </span>
                 <span className="font-mono text-[10px] text-slate-400">Tap name to view pass</span>
               </div>
               {matchingResults.attendees.map((att) => {
@@ -452,18 +467,31 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                   )}
                 </div>
 
-                {selectedCat && (
-                  <span
-                    className="px-3 py-1 rounded-xl text-xs font-black border shadow-xs shrink-0"
-                    style={{
-                      backgroundColor: selectedCat.color,
-                      color: selectedCat.textColor,
-                      borderColor: selectedCat.borderColor,
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAttendee(null);
+                      setSelectedSeat(null);
+                      handleResetZoom();
                     }}
+                    className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold border border-slate-200 transition cursor-pointer"
                   >
-                    {selectedCat.shortName || selectedCat.name}
-                  </span>
-                )}
+                    Change
+                  </button>
+                  {selectedCat && (
+                    <span
+                      className="px-3 py-1 rounded-xl text-xs font-black border shadow-xs shrink-0"
+                      style={{
+                        backgroundColor: selectedCat.color,
+                        color: selectedCat.textColor,
+                        borderColor: selectedCat.borderColor,
+                      }}
+                    >
+                      {selectedCat.shortName || selectedCat.name}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Big Seat Code & Entrance Door Pill Grid */}

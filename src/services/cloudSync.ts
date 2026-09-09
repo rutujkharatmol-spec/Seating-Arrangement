@@ -72,8 +72,8 @@ export async function publishPlanToCloud(plan: PlanState): Promise<{ success: bo
   // 3. Cache locally in current browser
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
-      localStorage.setItem('aiims_seating_plan_v10', jsonStr);
-      localStorage.setItem('aiims_kalyani_mobile_cached_plan', jsonStr);
+      localStorage.setItem('aiims_seating_plan_v12', jsonStr);
+      localStorage.setItem('aiims_kalyani_mobile_cached_plan_v12', jsonStr);
       localStorage.setItem('aiims_last_cloud_publish', new Date().toISOString());
     } catch (e) {
       console.warn('[CloudSync] Local cache write error:', e);
@@ -81,6 +81,16 @@ export async function publishPlanToCloud(plan: PlanState): Promise<{ success: bo
   }
 
   return { success, error: success ? undefined : lastError };
+}
+
+/**
+ * Helper to ensure a fetched plan has valid assigned seats.
+ */
+function isValidSeatedPlan(plan: any): boolean {
+  if (!plan || !Array.isArray(plan.seats) || plan.seats.length === 0) return false;
+  if (!Array.isArray(plan.attendees) || plan.attendees.length === 0) return false;
+  const seatedCount = plan.attendees.filter((a: any) => Boolean(a.seatId)).length;
+  return seatedCount >= 500;
 }
 
 /**
@@ -97,14 +107,14 @@ export async function fetchLiveCloudPlan(): Promise<{
     const rows = await sql`SELECT key, data, updated_at FROM seating_plan WHERE key = 'active_plan'`;
     if (rows && rows.length > 0 && rows[0].data) {
       const rawData = typeof rows[0].data === 'string' ? JSON.parse(rows[0].data) : rows[0].data;
-      if (rawData && rawData.seats && Array.isArray(rawData.seats)) {
+      if (isValidSeatedPlan(rawData)) {
         const normalised = normalisePlan(rawData);
         // Update local browser cache so subsequent loads are instant
         if (typeof window !== 'undefined' && window.localStorage) {
           try {
             const cacheStr = JSON.stringify(normalised);
-            localStorage.setItem('aiims_seating_plan_v10', cacheStr);
-            localStorage.setItem('aiims_kalyani_mobile_cached_plan', cacheStr);
+            localStorage.setItem('aiims_seating_plan_v12', cacheStr);
+            localStorage.setItem('aiims_kalyani_mobile_cached_plan_v12', cacheStr);
             localStorage.setItem('aiims_last_cloud_fetch', new Date().toISOString());
           } catch {}
         }
@@ -117,7 +127,7 @@ export async function fetchLiveCloudPlan(): Promise<{
       }
     }
   } catch (err) {
-    console.warn('[CloudSync] Neon cloud fetch failed, trying fallbacks:', err);
+    // Graceful silent fallback without spamming console
   }
 
   // 2. Secondary: Local dev / network server (/api/plan)
@@ -128,7 +138,7 @@ export async function fetchLiveCloudPlan(): Promise<{
     });
     if (res.ok) {
       const data = await res.json();
-      if (data && data.seats && Array.isArray(data.seats)) {
+      if (isValidSeatedPlan(data)) {
         return { plan: normalisePlan(data), source: 'local_api' };
       }
     }
@@ -144,7 +154,7 @@ export async function fetchLiveCloudPlan(): Promise<{
     });
     if (staticRes.ok) {
       const data = await staticRes.json();
-      if (data && data.seats && Array.isArray(data.seats)) {
+      if (isValidSeatedPlan(data)) {
         return { plan: normalisePlan(data), source: 'static' };
       }
     }
@@ -156,11 +166,11 @@ export async function fetchLiveCloudPlan(): Promise<{
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const cached =
-        localStorage.getItem('aiims_seating_plan_v10') ||
-        localStorage.getItem('aiims_kalyani_mobile_cached_plan');
+        localStorage.getItem('aiims_seating_plan_v12') ||
+        localStorage.getItem('aiims_kalyani_mobile_cached_plan_v12');
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (parsed && parsed.seats && Array.isArray(parsed.seats)) {
+        if (isValidSeatedPlan(parsed)) {
           return { plan: normalisePlan(parsed), source: 'cache' };
         }
       }

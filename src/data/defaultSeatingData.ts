@@ -30,7 +30,7 @@ export function generateDefaultSeats(): Seat[] {
   });
 
   // --- Upper Center Block (62 seats) ---
-  // - Row UB5 (10 seats): PDCC & Post-Doctoral Fellows
+  // - Row UB5 (10 seats): Accompanying Guests / Parents
   for (let c = 1; c <= 10; c++) {
     const id = `UC-UB5-${c}`;
     seats.push({
@@ -41,13 +41,13 @@ export function generateDefaultSeats(): Seat[] {
       row: 'UB5',
       col: c,
       seatNumber: `UB5-${c}`,
-      categoryId: 'pdcc',
+      categoryId: 'accompanying',
       isBlocked: false,
       gateRecommendation: 'Balcony Gate',
     });
   }
 
-  // - Row UB4 (13 seats): PDCC & Post-Doctoral Fellows
+  // - Row UB4 (13 seats): Accompanying Guests / Parents
   for (let c = 1; c <= 13; c++) {
     const id = `UC-UB4-${c}`;
     seats.push({
@@ -58,13 +58,13 @@ export function generateDefaultSeats(): Seat[] {
       row: 'UB4',
       col: c,
       seatNumber: `UB4-${c}`,
-      categoryId: 'pdcc',
+      categoryId: 'accompanying',
       isBlocked: false,
       gateRecommendation: 'Balcony Gate',
     });
   }
 
-  // - Row UB3 (13 seats): PDCC & Post-Doctoral Fellows
+  // - Row UB3 (13 seats): Accompanying Guests / Parents
   for (let c = 1; c <= 13; c++) {
     const id = `UC-UB3-${c}`;
     seats.push({
@@ -75,7 +75,7 @@ export function generateDefaultSeats(): Seat[] {
       row: 'UB3',
       col: c,
       seatNumber: `UB3-${c}`,
-      categoryId: 'pdcc',
+      categoryId: 'accompanying',
       isBlocked: false,
       gateRecommendation: 'Balcony Gate',
     });
@@ -98,10 +98,10 @@ export function generateDefaultSeats(): Seat[] {
     });
   }
 
-  // - Row UB1 (13 seats): cols 1-10 Nursing Graduates (10 seats), cols 11-13 PG Residents (3 seats)
+  // - Row UB1 (13 seats): cols 1-10 Nursing (10 seats), cols 11-12 PG Residents (2 seats), col 13 Guest (1 seat)
   for (let c = 1; c <= 13; c++) {
     const id = `UC-UB1-${c}`;
-    const cat: CategoryId = c <= 10 ? 'nursing' : 'pg';
+    const cat: CategoryId = c <= 10 ? 'nursing' : c <= 12 ? 'pg' : 'accompanying';
     seats.push({
       id,
       tier: 'UPPER',
@@ -226,22 +226,13 @@ export function generateDefaultSeats(): Seat[] {
 
   // --- LOWER RIGHT WING (166 seats) ---
   // - Row A cols 1-5 (5 seats) -> Blocked Seats (camera/stage buffer)
-  // - Rows B-C cols 1-7 (14 seats) -> Media & Press Reporters
-  // - Rows D-E cols 1-7 (14 seats) -> VIP & Dignitaries
-  // - Rows F-H cols 1-7 (21 seats) -> Administrative Staff
-  // - Rows I through X cols 1-7 (16 rows x 7 cols = 112 seats) -> Parents & Guardians
+  // - Rows B through X (161 seats) -> Accompanying Guests / Parents
   lowerRows.forEach((rowLetter) => {
     const endCol = rowLetter === 'A' ? 5 : 7;
     for (let c = 1; c <= endCol; c++) {
       let cat: CategoryId = 'accompanying';
       if (rowLetter === 'A') {
         cat = 'blocked';
-      } else if (rowLetter === 'B' || rowLetter === 'C') {
-        cat = 'reporters';
-      } else if (rowLetter === 'D' || rowLetter === 'E') {
-        cat = 'vip';
-      } else if (rowLetter === 'F' || rowLetter === 'G' || rowLetter === 'H') {
-        cat = 'admin_staff';
       } else {
         cat = 'accompanying';
       }
@@ -268,16 +259,16 @@ export function generateDefaultSeats(): Seat[] {
 export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   eventTitle: 'Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)',
   departmentName: 'Convocation Organizing Committee',
-  numVip: 79,             // 65 Center Rows C-G + 14 Right Rows D-E
+  numVip: 79,             // 65 Center Rows C-G + 14 Right Rows D-E buffer
   numSeniorFaculty: 26,   // 26 VVIP seats (Center Rows A-B)
-  numFaculty: 208,        // Rows H-W Center
+  numFaculty: 145,        // 145 Faculty from SORTED FACULTY LIST
   numAwardees: 7,         // Left Row B
-  numReporters: 14,       // Right Rows B-C
-  numAccompanying: 147,   // 112 Right Rows I-X + 35 Upper Right Balcony (Parents & Guardians)
+  numReporters: 14,       // Right Rows B-C buffer
+  numAccompanying: 296,   // 296 Accompanying Guests / Parents from Student Forms
   numBandParty: 14,       // 14 IT Dept Staff (Left Rows C-D)
   numConsole: 5,          // 5 Console (Left Row A)
   numBlocked: 5,          // 5 Blocked seats (Right Row A cols 1-5)
-  numAudience: 258,       // 119 MBBS + 66 Nursing + 36 PDCC + 16 PG + 21 Admin Staff
+  numAudience: 169,       // 109 MBBS + 45 Nursing + 15 PG
   totalSeats: 763,
-  notes: 'Official AIIMS Kalyani Convocation Master Blueprint',
+  notes: 'Official AIIMS Kalyani Convocation Master Blueprint with Authoritative Roster',
 };

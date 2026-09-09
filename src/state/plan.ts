@@ -16,13 +16,15 @@ export interface PlanState {
   categories: Record<string, CategoryInfo>;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v11';
+const STORAGE_KEY = 'aiims_seating_plan_v12';
 
 export function createDefaultPlan(): PlanState {
+  const attendees = [...INITIAL_ATTENDEES];
+  const seats = withAttendees(generateDefaultSeats(), attendees);
   return {
     answers: INITIAL_QUESTIONNAIRE_ANSWERS,
-    seats: generateDefaultSeats(),
-    attendees: [...INITIAL_ATTENDEES],
+    seats,
+    attendees,
     volunteers: DEFAULT_VOLUNTEERS,
     categories: { ...CATEGORIES },
   };
@@ -81,7 +83,14 @@ export function withAttendees(seats: Seat[], attendees: Attendee[]): Seat[] {
 
   return seats.map((s) => {
     const attendee = bySeat.get(s.id);
-    return attendee ? { ...s, attendee, attendeeId: attendee.id } : s;
+    return attendee
+      ? {
+          ...s,
+          attendee,
+          attendeeId: attendee.id,
+          categoryId: attendee.categoryId || s.categoryId,
+        }
+      : s;
   });
 }
 
@@ -90,18 +99,24 @@ export function loadPlan(): PlanState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as PlanState;
-      if (parsed?.seats?.length) return normalisePlan(parsed);
+      const seatedCount = parsed?.attendees?.filter((a) => Boolean(a.seatId))?.length || 0;
+      // Only keep cached plan if it has seats and at least 500 seated attendees
+      if (parsed?.seats?.length && seatedCount >= 500) {
+        return normalisePlan(parsed);
+      }
     }
   } catch {
     // Corrupt storage should never block the app from opening.
   }
 
-  // Clear older versions
+  // Clear older versions and unseated caches
   try {
     localStorage.removeItem('aiims_seating_plan_v7');
     localStorage.removeItem('aiims_seating_plan_v8');
     localStorage.removeItem('aiims_seating_plan_v9');
     localStorage.removeItem('aiims_seating_plan_v10');
+    localStorage.removeItem('aiims_seating_plan_v11');
+    localStorage.removeItem('aiims_kalyani_mobile_cached_plan');
   } catch {
     // Ignore storage errors
   }
