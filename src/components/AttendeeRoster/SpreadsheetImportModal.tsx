@@ -294,7 +294,7 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
         institution: p.institution || 'AIIMS Kalyani',
         email: p.email || undefined,
         phone: p.phone || undefined,
-        categoryId: (p.categoryId as CategoryId) || 'audience',
+        categoryId: (p.categoryId as CategoryId) || 'faculty',
         seatId: p.seatId || undefined,
         notes: p.notes || undefined,
         isVip: p.categoryId === 'vip',

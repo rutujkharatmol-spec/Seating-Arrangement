@@ -1,125 +1,20 @@
-import { Seat, QuestionnaireAnswers, CategoryId } from '../types/seating';
+import { Seat, QuestionnaireAnswers } from '../types/seating';
+import { assignConvocationZones, DEFAULT_ZONE_COUNTS } from '../data/defaultSeatingData';
 
 /**
- * Re-allocates seats intelligently across the 750-seat auditorium based on questionnaire answers
+ * Rebuilds the seat sections from the wizard's answers, using the same
+ * convocation rules as the built-in layout (see assignConvocationZones).
+ *
+ * The rows for VIP, admin, reporters, IT staff and parents are fixed; the
+ * faculty count decides how many middle-block rows go to faculty before the
+ * students behind them. Guests are not moved — use Auto-seat afterwards.
  */
 export function reallocateSeatsFromAnswers(
   currentSeats: Seat[],
   answers: QuestionnaireAnswers
 ): Seat[] {
-  // Clone seats
-  const newSeats: Seat[] = currentSeats.map((s) => ({ ...s, isBlocked: false }));
-
-  // Create category demand quotas
-  const demand: Record<CategoryId, number> = {
-    vip: answers.numVip,
-    senior_faculty: answers.numSeniorFaculty,
-    faculty: answers.numFaculty,
-    awardees: answers.numAwardees,
-    reporters: answers.numReporters,
-    accompanying: answers.numAccompanying,
-    band_party: answers.numBandParty,
-    console: answers.numConsole,
-    blocked: answers.numBlocked,
-    audience: answers.numAudience,
-    available: 0,
-  };
-
-  // 1. Assign Band Party to Upper Center (Rows UB1 to UB3, then UB4)
-  const upperCenterSeats = newSeats.filter((s) => s.block === 'UPPER_CENTER');
-  // Sort from bottom row to top row: UB1, UB2, UB3, UB4, UB5
-  upperCenterSeats.sort((a, b) => a.row.localeCompare(b.row));
-
-  let bandAssigned = 0;
-  for (const s of upperCenterSeats) {
-    if (bandAssigned < demand.band_party) {
-      s.categoryId = 'band_party';
-      bandAssigned++;
-    } else {
-      s.categoryId = 'audience';
-    }
-  }
-
-  // 2. Upper Left and Upper Right default to Audience
-  newSeats.forEach((s) => {
-    if (s.block === 'UPPER_LEFT' || s.block === 'UPPER_RIGHT') {
-      s.categoryId = 'audience';
-    }
-  });
-
-  // 3. Lower Right: Front rows (A-H) for Blocked seats, middle (I-O) for Awardees, rest for Accompanying
-  const lowerRightSeats = newSeats.filter((s) => s.block === 'LOWER_RIGHT');
-  // Sort from front (A) to back (X)
-  const rowOrder = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X'];
-  lowerRightSeats.sort((a, b) => rowOrder.indexOf(a.row) - rowOrder.indexOf(b.row) || a.col - b.col);
-
-  let blockedAssigned = 0;
-  let awardeesAssigned = 0;
-  let accompanyingAssignedRight = 0;
-
-  for (const s of lowerRightSeats) {
-    if (blockedAssigned < demand.blocked) {
-      s.categoryId = 'blocked';
-      s.isBlocked = true;
-      blockedAssigned++;
-    } else if (awardeesAssigned < demand.awardees) {
-      s.categoryId = 'awardees';
-      awardeesAssigned++;
-    } else if (accompanyingAssignedRight < demand.accompanying) {
-      s.categoryId = 'accompanying';
-      accompanyingAssignedRight++;
-    } else {
-      s.categoryId = 'audience';
-    }
-  }
-
-  // 4. Lower Left: Front rows (A-H) for Senior Faculty + Registrar, mid (I-M) for Console, rear (N-X) for Audience
-  const lowerLeftSeats = newSeats.filter((s) => s.block === 'LOWER_LEFT');
-  lowerLeftSeats.sort((a, b) => rowOrder.indexOf(a.row) - rowOrder.indexOf(b.row) || a.col - b.col);
-
-  let srFacultyAssigned = 0;
-  let consoleAssigned = 0;
-
-  for (const s of lowerLeftSeats) {
-    if (srFacultyAssigned < demand.senior_faculty) {
-      s.categoryId = 'senior_faculty';
-      srFacultyAssigned++;
-    } else if (consoleAssigned < demand.console) {
-      s.categoryId = 'console';
-      consoleAssigned++;
-    } else {
-      s.categoryId = 'audience';
-    }
-  }
-
-  // 5. Lower Center: VIP (Front rows A..), then Reporters, then Faculty, then remaining Accompanying, then Audience
-  const lowerCenterSeats = newSeats.filter((s) => s.block === 'LOWER_CENTER');
-  lowerCenterSeats.sort((a, b) => rowOrder.indexOf(a.row) - rowOrder.indexOf(b.row) || a.col - b.col);
-
-  let vipAssigned = 0;
-  let reportersAssigned = 0;
-  let facultyAssigned = 0;
-  let accompanyingRemaining = Math.max(0, demand.accompanying - accompanyingAssignedRight);
-
-  for (const s of lowerCenterSeats) {
-    if (vipAssigned < demand.vip) {
-      s.categoryId = 'vip';
-      vipAssigned++;
-    } else if (reportersAssigned < demand.reporters) {
-      s.categoryId = 'reporters';
-      reportersAssigned++;
-    } else if (facultyAssigned < demand.faculty) {
-      s.categoryId = 'faculty';
-      facultyAssigned++;
-    } else if (accompanyingRemaining > 0) {
-      s.categoryId = 'accompanying';
-      accompanyingRemaining--;
-    } else {
-      s.categoryId = 'audience';
-    }
-  }
-
-  return newSeats;
+  const faculty = Number.isFinite(answers.numFaculty) ? Math.max(0, answers.numFaculty) : DEFAULT_ZONE_COUNTS.faculty;
+  return assignConvocationZones(currentSeats, { ...DEFAULT_ZONE_COUNTS, faculty });
 }
 
 /**
@@ -158,7 +53,7 @@ export function validateQuestionnaire(answers: QuestionnaireAnswers, capacity?: 
       isValid: true,
       totalRequested: totalAllocated,
       difference: diff,
-      message: `${diff} unallocated seats will be marked as open General Audience / Available.`,
+      message: `${diff} unallocated seats will be marked as open / Available.`,
     };
   } else {
     return {

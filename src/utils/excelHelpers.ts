@@ -46,7 +46,7 @@ export function extractEmail(str: string): string {
  * Normalize and map category string to valid CategoryId
  */
 export function mapToCategoryId(catStr: string): CategoryId {
-  if (!catStr) return 'audience';
+  if (!catStr) return 'faculty';
   const clean = catStr.toLowerCase().trim().replace(/[\s-]+/g, '_');
   if (CATEGORIES[clean]) return clean;
 
@@ -58,13 +58,12 @@ export function mapToCategoryId(catStr: string): CategoryId {
   if (clean.includes('pg') || clean.includes('md') || clean.includes('ms') || clean.includes('mds') || clean.includes('resident')) return 'pg';
   if (clean.includes('parent') || clean.includes('accompany') || clean.includes('family') || clean.includes('guardian')) return 'accompanying';
   if (clean.includes('faculty') || clean.includes('prof') || clean.includes('doctor') || clean.includes('teacher')) return 'faculty';
-  if (clean.includes('senior') || clean.includes('registrar')) return 'senior_faculty';
-  if (clean.includes('award') || clean.includes('medal') || clean.includes('prize')) return 'awardees';
-  if (clean.includes('band') || clean.includes('music')) return 'band_party';
+  if (clean.includes('senior') || clean.includes('registrar')) return 'faculty';
+  if (clean.includes('admin')) return 'admin_staff';
   if (clean.includes('console') || clean.includes('av') || clean.includes('tech')) return 'console';
-  if (clean.includes('student') || clean.includes('audience')) return 'audience';
+  if (clean.includes('student')) return 'mbbs';
 
-  return 'audience';
+  return 'faculty';
 }
 
 /**

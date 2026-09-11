@@ -3,15 +3,19 @@ import { Attendee } from '../types/seating';
 /**
  * PERMANENT AUTHORITATIVE ATTENDEE DATA - 2nd Convocation, AIIMS Kalyani
  *
- * Fully mapped with guaranteed pre-assigned auditorium seats from authoritative Excel sources:
- *   1. SORTED FACULTY LIST.xlsx (145 faculty in Center Block Rows H-S)
+ * Pre-assigned auditorium seats from the authoritative Excel sources, seated
+ * under the convocation layout (see assignConvocationZones):
+ *   1. SORTED FACULTY LIST.xlsx — 145 faculty, Middle Block Rows F–R
  *   2. Form Responses of Students:
- *      - 109 MBBS Graduates (Lower Left Rows E-T)
- *      - 45 Nursing Graduates (Lower Left V-X + Upper Left Balcony UB1-UB4)
- *      - 15 PG Residents (Upper Center Balcony UB2 + UB1)
- *      - 296 Accompanying Guests / Parents (Lower Right Rows B-X, Upper Balcony & Center Rear)
+ *      - 108 MBBS Graduates — Left Wing Rows C–R
+ *      - 45 Nursing Graduates — Middle Block Rows T–W (last rows)
+ *      - 15 PG Residents — Left Wing Rows S–X
+ *      - 296 Parents / Guardians — whole Balcony + Right Wing Rows F–X
  *
- * Total Authoritative Attendees: 610 (100% pre-seated)
+ * Total: 609 attendees. The parents' section holds 265, so 16 families
+ * (32 parents) have no seat yet and are marked "Assigned Seat: none".
+ * Seats are regenerated with seatRosterByZone: roster order, front to back,
+ * highest seat number first within a row, families kept together.
  * Numbering format: Right-to-Left (e.g. B1 at rightmost to B27 at leftmost)
  */
 
@@ -25,8 +29,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "rekha.cmfm@aiimskalyani.edu.in",
     "phone": "8961310911",
     "categoryId": "faculty",
-    "seatId": "H20",
-    "notes": "Faculty | Professor and Head, | Community Medicine and Family Medicine | Assigned Seat: H20"
+    "seatId": "F20",
+    "notes": "Faculty | Professor and Head, | Community Medicine and Family Medicine | Assigned Seat: F20"
   },
   {
     "id": "att-fac-poonam-joshi",
@@ -37,8 +41,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "poonam.nursing@aiimskalyani.edu.in",
     "phone": "9818039744",
     "categoryId": "faculty",
-    "seatId": "H19",
-    "notes": "Faculty | Professor cum Principal | College of Nursing | Assigned Seat: H19"
+    "seatId": "F19",
+    "notes": "Faculty | Professor cum Principal | College of Nursing | Assigned Seat: F19"
   },
   {
     "id": "att-fac-prof-dr-biswabina-ray",
@@ -49,8 +53,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "biswabina.anat@aiimskalyani.edu.in",
     "phone": "9845513054",
     "categoryId": "faculty",
-    "seatId": "H18",
-    "notes": "Faculty | Professor& Head, Dean academics | Anatomy | Assigned Seat: H18"
+    "seatId": "F18",
+    "notes": "Faculty | Professor& Head, Dean academics | Anatomy | Assigned Seat: F18"
   },
   {
     "id": "att-fac-ujjala-ghoshal",
@@ -61,8 +65,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ujjala.micro@aiimskalyani.edu.in",
     "phone": "7706997492",
     "categoryId": "faculty",
-    "seatId": "H17",
-    "notes": "Faculty | Prof and head | Microbiology | Assigned Seat: H17"
+    "seatId": "F17",
+    "notes": "Faculty | Prof and head | Microbiology | Assigned Seat: F17"
   },
   {
     "id": "att-fac-anjum-naz",
@@ -73,8 +77,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anjum.anesth@aiimskalyani.edu.in",
     "phone": "9836893073",
     "categoryId": "faculty",
-    "seatId": "H16",
-    "notes": "Faculty | Professor | Anaesthesiology | Assigned Seat: H16"
+    "seatId": "F16",
+    "notes": "Faculty | Professor | Anaesthesiology | Assigned Seat: F16"
   },
   {
     "id": "att-fac-dr-tirthankar-deb",
@@ -85,8 +89,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "tirthankar.pharma@aiimskalyani.edu.in",
     "phone": "9088859953",
     "categoryId": "faculty",
-    "seatId": "H15",
-    "notes": "Faculty | Professor | Pharmacology | Assigned Seat: H15"
+    "seatId": "F15",
+    "notes": "Faculty | Professor | Pharmacology | Assigned Seat: F15"
   },
   {
     "id": "att-fac-dr-aparna-palit",
@@ -97,8 +101,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "aparna.derm@aiimskalyani.edu.in",
     "phone": "9449233144",
     "categoryId": "faculty",
-    "seatId": "H14",
-    "notes": "Faculty | Professor | Dermatology | Assigned Seat: H14"
+    "seatId": "F14",
+    "notes": "Faculty | Professor | Dermatology | Assigned Seat: F14"
   },
   {
     "id": "att-fac-dr-santosh-kumar-mondal",
@@ -109,8 +113,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "santosh.path@aiimskalyani.edu.in",
     "phone": "7003144817",
     "categoryId": "faculty",
-    "seatId": "H13",
-    "notes": "Faculty | Professor | Pathology | Assigned Seat: H13"
+    "seatId": "F13",
+    "notes": "Faculty | Professor | Pathology | Assigned Seat: F13"
   },
   {
     "id": "att-fac-gaurab-ranjan-chaudhuri",
@@ -121,8 +125,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "gaurab.prs@aiimskalyani.edu.in",
     "phone": "9748044093",
     "categoryId": "faculty",
-    "seatId": "H12",
-    "notes": "Faculty | Professor | Burns and Plastic Surgery | Assigned Seat: H12"
+    "seatId": "F12",
+    "notes": "Faculty | Professor | Burns and Plastic Surgery | Assigned Seat: F12"
   },
   {
     "id": "att-fac-kalyan-goswami",
@@ -133,8 +137,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "kalyan.biochem@aiimskalyani.edu.in",
     "phone": "9970030441",
     "categoryId": "faculty",
-    "seatId": "H11",
-    "notes": "Faculty | Professor | Biochemistry | Assigned Seat: H11"
+    "seatId": "F11",
+    "notes": "Faculty | Professor | Biochemistry | Assigned Seat: F11"
   },
   {
     "id": "att-fac-sukanto-sarkar",
@@ -145,8 +149,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sukanto.psy@aiimskalyani.edu.in",
     "phone": "9655489210",
     "categoryId": "faculty",
-    "seatId": "H10",
-    "notes": "Faculty | Professor | Psychiatry | Assigned Seat: H10"
+    "seatId": "F10",
+    "notes": "Faculty | Professor | Psychiatry | Assigned Seat: F10"
   },
   {
     "id": "att-fac-abanti-das",
@@ -157,8 +161,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "abanti.radiodgs@aiimskalyani.edu.in",
     "phone": "8448417139",
     "categoryId": "faculty",
-    "seatId": "H9",
-    "notes": "Faculty | Additional Professor | Radiodiagnosis | Assigned Seat: H9"
+    "seatId": "F9",
+    "notes": "Faculty | Additional Professor | Radiodiagnosis | Assigned Seat: F9"
   },
   {
     "id": "att-fac-anirban-das-gupta",
@@ -169,8 +173,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anirban.anat@aiimskalyani.edu.in",
     "phone": "9885939321",
     "categoryId": "faculty",
-    "seatId": "H8",
-    "notes": "Faculty | Additional Professor | Anatomy | Assigned Seat: H8"
+    "seatId": "F8",
+    "notes": "Faculty | Additional Professor | Anatomy | Assigned Seat: F8"
   },
   {
     "id": "att-fac-debangshu-ghosh",
@@ -181,8 +185,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "debangshu.ent@aiimskalyani.edu.in",
     "phone": "9038336301",
     "categoryId": "faculty",
-    "seatId": "I20",
-    "notes": "Faculty | Additional Professor | Otorhinolaryngology(ENT) | Assigned Seat: I20"
+    "seatId": "G20",
+    "notes": "Faculty | Additional Professor | Otorhinolaryngology(ENT) | Assigned Seat: G20"
   },
   {
     "id": "att-fac-dr-amit-kumar",
@@ -193,8 +197,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "amit.ortho@aiimskalyani.edu.in",
     "phone": "7706098170",
     "categoryId": "faculty",
-    "seatId": "I19",
-    "notes": "Faculty | Additional Professor | Orthopaedics | Assigned Seat: I19"
+    "seatId": "G19",
+    "notes": "Faculty | Additional Professor | Orthopaedics | Assigned Seat: G19"
   },
   {
     "id": "att-fac-dr-aruna-r",
@@ -205,8 +209,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "aruna.physiol@aiimskalyani.edu.in",
     "phone": "9611615352",
     "categoryId": "faculty",
-    "seatId": "I18",
-    "notes": "Faculty | Additional professor | Physiology | Assigned Seat: I18"
+    "seatId": "G18",
+    "notes": "Faculty | Additional professor | Physiology | Assigned Seat: G18"
   },
   {
     "id": "att-fac-dr-atanu-kumar-dutta",
@@ -217,8 +221,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "atanu.biochem@aiimskalyani.edu.in",
     "phone": "8967369455",
     "categoryId": "faculty",
-    "seatId": "I17",
-    "notes": "Faculty | Additional Professor | Biochemistry | Assigned Seat: I17"
+    "seatId": "G17",
+    "notes": "Faculty | Additional Professor | Biochemistry | Assigned Seat: G17"
   },
   {
     "id": "att-fac-dr-nonika-rajkumari",
@@ -229,8 +233,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "nonika.micro@aiimskalyani.edu.in",
     "phone": "9159897799",
     "categoryId": "faculty",
-    "seatId": "I16",
-    "notes": "Faculty | Additional Professor | Microbiology | Assigned Seat: I16"
+    "seatId": "G16",
+    "notes": "Faculty | Additional Professor | Microbiology | Assigned Seat: G16"
   },
   {
     "id": "att-fac-dr-sanjay-kumar-patel",
@@ -241,8 +245,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sanjay.physiol@aiimskalyani.edu.in",
     "phone": "9897305201",
     "categoryId": "faculty",
-    "seatId": "I15",
-    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: I15"
+    "seatId": "G15",
+    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: G15"
   },
   {
     "id": "att-fac-dr-shiv-sekhar-chatterjee",
@@ -253,8 +257,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "shivsekhar.micro@aiimskalyani.edu.in",
     "phone": "9748732366",
     "categoryId": "faculty",
-    "seatId": "I14",
-    "notes": "Faculty | Additional Professor | Microbiology | Assigned Seat: I14"
+    "seatId": "G14",
+    "notes": "Faculty | Additional Professor | Microbiology | Assigned Seat: G14"
   },
   {
     "id": "att-fac-dr-tummidi-santosh",
@@ -265,8 +269,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "tummidi.patho@aiimskalyani.edu.in",
     "phone": "8895495670",
     "categoryId": "faculty",
-    "seatId": "I13",
-    "notes": "Faculty | Additional Professor | Pathology | Assigned Seat: I13"
+    "seatId": "G13",
+    "notes": "Faculty | Additional Professor | Pathology | Assigned Seat: G13"
   },
   {
     "id": "att-fac-dr-unnati-asthana",
@@ -277,8 +281,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "unnati.anesth@aiimskalyani.edu.in",
     "phone": "9953520075",
     "categoryId": "faculty",
-    "seatId": "I12",
-    "notes": "Faculty | Additional Professor | Anaesthesia | Assigned Seat: I12"
+    "seatId": "G12",
+    "notes": "Faculty | Additional Professor | Anaesthesia | Assigned Seat: G12"
   },
   {
     "id": "att-fac-dr-jitendra-majhi",
@@ -289,8 +293,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "jitendra.cmfm@aiimskalyani.edu.in",
     "phone": "9899533414",
     "categoryId": "faculty",
-    "seatId": "I11",
-    "notes": "Faculty | Additional Professor | CM & FM | Assigned Seat: I11"
+    "seatId": "G11",
+    "notes": "Faculty | Additional Professor | CM & FM | Assigned Seat: G11"
   },
   {
     "id": "att-fac-farhad-ahamed",
@@ -301,8 +305,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "farhad.cmfm@aiimskalyani.edu.in",
     "phone": "9711813486",
     "categoryId": "faculty",
-    "seatId": "I10",
-    "notes": "Faculty | Additional Professor | CMFM | Assigned Seat: I10"
+    "seatId": "G10",
+    "notes": "Faculty | Additional Professor | CMFM | Assigned Seat: G10"
   },
   {
     "id": "att-fac-jean-fredrick",
@@ -313,8 +317,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "jean.physiol@aiimskalyani.edu.in",
     "phone": "988036733",
     "categoryId": "faculty",
-    "seatId": "I9",
-    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: I9"
+    "seatId": "G9",
+    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: G9"
   },
   {
     "id": "att-fac-karuna-sree-podila",
@@ -325,8 +329,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "karunasree.pharma@aiimskalyani.edu.in",
     "phone": "9494554545",
     "categoryId": "faculty",
-    "seatId": "I8",
-    "notes": "Faculty | Additional Professor | Pharmacology | Assigned Seat: I8"
+    "seatId": "G8",
+    "notes": "Faculty | Additional Professor | Pharmacology | Assigned Seat: G8"
   },
   {
     "id": "att-fac-kaushik-mukhopadhyay",
@@ -337,8 +341,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "kaushik.pharm@aiimskalyani.edu.in",
     "phone": "9163167014",
     "categoryId": "faculty",
-    "seatId": "J20",
-    "notes": "Faculty | Additional Professor | Pharmacology | Assigned Seat: J20"
+    "seatId": "H20",
+    "notes": "Faculty | Additional Professor | Pharmacology | Assigned Seat: H20"
   },
   {
     "id": "att-fac-madhavan-c",
@@ -349,8 +353,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "madhavan.physiol@aiimskalyani.edu.in",
     "phone": "9843586688",
     "categoryId": "faculty",
-    "seatId": "J19",
-    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: J19"
+    "seatId": "H19",
+    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: H19"
   },
   {
     "id": "att-fac-nihar-ranjan-mishra",
@@ -361,8 +365,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "nihar.peds@aiimskalyani.edu.in",
     "phone": "9861044586",
     "categoryId": "faculty",
-    "seatId": "J18",
-    "notes": "Faculty | Additional Professor | Pediatrics | Assigned Seat: J18"
+    "seatId": "H18",
+    "notes": "Faculty | Additional Professor | Pediatrics | Assigned Seat: H18"
   },
   {
     "id": "att-fac-ritesh-singh",
@@ -373,8 +377,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ritesh.cmfm@aiimskalyani.edu.in",
     "phone": "9836444242",
     "categoryId": "faculty",
-    "seatId": "J17",
-    "notes": "Faculty | Additional Professor | CMFM | Assigned Seat: J17"
+    "seatId": "H17",
+    "notes": "Faculty | Additional Professor | CMFM | Assigned Seat: H17"
   },
   {
     "id": "att-fac-sayantan-banerjee",
@@ -385,8 +389,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sayantan.micro@aiimskalyani.edu.in",
     "phone": "8697477033",
     "categoryId": "faculty",
-    "seatId": "J16",
-    "notes": "Faculty | Additional Professor | Microbiology | Assigned Seat: J16"
+    "seatId": "H16",
+    "notes": "Faculty | Additional Professor | Microbiology | Assigned Seat: H16"
   },
   {
     "id": "att-fac-sibasish-sahoo",
@@ -397,8 +401,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sibasish.biochem@aiimskalyani.edu.in",
     "phone": "9433782291",
     "categoryId": "faculty",
-    "seatId": "J15",
-    "notes": "Faculty | Additional Professor | Biochemistry | Assigned Seat: J15"
+    "seatId": "H15",
+    "notes": "Faculty | Additional Professor | Biochemistry | Assigned Seat: H15"
   },
   {
     "id": "att-fac-suman-patra",
@@ -409,8 +413,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "suman.derm@aiimskalyani.edu.in",
     "phone": "9650450413",
     "categoryId": "faculty",
-    "seatId": "J14",
-    "notes": "Faculty | Additional Professor | Dermatology Venereology and Leprology | Assigned Seat: J14"
+    "seatId": "H14",
+    "notes": "Faculty | Additional Professor | Dermatology Venereology and Leprology | Assigned Seat: H14"
   },
   {
     "id": "att-fac-tandra-ghosh",
@@ -421,8 +425,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "tandra.physiol@aiimskalyani.edu.in",
     "phone": "9674177880",
     "categoryId": "faculty",
-    "seatId": "J13",
-    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: J13"
+    "seatId": "H13",
+    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: H13"
   },
   {
     "id": "att-fac-tanmay-saha",
@@ -433,8 +437,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "tanmay.biochem@aiimskalyani.edu.in",
     "phone": "9830129458",
     "categoryId": "faculty",
-    "seatId": "J12",
-    "notes": "Faculty | ADDITIONAL PROFESSOR | BIOCHEMISTRY | Assigned Seat: J12"
+    "seatId": "H12",
+    "notes": "Faculty | ADDITIONAL PROFESSOR | BIOCHEMISTRY | Assigned Seat: H12"
   },
   {
     "id": "att-fac-a-j-priyadarsini",
@@ -445,8 +449,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "priyadarsini.tmbb@aiimskalyani.edu.in",
     "phone": "9779230684",
     "categoryId": "faculty",
-    "seatId": "J11",
-    "notes": "Faculty | Associate Professor | TMBC | Assigned Seat: J11"
+    "seatId": "H11",
+    "notes": "Faculty | Associate Professor | TMBC | Assigned Seat: H11"
   },
   {
     "id": "att-fac-a-naga-syamsundara-kiran",
@@ -457,8 +461,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "naga.physiol@aiimskalyani.edu.in",
     "phone": "9703089340",
     "categoryId": "faculty",
-    "seatId": "J10",
-    "notes": "Faculty | Associate Professor | Physiology | Assigned Seat: J10"
+    "seatId": "H10",
+    "notes": "Faculty | Associate Professor | Physiology | Assigned Seat: H10"
   },
   {
     "id": "att-fac-akhilesh-arumalla",
@@ -469,8 +473,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "akhilesh.ctvs@aiimskalyani.edu.in",
     "phone": "7981865309",
     "categoryId": "faculty",
-    "seatId": "J9",
-    "notes": "Faculty | Associate Professor CTVS | CTVS | Assigned Seat: J9"
+    "seatId": "H9",
+    "notes": "Faculty | Associate Professor CTVS | CTVS | Assigned Seat: H9"
   },
   {
     "id": "att-fac-amit-kumar-pal",
@@ -481,8 +485,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "amit.anat@aiimskalyani.edu.in",
     "phone": "9830579755",
     "categoryId": "faculty",
-    "seatId": "J8",
-    "notes": "Faculty | ASSOCIATE PROFESSOR | ANATOMY | Assigned Seat: J8"
+    "seatId": "H8",
+    "notes": "Faculty | ASSOCIATE PROFESSOR | ANATOMY | Assigned Seat: H8"
   },
   {
     "id": "att-fac-amit-pal",
@@ -493,8 +497,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "amit.biochem@aiimskalyani.edu.in",
     "phone": "8427007109",
     "categoryId": "faculty",
-    "seatId": "K20",
-    "notes": "Faculty | Associate Professor | Biochemistry | Assigned Seat: K20"
+    "seatId": "I20",
+    "notes": "Faculty | Associate Professor | Biochemistry | Assigned Seat: I20"
   },
   {
     "id": "att-fac-ashish",
@@ -505,8 +509,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ashish.cmfm@aiimskalyani.edu.in",
     "phone": "7454999305",
     "categoryId": "faculty",
-    "seatId": "K19",
-    "notes": "Faculty | Associate Professor | CMFM | Assigned Seat: K19"
+    "seatId": "I19",
+    "notes": "Faculty | Associate Professor | CMFM | Assigned Seat: I19"
   },
   {
     "id": "att-fac-boudhayan-das-munshi",
@@ -517,8 +521,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "boudhayan.genmed@aiimskalyani.edu.in",
     "phone": "9432204540",
     "categoryId": "faculty",
-    "seatId": "K18",
-    "notes": "Faculty | Associate Professor | General Medicine | Assigned Seat: K18"
+    "seatId": "I18",
+    "notes": "Faculty | Associate Professor | General Medicine | Assigned Seat: I18"
   },
   {
     "id": "att-fac-chandan-lal-gupta",
@@ -529,8 +533,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "chandan.anat@aiimskalyani.edu.in",
     "phone": "9910383836",
     "categoryId": "faculty",
-    "seatId": "K17",
-    "notes": "Faculty | Associate Professor | Anatomy | Assigned Seat: K17"
+    "seatId": "I17",
+    "notes": "Faculty | Associate Professor | Anatomy | Assigned Seat: I17"
   },
   {
     "id": "att-fac-debraj-howlader",
@@ -541,8 +545,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "debraj.dental@aiimskalyani.edu.in",
     "phone": "8595643586",
     "categoryId": "faculty",
-    "seatId": "K16",
-    "notes": "Faculty | asso prof | dentistry | Assigned Seat: K16"
+    "seatId": "I16",
+    "notes": "Faculty | asso prof | dentistry | Assigned Seat: I16"
   },
   {
     "id": "att-fac-dr-anasuya-ghosh",
@@ -553,8 +557,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anasuya.anat@aiimskalyani.edu.in",
     "phone": "6291329015",
     "categoryId": "faculty",
-    "seatId": "K15",
-    "notes": "Faculty | Associate Professor | Anatomy | Assigned Seat: K15"
+    "seatId": "I15",
+    "notes": "Faculty | Associate Professor | Anatomy | Assigned Seat: I15"
   },
   {
     "id": "att-fac-dr-anindya-halder",
@@ -565,8 +569,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anindya.gensurg@aiimskalyani.edu.in",
     "phone": "9477378988",
     "categoryId": "faculty",
-    "seatId": "K14",
-    "notes": "Faculty | Associate Professor | General Surgery | Assigned Seat: K14"
+    "seatId": "I14",
+    "notes": "Faculty | Associate Professor | General Surgery | Assigned Seat: I14"
   },
   {
     "id": "att-fac-dr-asmita-hazra",
@@ -577,8 +581,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "asmita.biochem@aiimskalyani.edu.in",
     "phone": "8420899964",
     "categoryId": "faculty",
-    "seatId": "K13",
-    "notes": "Faculty | Associate Professor | Biochemistry | Assigned Seat: K13"
+    "seatId": "I13",
+    "notes": "Faculty | Associate Professor | Biochemistry | Assigned Seat: I13"
   },
   {
     "id": "att-fac-dr-athar-javeth",
@@ -589,8 +593,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "athar.nursing@aiimskalyani.edu.in",
     "phone": "9037419101",
     "categoryId": "faculty",
-    "seatId": "K12",
-    "notes": "Faculty | Associate Professor | College of Nursing | Assigned Seat: K12"
+    "seatId": "I12",
+    "notes": "Faculty | Associate Professor | College of Nursing | Assigned Seat: I12"
   },
   {
     "id": "att-fac-dr-karan-kumar",
@@ -601,8 +605,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "karan.tmbb@aiimskalyani.edu.in",
     "phone": "9803400849",
     "categoryId": "faculty",
-    "seatId": "K11",
-    "notes": "Faculty | Associate Professor | Transfusion Medicine | Assigned Seat: K11"
+    "seatId": "I11",
+    "notes": "Faculty | Associate Professor | Transfusion Medicine | Assigned Seat: I11"
   },
   {
     "id": "att-fac-dr-korra-parushuram-naik",
@@ -613,8 +617,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "parushuram.pharma@aiimskalyani.edu.in",
     "phone": "7702694332",
     "categoryId": "faculty",
-    "seatId": "K10",
-    "notes": "Faculty | Associate Professor | Pharmacology | Assigned Seat: K10"
+    "seatId": "I10",
+    "notes": "Faculty | Associate Professor | Pharmacology | Assigned Seat: I10"
   },
   {
     "id": "att-fac-dr-kumari-sneha",
@@ -625,8 +629,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "kumari.anesth@aiimskalyani.edu.in",
     "phone": "9818234861",
     "categoryId": "faculty",
-    "seatId": "K9",
-    "notes": "Faculty | Associate Professor | Anaesthesia | Assigned Seat: K9"
+    "seatId": "I9",
+    "notes": "Faculty | Associate Professor | Anaesthesia | Assigned Seat: I9"
   },
   {
     "id": "att-fac-dr-mohit-kataruka",
@@ -637,8 +641,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mohit.pmr@aiimskalyani.edu.in",
     "phone": "8729912916",
     "categoryId": "faculty",
-    "seatId": "K8",
-    "notes": "Faculty | Associate professor | PMR | Assigned Seat: K8"
+    "seatId": "I8",
+    "notes": "Faculty | Associate professor | PMR | Assigned Seat: I8"
   },
   {
     "id": "att-fac-dr-niladri-sekhar-das",
@@ -649,8 +653,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "niladri.micro@aiimskalyani.edu.in",
     "phone": "8974816077",
     "categoryId": "faculty",
-    "seatId": "L20",
-    "notes": "Faculty | Associate Professor | Microbiology | Assigned Seat: L20"
+    "seatId": "J20",
+    "notes": "Faculty | Associate Professor | Microbiology | Assigned Seat: J20"
   },
   {
     "id": "att-fac-dr-queen-alice-a",
@@ -661,8 +665,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "alice.dental@aiimskalyani.edu.in",
     "phone": "8778749778",
     "categoryId": "faculty",
-    "seatId": "L19",
-    "notes": "Faculty | Associate professor | Dentistry | Assigned Seat: L19"
+    "seatId": "J19",
+    "notes": "Faculty | Associate professor | Dentistry | Assigned Seat: J19"
   },
   {
     "id": "att-fac-dr-satabdi-sarkar",
@@ -673,8 +677,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "satabdi.anat@aiimskalyani.edu.in",
     "phone": "9830503734",
     "categoryId": "faculty",
-    "seatId": "L18",
-    "notes": "Faculty | Associate professor | Anatomy | Assigned Seat: L18"
+    "seatId": "J18",
+    "notes": "Faculty | Associate professor | Anatomy | Assigned Seat: J18"
   },
   {
     "id": "att-fac-dr-sayanti-paul",
@@ -685,8 +689,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sayanti.obg@aiimskalyani.edu.in",
     "phone": "9836799167",
     "categoryId": "faculty",
-    "seatId": "L17",
-    "notes": "Faculty | Associate Professor | Obstetrics and Gynecology | Assigned Seat: L17"
+    "seatId": "J17",
+    "notes": "Faculty | Associate Professor | Obstetrics and Gynecology | Assigned Seat: J17"
   },
   {
     "id": "att-fac-dr-soumitra-mandal",
@@ -697,8 +701,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "soumitra.pharma@aiimskalyani.edu.in",
     "phone": "7055241906",
     "categoryId": "faculty",
-    "seatId": "L16",
-    "notes": "Faculty | Associate Professor | Pharmacology | Assigned Seat: L16"
+    "seatId": "J16",
+    "notes": "Faculty | Associate Professor | Pharmacology | Assigned Seat: J16"
   },
   {
     "id": "att-fac-dr-sudhanshu-shekhar",
@@ -709,8 +713,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sudhanshu.patho@aiimskalyani.edu.in",
     "phone": "8010680500",
     "categoryId": "faculty",
-    "seatId": "L15",
-    "notes": "Faculty | Associate Professor | Pathology/Lab Med | Assigned Seat: L15"
+    "seatId": "J15",
+    "notes": "Faculty | Associate Professor | Pathology/Lab Med | Assigned Seat: J15"
   },
   {
     "id": "att-fac-dr-sujaya-mazumder",
@@ -721,8 +725,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sujaya.path@aiimskalyani.edu.in",
     "phone": "9500160582",
     "categoryId": "faculty",
-    "seatId": "L14",
-    "notes": "Faculty | Associate Professor | Pathology and lab medicine | Assigned Seat: L14"
+    "seatId": "J14",
+    "notes": "Faculty | Associate Professor | Pathology and lab medicine | Assigned Seat: J14"
   },
   {
     "id": "att-fac-dr-ujwala-bhanarkar",
@@ -733,8 +737,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ujwala.anat@aiimskalyani.edu.in",
     "phone": "7972575730",
     "categoryId": "faculty",
-    "seatId": "L13",
-    "notes": "Faculty | Associate Professor | Anatomy | Assigned Seat: L13"
+    "seatId": "J13",
+    "notes": "Faculty | Associate Professor | Anatomy | Assigned Seat: J13"
   },
   {
     "id": "att-fac-dr-abhishek",
@@ -745,8 +749,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "abhishek.ophthal@aiimskalyani.edu.in",
     "phone": "8130833223",
     "categoryId": "faculty",
-    "seatId": "L12",
-    "notes": "Faculty | Associate Professor | Ophthalmology | Assigned Seat: L12"
+    "seatId": "J12",
+    "notes": "Faculty | Associate Professor | Ophthalmology | Assigned Seat: J12"
   },
   {
     "id": "att-fac-dr-arijit-dey",
@@ -757,8 +761,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "arijit.fmt@aiimskalyani.edu.in",
     "phone": "9674771869",
     "categoryId": "faculty",
-    "seatId": "L11",
-    "notes": "Faculty | Associate Professor | Forensic Medicine and Toxicology | Assigned Seat: L11"
+    "seatId": "J11",
+    "notes": "Faculty | Associate Professor | Forensic Medicine and Toxicology | Assigned Seat: J11"
   },
   {
     "id": "att-fac-dr-rama-saha",
@@ -769,8 +773,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "rama.path@aiimskalyani.edu.in",
     "phone": "9804487550",
     "categoryId": "faculty",
-    "seatId": "L10",
-    "notes": "Faculty | Associate Professor | Pathology and Laboratory Medicine | Assigned Seat: L10"
+    "seatId": "J10",
+    "notes": "Faculty | Associate Professor | Pathology and Laboratory Medicine | Assigned Seat: J10"
   },
   {
     "id": "att-fac-dr-mutyalapati-venkata-ramulu",
@@ -781,8 +785,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "venkata.anat@aiimskalyani.edu.in",
     "phone": "9652114668",
     "categoryId": "faculty",
-    "seatId": "L9",
-    "notes": "Faculty | Associate professor | Anatomy | Assigned Seat: L9"
+    "seatId": "J9",
+    "notes": "Faculty | Associate professor | Anatomy | Assigned Seat: J9"
   },
   {
     "id": "att-fac-gitismita-naik",
@@ -793,8 +797,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "gitismita.cmfm@aiimskalyani.edu.in",
     "phone": "7749071058",
     "categoryId": "faculty",
-    "seatId": "L8",
-    "notes": "Faculty | Associate Professor | CMFM | Assigned Seat: L8"
+    "seatId": "J8",
+    "notes": "Faculty | Associate Professor | CMFM | Assigned Seat: J8"
   },
   {
     "id": "att-fac-ibanylla-k-h-hadem",
@@ -805,8 +809,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ibanylla.biochem@aiimskalyani.edu.in",
     "phone": "9612624753",
     "categoryId": "faculty",
-    "seatId": "M20",
-    "notes": "Faculty | Associate Professor | Biochemistry | Assigned Seat: M20"
+    "seatId": "K20",
+    "notes": "Faculty | Associate Professor | Biochemistry | Assigned Seat: K20"
   },
   {
     "id": "att-fac-jayeeta-bhowmick",
@@ -817,8 +821,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "jayeeta.gastro@aiimskalyani.edu.in",
     "phone": "9432100747",
     "categoryId": "faculty",
-    "seatId": "M19",
-    "notes": "Faculty | Associate professor | Gastroenterology | Assigned Seat: M19"
+    "seatId": "K19",
+    "notes": "Faculty | Associate professor | Gastroenterology | Assigned Seat: K19"
   },
   {
     "id": "att-fac-mahesh-jansari",
@@ -829,8 +833,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mahesh.pulmonary@aiimskalyani.edu.in",
     "phone": "9699622154",
     "categoryId": "faculty",
-    "seatId": "M18",
-    "notes": "Faculty | Asso Prof | Pulmonary Medicine | Assigned Seat: M18"
+    "seatId": "K18",
+    "notes": "Faculty | Asso Prof | Pulmonary Medicine | Assigned Seat: K18"
   },
   {
     "id": "att-fac-mallika-sengupta",
@@ -841,8 +845,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mallika.micro@aiimskalyani.edu.in",
     "phone": "9894719402",
     "categoryId": "faculty",
-    "seatId": "M17",
-    "notes": "Faculty | Associate Professor | Microbiology | Assigned Seat: M17"
+    "seatId": "K17",
+    "notes": "Faculty | Associate Professor | Microbiology | Assigned Seat: K17"
   },
   {
     "id": "att-fac-mandira-saha-mallik",
@@ -853,8 +857,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mandira.radiothp@aiimskalyani.edu.in",
     "phone": "8697371353",
     "categoryId": "faculty",
-    "seatId": "M16",
-    "notes": "Faculty | Associate Professor | Radiotherapy | Assigned Seat: M16"
+    "seatId": "K16",
+    "notes": "Faculty | Associate Professor | Radiotherapy | Assigned Seat: K16"
   },
   {
     "id": "att-fac-niladri-sekhar-bhunia",
@@ -865,8 +869,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "niladri.peds@aiimskalyani.edu.in",
     "phone": "9432879603",
     "categoryId": "faculty",
-    "seatId": "M15",
-    "notes": "Faculty | Associate Professor | Pediatrics | Assigned Seat: M15"
+    "seatId": "K15",
+    "notes": "Faculty | Associate Professor | Pediatrics | Assigned Seat: K15"
   },
   {
     "id": "att-fac-rina",
@@ -877,8 +881,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "rina.psy@aiimskalyani.edu.in",
     "phone": "9914576444",
     "categoryId": "faculty",
-    "seatId": "M14",
-    "notes": "Faculty | Associate Professor | Psychiatry | Assigned Seat: M14"
+    "seatId": "K14",
+    "notes": "Faculty | Associate Professor | Psychiatry | Assigned Seat: K14"
   },
   {
     "id": "att-fac-rohit-bhowmick",
@@ -889,8 +893,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "rohit.peds@aiimskalyani.edu.in",
     "phone": "9629135875",
     "categoryId": "faculty",
-    "seatId": "M13",
-    "notes": "Faculty | Associate Professor | Pediatrics | Assigned Seat: M13"
+    "seatId": "K13",
+    "notes": "Faculty | Associate Professor | Pediatrics | Assigned Seat: K13"
   },
   {
     "id": "att-fac-samrat-smrutiranjan-sahoo",
@@ -901,8 +905,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "samrat.ortho@aiimskalyani.edu.in",
     "phone": "9565967034",
     "categoryId": "faculty",
-    "seatId": "M12",
-    "notes": "Faculty | Associate Professor | Orthopaedics | Assigned Seat: M12"
+    "seatId": "K12",
+    "notes": "Faculty | Associate Professor | Orthopaedics | Assigned Seat: K12"
   },
   {
     "id": "att-fac-sarika-palepu",
@@ -913,8 +917,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sarika.cmfm@aiimskalyani.edu.in",
     "phone": "9582044608",
     "categoryId": "faculty",
-    "seatId": "M11",
-    "notes": "Faculty | Associate Professor | CMFM | Assigned Seat: M11"
+    "seatId": "K11",
+    "notes": "Faculty | Associate Professor | CMFM | Assigned Seat: K11"
   },
   {
     "id": "att-fac-subodh-lakra",
@@ -925,8 +929,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "subodh.ophthal@aiimskalyani.edu.in",
     "phone": "9971616418",
     "categoryId": "faculty",
-    "seatId": "M10",
-    "notes": "Faculty | Associate Professor | Ophthalmology | Assigned Seat: M10"
+    "seatId": "K10",
+    "notes": "Faculty | Associate Professor | Ophthalmology | Assigned Seat: K10"
   },
   {
     "id": "att-fac-sucharita-mandal",
@@ -937,8 +941,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sucharita.psy@aiimskalyani.edu.in",
     "phone": "8420281546",
     "categoryId": "faculty",
-    "seatId": "M9",
-    "notes": "Faculty | Associate Professor | Psychiatry | Assigned Seat: M9"
+    "seatId": "K9",
+    "notes": "Faculty | Associate Professor | Psychiatry | Assigned Seat: K9"
   },
   {
     "id": "att-fac-sudip-ghosh",
@@ -949,8 +953,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sudip.pulmonary@aiimskalyani.edu.in",
     "phone": "9932236497",
     "categoryId": "faculty",
-    "seatId": "M8",
-    "notes": "Faculty | Associate professor | Pulmonary medicine | Assigned Seat: M8"
+    "seatId": "K8",
+    "notes": "Faculty | Associate professor | Pulmonary medicine | Assigned Seat: K8"
   },
   {
     "id": "att-fac-swarnava-tarafdar",
@@ -961,8 +965,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "swarnava.radiodgs@aiimskalyani.edu.in",
     "phone": "7742248537",
     "categoryId": "faculty",
-    "seatId": "N20",
-    "notes": "Faculty | ASSOCIATE PROFESSOR | RADIODIAGNOSIS | Assigned Seat: N20"
+    "seatId": "L20",
+    "notes": "Faculty | ASSOCIATE PROFESSOR | RADIODIAGNOSIS | Assigned Seat: L20"
   },
   {
     "id": "att-fac-vijay-kannaujiya",
@@ -973,8 +977,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "vijay.gensurg@aiimskalyani.edu.in",
     "phone": "9919327024",
     "categoryId": "faculty",
-    "seatId": "N19",
-    "notes": "Faculty | Associate Professor | General Surgery | Assigned Seat: N19"
+    "seatId": "L19",
+    "notes": "Faculty | Associate Professor | General Surgery | Assigned Seat: L19"
   },
   {
     "id": "att-fac-a-p-gowri-sankar",
@@ -985,8 +989,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "gowri.nuclearmed@aiimskalyani.edu.in",
     "phone": "9080113432",
     "categoryId": "faculty",
-    "seatId": "N18",
-    "notes": "Faculty | Assistant Professor | Nuclear Medicine | Assigned Seat: N18"
+    "seatId": "L18",
+    "notes": "Faculty | Assistant Professor | Nuclear Medicine | Assigned Seat: L18"
   },
   {
     "id": "att-fac-abhirup-bhunia",
@@ -997,8 +1001,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "abhirup.nephro@aiimskalyani.edu.in",
     "phone": "9433894057",
     "categoryId": "faculty",
-    "seatId": "N17",
-    "notes": "Faculty | ASSISTANT PROFESSOR | NEPHROLOGY | Assigned Seat: N17"
+    "seatId": "L17",
+    "notes": "Faculty | ASSISTANT PROFESSOR | NEPHROLOGY | Assigned Seat: L17"
   },
   {
     "id": "att-fac-ananda-datta",
@@ -1009,8 +1013,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ananda.pulmonary@aiimskalyani.edu.in",
     "phone": "8290362681",
     "categoryId": "faculty",
-    "seatId": "N16",
-    "notes": "Faculty | Assistant Professor | Pulmonary Medicine and Critical care | Assigned Seat: N16"
+    "seatId": "L16",
+    "notes": "Faculty | Assistant Professor | Pulmonary Medicine and Critical care | Assigned Seat: L16"
   },
   {
     "id": "att-fac-anirban-ghosh",
@@ -1021,8 +1025,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anirban.genmed@aiimskalyani.edu.in",
     "phone": "7996282968",
     "categoryId": "faculty",
-    "seatId": "N15",
-    "notes": "Faculty | Assistant professor | General Medicine | Assigned Seat: N15"
+    "seatId": "L15",
+    "notes": "Faculty | Assistant professor | General Medicine | Assigned Seat: L15"
   },
   {
     "id": "att-fac-anupama-kisku",
@@ -1033,8 +1037,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anupama.anesth@aiimskalyani.edu.in",
     "phone": "8942804955",
     "categoryId": "faculty",
-    "seatId": "N14",
-    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: N14"
+    "seatId": "L14",
+    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: L14"
   },
   {
     "id": "att-fac-anurug-biswas",
@@ -1045,8 +1049,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "anurug.pmr@aiimskalyani.edu.in",
     "phone": "7908763475",
     "categoryId": "faculty",
-    "seatId": "N13",
-    "notes": "Faculty | Assistant Professor | PMR | Assigned Seat: N13"
+    "seatId": "L13",
+    "notes": "Faculty | Assistant Professor | PMR | Assigned Seat: L13"
   },
   {
     "id": "att-fac-arghya-das",
@@ -1057,8 +1061,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "arghya.micro@aiimskalyani.edu.in",
     "phone": "7991271757",
     "categoryId": "faculty",
-    "seatId": "N12",
-    "notes": "Faculty | Assistant Professor | Microbiology | Assigned Seat: N12"
+    "seatId": "L12",
+    "notes": "Faculty | Assistant Professor | Microbiology | Assigned Seat: L12"
   },
   {
     "id": "att-fac-arghya-pal",
@@ -1069,8 +1073,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "arghya.psy@aiimskalyani.edu.in",
     "phone": "9674417987",
     "categoryId": "faculty",
-    "seatId": "N11",
-    "notes": "Faculty | Assistant Professor | Psychiatry | Assigned Seat: N11"
+    "seatId": "L11",
+    "notes": "Faculty | Assistant Professor | Psychiatry | Assigned Seat: L11"
   },
   {
     "id": "att-fac-arkapal-bandyopadhyay",
@@ -1081,8 +1085,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "arkapal.pharma@aiimskalyani.edu.in",
     "phone": "8820666435",
     "categoryId": "faculty",
-    "seatId": "N10",
-    "notes": "Faculty | Assistant Professor | Pharma | Assigned Seat: N10"
+    "seatId": "L10",
+    "notes": "Faculty | Assistant Professor | Pharma | Assigned Seat: L10"
   },
   {
     "id": "att-fac-ashwin-m",
@@ -1093,8 +1097,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ashwin.anesth@aiimskalyani.edu.in",
     "phone": "8319736508",
     "categoryId": "faculty",
-    "seatId": "N9",
-    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: N9"
+    "seatId": "L9",
+    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: L9"
   },
   {
     "id": "att-fac-betsy-chakraborty",
@@ -1105,8 +1109,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "betsy.nursing@aiimskalyani.edu.in",
     "phone": "9547106258",
     "categoryId": "faculty",
-    "seatId": "N8",
-    "notes": "Faculty | Assistant professor | College of nursing | Assigned Seat: N8"
+    "seatId": "L8",
+    "notes": "Faculty | Assistant professor | College of nursing | Assigned Seat: L8"
   },
   {
     "id": "att-fac-chirantan-mandal",
@@ -1117,8 +1121,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "chirantan.genmed@aiimskalyani.edu.in",
     "phone": "8617256496",
     "categoryId": "faculty",
-    "seatId": "O20",
-    "notes": "Faculty | Assistant Professor | General Medicine | Assigned Seat: O20"
+    "seatId": "M20",
+    "notes": "Faculty | Assistant Professor | General Medicine | Assigned Seat: M20"
   },
   {
     "id": "att-fac-deepanjan-bhattacharya",
@@ -1129,8 +1133,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "deepanjan.cardio@aiimskalyani.edu.in",
     "phone": "8968553623",
     "categoryId": "faculty",
-    "seatId": "O19",
-    "notes": "Faculty | Assistant Professor | Cardiology | Assigned Seat: O19"
+    "seatId": "M19",
+    "notes": "Faculty | Assistant Professor | Cardiology | Assigned Seat: M19"
   },
   {
     "id": "att-fac-dipanjan-halder",
@@ -1141,8 +1145,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "dipanjan.ems@aiimskalyani.edu.in",
     "phone": "8013422466",
     "categoryId": "faculty",
-    "seatId": "O18",
-    "notes": "Faculty | Assistant Professor | Trauma and Emergency Medicine | Assigned Seat: O18"
+    "seatId": "M18",
+    "notes": "Faculty | Assistant Professor | Trauma and Emergency Medicine | Assigned Seat: M18"
   },
   {
     "id": "att-fac-dipanwita-bhaumik",
@@ -1153,8 +1157,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "dipanwita.obg@aiimskalyani.edu.in",
     "phone": "7005420721",
     "categoryId": "faculty",
-    "seatId": "O17",
-    "notes": "Faculty | Assistant Professor | Obstetrics and Gynaecology | Assigned Seat: O17"
+    "seatId": "M17",
+    "notes": "Faculty | Assistant Professor | Obstetrics and Gynaecology | Assigned Seat: M17"
   },
   {
     "id": "att-fac-dr-atul-aman",
@@ -1165,8 +1169,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "atul.ems@aiimskalyani.edu.in",
     "phone": "9088955257",
     "categoryId": "faculty",
-    "seatId": "O16",
-    "notes": "Faculty | Assistant Professor | Trauma and Emergency Medicine | Assigned Seat: O16"
+    "seatId": "M16",
+    "notes": "Faculty | Assistant Professor | Trauma and Emergency Medicine | Assigned Seat: M16"
   },
   {
     "id": "att-fac-dr-b-subhash",
@@ -1177,8 +1181,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "subhash.anat@aiimskalyani.edu.in",
     "phone": "9703189506",
     "categoryId": "faculty",
-    "seatId": "O15",
-    "notes": "Faculty | Assistant Professor | Anatomy | Assigned Seat: O15"
+    "seatId": "M15",
+    "notes": "Faculty | Assistant Professor | Anatomy | Assigned Seat: M15"
   },
   {
     "id": "att-fac-dr-bapi-barman",
@@ -1189,8 +1193,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "bapi.radiodgs@aiimskalyani.edu.in",
     "phone": "8100152020",
     "categoryId": "faculty",
-    "seatId": "O14",
-    "notes": "Faculty | Assistant Professor | Radiology | Assigned Seat: O14"
+    "seatId": "M14",
+    "notes": "Faculty | Assistant Professor | Radiology | Assigned Seat: M14"
   },
   {
     "id": "att-fac-dr-bismaya-sahoo",
@@ -1201,8 +1205,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "bismaya.ortho@aiimskalyani.edu.in",
     "phone": "9147062857",
     "categoryId": "faculty",
-    "seatId": "O13",
-    "notes": "Faculty | Assistant Professor | Orthopaedics | Assigned Seat: O13"
+    "seatId": "M13",
+    "notes": "Faculty | Assistant Professor | Orthopaedics | Assigned Seat: M13"
   },
   {
     "id": "att-fac-dr-biswajit-naskar",
@@ -1213,8 +1217,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "biswajit.ems@aiimskalyani.edu.in",
     "phone": "6290074738",
     "categoryId": "faculty",
-    "seatId": "O12",
-    "notes": "Faculty | Assistant Professor | Trauma & Emergency Medicine | Assigned Seat: O12"
+    "seatId": "M12",
+    "notes": "Faculty | Assistant Professor | Trauma & Emergency Medicine | Assigned Seat: M12"
   },
   {
     "id": "att-fac-dr-deepasree-sukumaran",
@@ -1225,8 +1229,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "deepasree.pharma@aiimskalyani.edu.in",
     "phone": "9626587446",
     "categoryId": "faculty",
-    "seatId": "O11",
-    "notes": "Faculty | Assistant Professor | Pharmacology | Assigned Seat: O11"
+    "seatId": "M11",
+    "notes": "Faculty | Assistant Professor | Pharmacology | Assigned Seat: M11"
   },
   {
     "id": "att-fac-dr-dhiraj-mallik",
@@ -1237,8 +1241,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "dhiraj.gensurg@aiimskalyani.edu.in",
     "phone": "9874806628",
     "categoryId": "faculty",
-    "seatId": "O10",
-    "notes": "Faculty | Assistant Professor | GENERAL SURGERY | Assigned Seat: O10"
+    "seatId": "M10",
+    "notes": "Faculty | Assistant Professor | GENERAL SURGERY | Assigned Seat: M10"
   },
   {
     "id": "att-fac-dr-maninder-kaur",
@@ -1249,8 +1253,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "maninder.derm@aiimskalyani.edu.in",
     "phone": "8860118442",
     "categoryId": "faculty",
-    "seatId": "O9",
-    "notes": "Faculty | Assistant Professor | Dermatology | Assigned Seat: O9"
+    "seatId": "M9",
+    "notes": "Faculty | Assistant Professor | Dermatology | Assigned Seat: M9"
   },
   {
     "id": "att-fac-dr-manshi-gandhi",
@@ -1261,8 +1265,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "manshi.anesth@aiimskalyani.edu.in",
     "phone": "9123836793",
     "categoryId": "faculty",
-    "seatId": "O8",
-    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: O8"
+    "seatId": "M8",
+    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: M8"
   },
   {
     "id": "att-fac-dr-mrinal-sikder",
@@ -1273,8 +1277,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mrinal.patho@aiimskalyani.edu.in",
     "phone": "9477061424",
     "categoryId": "faculty",
-    "seatId": "P20",
-    "notes": "Faculty | Assistant Professor | Pathology and Lab Medicine | Assigned Seat: P20"
+    "seatId": "N20",
+    "notes": "Faculty | Assistant Professor | Pathology and Lab Medicine | Assigned Seat: N20"
   },
   {
     "id": "att-fac-dr-nihit-parimal",
@@ -1285,8 +1289,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "nihit.ophthal@aiimskalyani.edu.in",
     "phone": "8210512835",
     "categoryId": "faculty",
-    "seatId": "P19",
-    "notes": "Faculty | Assistant Professor | Ophthalmology | Assigned Seat: P19"
+    "seatId": "N19",
+    "notes": "Faculty | Assistant Professor | Ophthalmology | Assigned Seat: N19"
   },
   {
     "id": "att-fac-dr-shinjan-patra",
@@ -1297,8 +1301,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "shinjan.endocr@aiimskalyani.edu.in",
     "phone": "9475433534",
     "categoryId": "faculty",
-    "seatId": "P18",
-    "notes": "Faculty | Assistant Professor | Endocrinology and Metabolism | Assigned Seat: P18"
+    "seatId": "N18",
+    "notes": "Faculty | Assistant Professor | Endocrinology and Metabolism | Assigned Seat: N18"
   },
   {
     "id": "att-fac-dr-srirupa-mandal",
@@ -1309,8 +1313,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "srirupa.anesth@aiimskalyani.edu.in",
     "phone": "8420268145",
     "categoryId": "faculty",
-    "seatId": "P17",
-    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: P17"
+    "seatId": "N17",
+    "notes": "Faculty | Assistant Professor | Anaesthesiology | Assigned Seat: N17"
   },
   {
     "id": "att-fac-dr-venkatesh-j",
@@ -1321,8 +1325,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "venkatesh.fmt@aiimskalyani.edu.in",
     "phone": "9677416716",
     "categoryId": "faculty",
-    "seatId": "P16",
-    "notes": "Faculty | Assistant Professor | FMT | Assigned Seat: P16"
+    "seatId": "N16",
+    "notes": "Faculty | Assistant Professor | FMT | Assigned Seat: N16"
   },
   {
     "id": "att-fac-dr-vikas-dagar",
@@ -1333,8 +1337,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "vikas.patho@aiimskalyani.edu.in",
     "phone": "9960361987",
     "categoryId": "faculty",
-    "seatId": "P15",
-    "notes": "Faculty | Assistant Professor | Pathology | Assigned Seat: P15"
+    "seatId": "N15",
+    "notes": "Faculty | Assistant Professor | Pathology | Assigned Seat: N15"
   },
   {
     "id": "att-fac-dr-aditi-das",
@@ -1345,8 +1349,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "aditi.peds@aiimskalyani.edu.in",
     "phone": "8006416532",
     "categoryId": "faculty",
-    "seatId": "P14",
-    "notes": "Faculty | Assistant Professor | Pediatrics | Assigned Seat: P14"
+    "seatId": "N14",
+    "notes": "Faculty | Assistant Professor | Pediatrics | Assigned Seat: N14"
   },
   {
     "id": "att-fac-dr-akhilesh-kumar-pandey",
@@ -1357,8 +1361,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "akhilesh.dental@aiimskalyani.edu.in",
     "phone": "9404924840",
     "categoryId": "faculty",
-    "seatId": "P13",
-    "notes": "Faculty | Assistant Professor | Dentistry (Oral & Maxillofacial Surgery) | Assigned Seat: P13"
+    "seatId": "N13",
+    "notes": "Faculty | Assistant Professor | Dentistry (Oral & Maxillofacial Surgery) | Assigned Seat: N13"
   },
   {
     "id": "att-fac-dr-arindam-chaudhury",
@@ -1369,8 +1373,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "arindam.radiothp@aiimskalyani.edu.in",
     "phone": "9674410426",
     "categoryId": "faculty",
-    "seatId": "P12",
-    "notes": "Faculty | Assistant Professor | Radiotherapy | Assigned Seat: P12"
+    "seatId": "N12",
+    "notes": "Faculty | Assistant Professor | Radiotherapy | Assigned Seat: N12"
   },
   {
     "id": "att-fac-dr-avir-sarkar",
@@ -1381,8 +1385,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "avir.obg@aiimskalyani.edu.in",
     "phone": "6280765384",
     "categoryId": "faculty",
-    "seatId": "P11",
-    "notes": "Faculty | Assistant Professor | Obstetrics and Gynaecology | Assigned Seat: P11"
+    "seatId": "N11",
+    "notes": "Faculty | Assistant Professor | Obstetrics and Gynaecology | Assigned Seat: N11"
   },
   {
     "id": "att-fac-dr-bibhas-saha-dalal",
@@ -1393,8 +1397,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "bibhas.patho@aiimskalyani.edu.in",
     "phone": "9903656069",
     "categoryId": "faculty",
-    "seatId": "P10",
-    "notes": "Faculty | Assistant Professor | Pathology and Laboratory Medicine | Assigned Seat: P10"
+    "seatId": "N10",
+    "notes": "Faculty | Assistant Professor | Pathology and Laboratory Medicine | Assigned Seat: N10"
   },
   {
     "id": "att-fac-dr-koyel-chakraborty",
@@ -1405,8 +1409,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "koyel.ophthal@aiimskalyani.edu.in",
     "phone": "7686986957",
     "categoryId": "faculty",
-    "seatId": "P9",
-    "notes": "Faculty | Assistant professor | Ophthalmology | Assigned Seat: P9"
+    "seatId": "N9",
+    "notes": "Faculty | Assistant professor | Ophthalmology | Assigned Seat: N9"
   },
   {
     "id": "att-fac-dr-niru-das",
@@ -1417,8 +1421,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "niru.derm@aiimskalyani.edu.in",
     "phone": "8768414112",
     "categoryId": "faculty",
-    "seatId": "P8",
-    "notes": "Faculty | ASSISTANT PROFESSOR | DERMATOLOGY | Assigned Seat: P8"
+    "seatId": "N8",
+    "notes": "Faculty | ASSISTANT PROFESSOR | DERMATOLOGY | Assigned Seat: N8"
   },
   {
     "id": "att-fac-dr-som-dev",
@@ -1429,8 +1433,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "som.biochem@aiimskalyani.edu.in",
     "phone": "6230553963",
     "categoryId": "faculty",
-    "seatId": "Q20",
-    "notes": "Faculty | Asst. Professor | Biochemistry | Assigned Seat: Q20"
+    "seatId": "O20",
+    "notes": "Faculty | Asst. Professor | Biochemistry | Assigned Seat: O20"
   },
   {
     "id": "att-fac-dr-subhankar-sarkar",
@@ -1441,8 +1445,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "subhankar.peds@aiimskalyani.edu.in",
     "phone": "8178831903",
     "categoryId": "faculty",
-    "seatId": "Q19",
-    "notes": "Faculty | Assistant Professor | Pediatrics | Assigned Seat: Q19"
+    "seatId": "O19",
+    "notes": "Faculty | Assistant Professor | Pediatrics | Assigned Seat: O19"
   },
   {
     "id": "att-fac-dr-sukdev-manna",
@@ -1453,8 +1457,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sukdev.rheumat@aiimskalyani.edu.in",
     "phone": "9897003253",
     "categoryId": "faculty",
-    "seatId": "Q18",
-    "notes": "Faculty | Assistant Professor | Rheumatology & Clinical Immunology | Assigned Seat: Q18"
+    "seatId": "O18",
+    "notes": "Faculty | Assistant Professor | Rheumatology & Clinical Immunology | Assigned Seat: O18"
   },
   {
     "id": "att-fac-dr-manjusha-a-shinde",
@@ -1465,8 +1469,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "manjusha.physiol@aiimskalyani.edu.in",
     "phone": "9221232423",
     "categoryId": "faculty",
-    "seatId": "Q17",
-    "notes": "Faculty | Assistant professor | Physiology | Assigned Seat: Q17"
+    "seatId": "O17",
+    "notes": "Faculty | Assistant professor | Physiology | Assigned Seat: O17"
   },
   {
     "id": "att-fac-kalyan-kumar-saha",
@@ -1477,8 +1481,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "kalyan.cardio@aiimskalyani.edu.in",
     "phone": "8582900487",
     "categoryId": "faculty",
-    "seatId": "Q16",
-    "notes": "Faculty | Assistant Professor | Cardiology | Assigned Seat: Q16"
+    "seatId": "O16",
+    "notes": "Faculty | Assistant Professor | Cardiology | Assigned Seat: O16"
   },
   {
     "id": "att-fac-kalyanasundarabharathi-vc",
@@ -1489,8 +1493,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "kalyan.gastrosurg@aiimskalyani.edu.in",
     "phone": "8300066565",
     "categoryId": "faculty",
-    "seatId": "Q15",
-    "notes": "Faculty | Assistant Professor | Surgical Gastroenterology | Assigned Seat: Q15"
+    "seatId": "O15",
+    "notes": "Faculty | Assistant Professor | Surgical Gastroenterology | Assigned Seat: O15"
   },
   {
     "id": "att-fac-kirubakaran-k",
@@ -1501,8 +1505,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "kirubakaran.ent@aiimskalyani.edu.in",
     "phone": "9489965353",
     "categoryId": "faculty",
-    "seatId": "Q14",
-    "notes": "Faculty | Assistant Professor | ENT | Assigned Seat: Q14"
+    "seatId": "O14",
+    "notes": "Faculty | Assistant Professor | ENT | Assigned Seat: O14"
   },
   {
     "id": "att-fac-mainak-mallik",
@@ -1513,8 +1517,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mainak.prs@aiimskalyani.edu.in",
     "phone": "9674634240",
     "categoryId": "faculty",
-    "seatId": "Q13",
-    "notes": "Faculty | Assistant Professor | Burns and Plastic Surgery | Assigned Seat: Q13"
+    "seatId": "O13",
+    "notes": "Faculty | Assistant Professor | Burns and Plastic Surgery | Assigned Seat: O13"
   },
   {
     "id": "att-fac-manoj-kumar",
@@ -1525,8 +1529,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "manoj.ems@aiimskalyani.edu.in",
     "phone": "9006062126",
     "categoryId": "faculty",
-    "seatId": "Q12",
-    "notes": "Faculty | Assistant Professor | Trauma and Emergency | Assigned Seat: Q12"
+    "seatId": "O12",
+    "notes": "Faculty | Assistant Professor | Trauma and Emergency | Assigned Seat: O12"
   },
   {
     "id": "att-fac-mita-mandal",
@@ -1537,8 +1541,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "mita.obg@aiimskalyani.edu.in",
     "phone": "9432879779",
     "categoryId": "faculty",
-    "seatId": "Q11",
-    "notes": "Faculty | Assistant Professor | Obstetrics and Gynaecology | Assigned Seat: Q11"
+    "seatId": "O11",
+    "notes": "Faculty | Assistant Professor | Obstetrics and Gynaecology | Assigned Seat: O11"
   },
   {
     "id": "att-fac-nitesh-kumar-sharma",
@@ -1549,8 +1553,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "nitesh.pedsurg@aiimskalyani.edu.in",
     "phone": "9596711230",
     "categoryId": "faculty",
-    "seatId": "Q10",
-    "notes": "Faculty | Assistant Professor | Pediatric Surgery | Assigned Seat: Q10"
+    "seatId": "O10",
+    "notes": "Faculty | Assistant Professor | Pediatric Surgery | Assigned Seat: O10"
   },
   {
     "id": "att-fac-rajita-devi",
@@ -1561,8 +1565,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "rajita.nursing@aiimskalyani.edu.in",
     "phone": "8638648596",
     "categoryId": "faculty",
-    "seatId": "Q9",
-    "notes": "Faculty | Assistant Professor | College of Nursing | Assigned Seat: Q9"
+    "seatId": "O9",
+    "notes": "Faculty | Assistant Professor | College of Nursing | Assigned Seat: O9"
   },
   {
     "id": "att-fac-ravi-anand",
@@ -1573,8 +1577,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "ravi.ems@aiimskalyani.edu.in",
     "phone": "7739290418",
     "categoryId": "faculty",
-    "seatId": "Q8",
-    "notes": "Faculty | Assistant Professor | Trauma and Emergency Medicine | Assigned Seat: Q8"
+    "seatId": "O8",
+    "notes": "Faculty | Assistant Professor | Trauma and Emergency Medicine | Assigned Seat: O8"
   },
   {
     "id": "att-fac-richa",
@@ -1585,8 +1589,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "richa.neonat@aiimskalyani.edu.in",
     "phone": "9600923274",
     "categoryId": "faculty",
-    "seatId": "R20",
-    "notes": "Faculty | Assistant Professor | Neonatology | Assigned Seat: R20"
+    "seatId": "P20",
+    "notes": "Faculty | Assistant Professor | Neonatology | Assigned Seat: P20"
   },
   {
     "id": "att-fac-rishav-mukherjee",
@@ -1597,8 +1601,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "rishav.genmed@aiimskalyani.edu.in",
     "phone": "9830158016",
     "categoryId": "faculty",
-    "seatId": "R19",
-    "notes": "Faculty | Assistant Professor | General Medicine | Assigned Seat: R19"
+    "seatId": "P19",
+    "notes": "Faculty | Assistant Professor | General Medicine | Assigned Seat: P19"
   },
   {
     "id": "att-fac-saurav-banerjee",
@@ -1609,8 +1613,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "saurav.cardio@aiimskalyani.edu.in",
     "phone": "9874657534",
     "categoryId": "faculty",
-    "seatId": "R18",
-    "notes": "Faculty | Assistant Professor | Cardiology | Assigned Seat: R18"
+    "seatId": "P18",
+    "notes": "Faculty | Assistant Professor | Cardiology | Assigned Seat: P18"
   },
   {
     "id": "att-fac-savita-bala-tuti",
@@ -1621,8 +1625,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "savitabala.urol@aiimskalyani.edu.in",
     "phone": "8298124128",
     "categoryId": "faculty",
-    "seatId": "R17",
-    "notes": "Faculty | Assistant Professor | Urology | Assigned Seat: R17"
+    "seatId": "P17",
+    "notes": "Faculty | Assistant Professor | Urology | Assigned Seat: P17"
   },
   {
     "id": "att-fac-shoham-majumder",
@@ -1633,8 +1637,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "shoham.neonat@aiimskalyani.edu.in",
     "phone": "7005388338/9774506054 (whatsApp)",
     "categoryId": "faculty",
-    "seatId": "R16",
-    "notes": "Faculty | Assistant Professor | Neonatology | Assigned Seat: R16"
+    "seatId": "P16",
+    "notes": "Faculty | Assistant Professor | Neonatology | Assigned Seat: P16"
   },
   {
     "id": "att-fac-somdatta-giri",
@@ -1645,8 +1649,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "somdatta.endocr@aiimskalyani.edu.in",
     "phone": "9002004026",
     "categoryId": "faculty",
-    "seatId": "R15",
-    "notes": "Faculty | Assistant Professor | Endocrinology and Metabolism | Assigned Seat: R15"
+    "seatId": "P15",
+    "notes": "Faculty | Assistant Professor | Endocrinology and Metabolism | Assigned Seat: P15"
   },
   {
     "id": "att-fac-sommya-kumari",
@@ -1657,8 +1661,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sommya.dental@aiimskalyani.edu.in",
     "phone": "8969859326",
     "categoryId": "faculty",
-    "seatId": "R14",
-    "notes": "Faculty | Assistant Professor | Dentistry | Assigned Seat: R14"
+    "seatId": "P14",
+    "notes": "Faculty | Assistant Professor | Dentistry | Assigned Seat: P14"
   },
   {
     "id": "att-fac-soniya-c",
@@ -1669,8 +1673,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "soniya.c.nursing@aiimskalyani.edu.in",
     "phone": "8438142968",
     "categoryId": "faculty",
-    "seatId": "R13",
-    "notes": "Faculty | Assistant Professor | College of Nursing | Assigned Seat: R13"
+    "seatId": "P13",
+    "notes": "Faculty | Assistant Professor | College of Nursing | Assigned Seat: P13"
   },
   {
     "id": "att-fac-soumya-bhowmik",
@@ -1681,8 +1685,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "soumya.neuro@aiimskalyani.edu.in",
     "phone": "8336850640",
     "categoryId": "faculty",
-    "seatId": "R12",
-    "notes": "Faculty | Assistant Professor | Neurology | Assigned Seat: R12"
+    "seatId": "P12",
+    "notes": "Faculty | Assistant Professor | Neurology | Assigned Seat: P12"
   },
   {
     "id": "att-fac-sourabh-shankar-chakraborty",
@@ -1693,8 +1697,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sourabh.prs@aiimskalyani.edu.in",
     "phone": "8178918482",
     "categoryId": "faculty",
-    "seatId": "R11",
-    "notes": "Faculty | Assistant Professor | Burns and Plastic Surgery | Assigned Seat: R11"
+    "seatId": "P11",
+    "notes": "Faculty | Assistant Professor | Burns and Plastic Surgery | Assigned Seat: P11"
   },
   {
     "id": "att-fac-sumit-roy-chowdhury",
@@ -1705,8 +1709,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sumit.anesth@aiimskalyani.edu.in",
     "phone": "9874621132",
     "categoryId": "faculty",
-    "seatId": "R10",
-    "notes": "Faculty | Assistant Professor | Anesthesiology | Assigned Seat: R10"
+    "seatId": "P10",
+    "notes": "Faculty | Assistant Professor | Anesthesiology | Assigned Seat: P10"
   },
   {
     "id": "att-fac-sumona-bose",
@@ -1717,8 +1721,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sumona.pedsurg@aiimskalyani.edu.in",
     "phone": "9738655839",
     "categoryId": "faculty",
-    "seatId": "R9",
-    "notes": "Faculty | Assistant Professor | Pediatric Surgery | Assigned Seat: R9"
+    "seatId": "P9",
+    "notes": "Faculty | Assistant Professor | Pediatric Surgery | Assigned Seat: P9"
   },
   {
     "id": "att-fac-sunil-kumar",
@@ -1729,8 +1733,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "sunil.pmr@aiimskalyani.edu.in",
     "phone": "7543037372",
     "categoryId": "faculty",
-    "seatId": "R8",
-    "notes": "Faculty | assistant professor | PMR | Assigned Seat: R8"
+    "seatId": "P8",
+    "notes": "Faculty | assistant professor | PMR | Assigned Seat: P8"
   },
   {
     "id": "att-fac-tanaya-panja",
@@ -1741,8 +1745,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "tanaya.ent@aiimskalyani.edu.in",
     "phone": "8145971031",
     "categoryId": "faculty",
-    "seatId": "S20",
-    "notes": "Faculty | Assistant Professor | ENT | Assigned Seat: S20"
+    "seatId": "Q20",
+    "notes": "Faculty | Assistant Professor | ENT | Assigned Seat: Q20"
   },
   {
     "id": "att-fac-dr-indranil-chakrabarti",
@@ -1753,8 +1757,8 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "indranil.patho@aiimskalyani.edu.in",
     "phone": "9433187448",
     "categoryId": "faculty",
-    "seatId": "S19",
-    "notes": "Faculty | Pathology and Laboratory Medicine | Pathology and Laboratory Medicine | Assigned Seat: S19"
+    "seatId": "Q19",
+    "notes": "Faculty | Pathology and Laboratory Medicine | Pathology and Laboratory Medicine | Assigned Seat: Q19"
   }
 ];
 
@@ -1768,8 +1772,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aman1.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7665571951",
     "categoryId": "mbbs",
-    "seatId": "E27",
-    "notes": "Enrollment No: 10/20200160 | Hometown: Motihari | Assigned Seat: E27"
+    "seatId": "C27",
+    "notes": "Enrollment No: 10/20200160 | Hometown: Motihari | Assigned Seat: C27"
   },
   {
     "id": "att-stu-ambuj-pandey",
@@ -1780,8 +1784,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ambuj.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8858150858",
     "categoryId": "mbbs",
-    "seatId": "E26",
-    "notes": "Enrollment No: 12/20200162 | Hometown: Pratapgarh Uttar Pradesh | Assigned Seat: E26"
+    "seatId": "C26",
+    "notes": "Enrollment No: 12/20200162 | Hometown: Pratapgarh Uttar Pradesh | Assigned Seat: C26"
   },
   {
     "id": "att-stu-aniket-sarkar",
@@ -1792,8 +1796,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aniket.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9547483864",
     "categoryId": "mbbs",
-    "seatId": "E25",
-    "notes": "Enrollment No: 16/ 20200166 | Hometown: Haldia | Assigned Seat: E25"
+    "seatId": "C25",
+    "notes": "Enrollment No: 16/ 20200166 | Hometown: Haldia | Assigned Seat: C25"
   },
   {
     "id": "att-stu-anirudh-gupta",
@@ -1804,8 +1808,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "anirudh.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9464906137",
     "categoryId": "mbbs",
-    "seatId": "E24",
-    "notes": "Enrollment No: 17 / 20200167 | Hometown: Chandigarh | Assigned Seat: E24"
+    "seatId": "C24",
+    "notes": "Enrollment No: 17 / 20200167 | Hometown: Chandigarh | Assigned Seat: C24"
   },
   {
     "id": "att-stu-anoushka-chaudhury",
@@ -1816,8 +1820,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aan012013@gmail.com",
     "phone": "8777643438",
     "categoryId": "mbbs",
-    "seatId": "E23",
-    "notes": "Enrollment No: 18/20200168 | Hometown: Kolkata | Assigned Seat: E23"
+    "seatId": "C23",
+    "notes": "Enrollment No: 18/20200168 | Hometown: Kolkata | Assigned Seat: C23"
   },
   {
     "id": "att-stu-anurag-dash",
@@ -1828,8 +1832,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "anurag.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6372093986",
     "categoryId": "mbbs",
-    "seatId": "E22",
-    "notes": "Enrollment No: 20/20200170 | Hometown: Berhampur, Odisha | Assigned Seat: E22"
+    "seatId": "C22",
+    "notes": "Enrollment No: 20/20200170 | Hometown: Berhampur, Odisha | Assigned Seat: C22"
   },
   {
     "id": "att-stu-anurag-samanta",
@@ -1840,8 +1844,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "anurags.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7602481593",
     "categoryId": "mbbs",
-    "seatId": "E21",
-    "notes": "Enrollment No: 21/20200171 | Hometown: Mecheda ,Purba Medinipur | Assigned Seat: E21"
+    "seatId": "C21",
+    "notes": "Enrollment No: 21/20200171 | Hometown: Mecheda ,Purba Medinipur | Assigned Seat: C21"
   },
   {
     "id": "att-stu-aritpriyo-ghosh",
@@ -1852,8 +1856,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "rikghosh2015@gmail.com",
     "phone": "7339814841",
     "categoryId": "mbbs",
-    "seatId": "F27",
-    "notes": "Enrollment No: 24 | Hometown: Kalyani | Assigned Seat: F27"
+    "seatId": "D27",
+    "notes": "Enrollment No: 24 | Hometown: Kalyani | Assigned Seat: D27"
   },
   {
     "id": "att-stu-ashutosh-kumar",
@@ -1864,8 +1868,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ashutoshajnvi@gmail.com",
     "phone": "9128781515",
     "categoryId": "mbbs",
-    "seatId": "F26",
-    "notes": "Enrollment No: 28 / 20200178 | Hometown: Nawada | Assigned Seat: F26"
+    "seatId": "D26",
+    "notes": "Enrollment No: 28 / 20200178 | Hometown: Nawada | Assigned Seat: D26"
   },
   {
     "id": "att-stu-atul-bharti",
@@ -1876,8 +1880,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "atul.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6299592194",
     "categoryId": "mbbs",
-    "seatId": "F25",
-    "notes": "Enrollment No: 29/20200179 | Hometown: Patna, Bihar | Assigned Seat: F25"
+    "seatId": "D25",
+    "notes": "Enrollment No: 29/20200179 | Hometown: Patna, Bihar | Assigned Seat: D25"
   },
   {
     "id": "att-stu-ayrin-c-simon",
@@ -1888,8 +1892,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ayrin.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8281643135",
     "categoryId": "mbbs",
-    "seatId": "F24",
-    "notes": "Enrollment No: 32/20200182 | Hometown: Thrissur | Assigned Seat: F24"
+    "seatId": "D24",
+    "notes": "Enrollment No: 32/20200182 | Hometown: Thrissur | Assigned Seat: D24"
   },
   {
     "id": "att-stu-debmalya-banerjee",
@@ -1900,8 +1904,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "debmalya.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9883948330",
     "categoryId": "mbbs",
-    "seatId": "F23",
-    "notes": "Enrollment No: 42/ 20200192 | Hometown: Burdwan | Assigned Seat: F23"
+    "seatId": "D23",
+    "notes": "Enrollment No: 42/ 20200192 | Hometown: Burdwan | Assigned Seat: D23"
   },
   {
     "id": "att-stu-honkap-wangjen",
@@ -1912,8 +1916,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "honkap.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9383106349",
     "categoryId": "mbbs",
-    "seatId": "F22",
-    "notes": "Enrollment No: 51/202001101 | Hometown: Village- Hasse Russa, PS/PO-Kanubari, Pincode-792131, District-Longding, State- Arunachal Pradesh. | Assigned Seat: F22"
+    "seatId": "D22",
+    "notes": "Enrollment No: 51/202001101 | Hometown: Village- Hasse Russa, PS/PO-Kanubari, Pincode-792131, District-Longding, State- Arunachal Pradesh. | Assigned Seat: D22"
   },
   {
     "id": "att-stu-jagruti-biswal",
@@ -1924,8 +1928,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "jagruti.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7848081502",
     "categoryId": "mbbs",
-    "seatId": "F21",
-    "notes": "Enrollment No: 53/202001103 | Hometown: Khamar , Dist- Angul , Odisha | Assigned Seat: F21"
+    "seatId": "D21",
+    "notes": "Enrollment No: 53/202001103 | Hometown: Khamar , Dist- Angul , Odisha | Assigned Seat: D21"
   },
   {
     "id": "att-stu-kaki-jessica-pal",
@@ -1936,8 +1940,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "kaki.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8328165594",
     "categoryId": "mbbs",
-    "seatId": "G27",
-    "notes": "Enrollment No: 55/ 202001105 | Hometown: Hyderabad, Telangana | Assigned Seat: G27"
+    "seatId": "E27",
+    "notes": "Enrollment No: 55/ 202001105 | Hometown: Hyderabad, Telangana | Assigned Seat: E27"
   },
   {
     "id": "att-stu-khadija-kalam",
@@ -1948,8 +1952,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "khadija.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9234370051",
     "categoryId": "mbbs",
-    "seatId": "G26",
-    "notes": "Enrollment No: 56/202001106 | Hometown: Bihar | Assigned Seat: G26"
+    "seatId": "E26",
+    "notes": "Enrollment No: 56/202001106 | Hometown: Bihar | Assigned Seat: E26"
   },
   {
     "id": "att-stu-krishnas-mahi",
@@ -1960,8 +1964,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "krishnasmahi1@gmail.com",
     "phone": "9110167850",
     "categoryId": "mbbs",
-    "seatId": "G25",
-    "notes": "Enrollment No: 58/202001108 | Hometown: Bhagalpur | Assigned Seat: G25"
+    "seatId": "E25",
+    "notes": "Enrollment No: 58/202001108 | Hometown: Bhagalpur | Assigned Seat: E25"
   },
   {
     "id": "att-stu-naman-chugh",
@@ -1972,8 +1976,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "naman.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7015830025",
     "categoryId": "mbbs",
-    "seatId": "G24",
-    "notes": "Enrollment No: 65/202001115 | Hometown: Gohana | Assigned Seat: G24"
+    "seatId": "E24",
+    "notes": "Enrollment No: 65/202001115 | Hometown: Gohana | Assigned Seat: E24"
   },
   {
     "id": "att-stu-prabesh-kumar-sahu",
@@ -1984,8 +1988,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "prabeshk99@gmail.com",
     "phone": "7752071706",
     "categoryId": "mbbs",
-    "seatId": "G23",
-    "notes": "Enrollment No: 68/202001118 | Hometown: Bahalda, Mayurbhanj, Odisha | Assigned Seat: G23"
+    "seatId": "E23",
+    "notes": "Enrollment No: 68/202001118 | Hometown: Bahalda, Mayurbhanj, Odisha | Assigned Seat: E23"
   },
   {
     "id": "att-stu-pragya-bharati",
@@ -1996,8 +2000,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "Pebble12000@gmail.com",
     "phone": "9821267506",
     "categoryId": "mbbs",
-    "seatId": "G22",
-    "notes": "Enrollment No: 69 / 202001119 | Hometown: Patna, bihar | Assigned Seat: G22"
+    "seatId": "E22",
+    "notes": "Enrollment No: 69 / 202001119 | Hometown: Patna, bihar | Assigned Seat: E22"
   },
   {
     "id": "att-stu-pritam-kumar-das",
@@ -2008,8 +2012,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "pritamkdas21@gmail.com",
     "phone": "9903416146",
     "categoryId": "mbbs",
-    "seatId": "G21",
-    "notes": "Enrollment No: 70 / 202001120 | Hometown: Ara - Bihar | Assigned Seat: G21"
+    "seatId": "E21",
+    "notes": "Enrollment No: 70 / 202001120 | Hometown: Ara - Bihar | Assigned Seat: E21"
   },
   {
     "id": "att-stu-rohit-raj-khandelwal",
@@ -2020,8 +2024,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "dr.rohitrajkhandelwal@gmail.com",
     "phone": "9674313474",
     "categoryId": "mbbs",
-    "seatId": "H27",
-    "notes": "Enrollment No: 79/ 202001129 | Hometown: Bhubaneswar | Assigned Seat: H27"
+    "seatId": "F27",
+    "notes": "Enrollment No: 79/ 202001129 | Hometown: Bhubaneswar | Assigned Seat: F27"
   },
   {
     "id": "att-stu-sadia-asad",
@@ -2032,8 +2036,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "asad.sadia145@gmail.com",
     "phone": "9334519662",
     "categoryId": "mbbs",
-    "seatId": "H26",
-    "notes": "Enrollment No: 81 | Hometown: Patna | Assigned Seat: H26"
+    "seatId": "F26",
+    "notes": "Enrollment No: 81 | Hometown: Patna | Assigned Seat: F26"
   },
   {
     "id": "att-stu-satyajit-behera",
@@ -2044,8 +2048,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "satyajit.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8984155610",
     "categoryId": "mbbs",
-    "seatId": "H25",
-    "notes": "Enrollment No: 86(202001136) | Hometown: Bhadrak | Assigned Seat: H25"
+    "seatId": "F25",
+    "notes": "Enrollment No: 86(202001136) | Hometown: Bhadrak | Assigned Seat: F25"
   },
   {
     "id": "att-stu-sharafudheen-ep",
@@ -2056,8 +2060,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sharafudheencu@gmail.com",
     "phone": "6383560594",
     "categoryId": "mbbs",
-    "seatId": "H24",
-    "notes": "Enrollment No: 88/202001138 | Hometown: Kozhikode | Assigned Seat: H24"
+    "seatId": "F24",
+    "notes": "Enrollment No: 88/202001138 | Hometown: Kozhikode | Assigned Seat: F24"
   },
   {
     "id": "att-stu-shraddha-matsyapal",
@@ -2068,8 +2072,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shraddha.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8319646271",
     "categoryId": "mbbs",
-    "seatId": "H23",
-    "notes": "Enrollment No: 93/202001143 | Hometown: Dhamtari | Assigned Seat: H23"
+    "seatId": "F23",
+    "notes": "Enrollment No: 93/202001143 | Hometown: Dhamtari | Assigned Seat: F23"
   },
   {
     "id": "att-stu-shruti-joshi",
@@ -2080,8 +2084,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shrutijoshi0304@gmail.com",
     "phone": "8696426826",
     "categoryId": "mbbs",
-    "seatId": "H22",
-    "notes": "Enrollment No: 94 | Hometown: Sriganganagar | Assigned Seat: H22"
+    "seatId": "F22",
+    "notes": "Enrollment No: 94 | Hometown: Sriganganagar | Assigned Seat: F22"
   },
   {
     "id": "att-stu-soham-mandal",
@@ -2092,8 +2096,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mandalsoham30@gmail.com",
     "phone": "8250397348",
     "categoryId": "mbbs",
-    "seatId": "H21",
-    "notes": "Enrollment No: 96/ 2020001146 | Hometown: Siliguri | Assigned Seat: H21"
+    "seatId": "F21",
+    "notes": "Enrollment No: 96/ 2020001146 | Hometown: Siliguri | Assigned Seat: F21"
   },
   {
     "id": "att-stu-sony-khatoon",
@@ -2104,8 +2108,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sony.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8709565947",
     "categoryId": "mbbs",
-    "seatId": "I27",
-    "notes": "Enrollment No: 97/202001147 | Hometown: Siwan | Assigned Seat: I27"
+    "seatId": "G27",
+    "notes": "Enrollment No: 97/202001147 | Hometown: Siwan | Assigned Seat: G27"
   },
   {
     "id": "att-stu-soutrik-sur",
@@ -2116,8 +2120,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "soutrikoff@gmail.com",
     "phone": "9073368142",
     "categoryId": "mbbs",
-    "seatId": "I26",
-    "notes": "Enrollment No: 99/202001149 | Hometown: Mogra Natungram, Hooghly, West Bengal | Assigned Seat: I26"
+    "seatId": "G26",
+    "notes": "Enrollment No: 99/202001149 | Hometown: Mogra Natungram, Hooghly, West Bengal | Assigned Seat: G26"
   },
   {
     "id": "att-stu-subhasis-panja",
@@ -2128,8 +2132,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "subhasispanja11@gmail.com",
     "phone": "7908126837",
     "categoryId": "mbbs",
-    "seatId": "I25",
-    "notes": "Enrollment No: 100/202001150 | Hometown: Arambagh | Assigned Seat: I25"
+    "seatId": "G25",
+    "notes": "Enrollment No: 100/202001150 | Hometown: Arambagh | Assigned Seat: G25"
   },
   {
     "id": "att-stu-subhodip-das",
@@ -2140,8 +2144,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "subhodip.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9679602964",
     "categoryId": "mbbs",
-    "seatId": "I24",
-    "notes": "Enrollment No: 101/202001151 | Hometown: Asansol | Assigned Seat: I24"
+    "seatId": "G24",
+    "notes": "Enrollment No: 101/202001151 | Hometown: Asansol | Assigned Seat: G24"
   },
   {
     "id": "att-stu-sudip-chatterjee",
@@ -2152,8 +2156,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sudipchatterjee429@gmail.com",
     "phone": "8116171221",
     "categoryId": "mbbs",
-    "seatId": "I23",
-    "notes": "Enrollment No: 102/202001152 | Hometown: Tarakeswar | Assigned Seat: I23"
+    "seatId": "G23",
+    "notes": "Enrollment No: 102/202001152 | Hometown: Tarakeswar | Assigned Seat: G23"
   },
   {
     "id": "att-stu-sumit-kumar-mondal",
@@ -2164,8 +2168,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sumit.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8274949371",
     "categoryId": "mbbs",
-    "seatId": "I22",
-    "notes": "Enrollment No: 103/202001153 | Hometown: BARUIPUR | Assigned Seat: I22"
+    "seatId": "G22",
+    "notes": "Enrollment No: 103/202001153 | Hometown: BARUIPUR | Assigned Seat: G22"
   },
   {
     "id": "att-stu-swastik-tripathy",
@@ -2176,8 +2180,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "swastik.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7604052975",
     "categoryId": "mbbs",
-    "seatId": "I21",
-    "notes": "Enrollment No: 104 / 202001154 | Hometown: Bhubaneswar | Assigned Seat: I21"
+    "seatId": "G21",
+    "notes": "Enrollment No: 104 / 202001154 | Hometown: Bhubaneswar | Assigned Seat: G21"
   },
   {
     "id": "att-stu-tanmay-saha",
@@ -2188,8 +2192,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "tanmay.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6290905708",
     "categoryId": "mbbs",
-    "seatId": "J27",
-    "notes": "Enrollment No: 105/202001155 | Hometown: Kolkata | Assigned Seat: J27"
+    "seatId": "H27",
+    "notes": "Enrollment No: 105/202001155 | Hometown: Kolkata | Assigned Seat: H27"
   },
   {
     "id": "att-stu-vadde-siddharth-roy",
@@ -2200,8 +2204,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "imsidroy1@gmail.com",
     "phone": "9866469739",
     "categoryId": "mbbs",
-    "seatId": "J26",
-    "notes": "Enrollment No: 109/ 202001159 | Hometown: Visakhapatnam | Assigned Seat: J26"
+    "seatId": "H26",
+    "notes": "Enrollment No: 109/ 202001159 | Hometown: Visakhapatnam | Assigned Seat: H26"
   },
   {
     "id": "att-stu-vikash-kumar-rai",
@@ -2212,8 +2216,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "vikash.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9546802465",
     "categoryId": "mbbs",
-    "seatId": "J25",
-    "notes": "Enrollment No: 111/202001161 | Hometown: Pokhrera,Taraiya ,Saran ,841424 ,Bihar | Assigned Seat: J25"
+    "seatId": "H25",
+    "notes": "Enrollment No: 111/202001161 | Hometown: Pokhrera,Taraiya ,Saran ,841424 ,Bihar | Assigned Seat: H25"
   },
   {
     "id": "att-stu-zinadin-zidan-t-k",
@@ -2224,8 +2228,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "zinadzidan04@gmail.com",
     "phone": "9633760376",
     "categoryId": "mbbs",
-    "seatId": "J24",
-    "notes": "Enrollment No: 115 | Hometown: Kerala | Assigned Seat: J24"
+    "seatId": "H24",
+    "notes": "Enrollment No: 115 | Hometown: Kerala | Assigned Seat: H24"
   },
   {
     "id": "att-stu-ajay-mohan",
@@ -2236,8 +2240,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ajay.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8606642894",
     "categoryId": "mbbs",
-    "seatId": "J23",
-    "notes": "Enrollment No: 116/202001166 | Hometown: KOLLAM | Assigned Seat: J23"
+    "seatId": "H23",
+    "notes": "Enrollment No: 116/202001166 | Hometown: KOLLAM | Assigned Seat: H23"
   },
   {
     "id": "att-stu-balram-sharma",
@@ -2248,8 +2252,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "nicebalramsharma@gmail.com",
     "phone": "9024523413",
     "categoryId": "mbbs",
-    "seatId": "J22",
-    "notes": "Enrollment No: 117 | Hometown: Vimalpura | Assigned Seat: J22"
+    "seatId": "H22",
+    "notes": "Enrollment No: 117 | Hometown: Vimalpura | Assigned Seat: H22"
   },
   {
     "id": "att-stu-fayiza-c",
@@ -2260,8 +2264,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "fayiza.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7025146621",
     "categoryId": "mbbs",
-    "seatId": "J21",
-    "notes": "Enrollment No: 119/202001169 | Hometown: Kottakkal | Assigned Seat: J21"
+    "seatId": "H21",
+    "notes": "Enrollment No: 119/202001169 | Hometown: Kottakkal | Assigned Seat: H21"
   },
   {
     "id": "att-stu-sreeram-r-s",
@@ -2272,8 +2276,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sreeram.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9188573375",
     "categoryId": "mbbs",
-    "seatId": "K27",
-    "notes": "Enrollment No: 124 / 202001174 | Hometown: Kerala | Assigned Seat: K27"
+    "seatId": "I27",
+    "notes": "Enrollment No: 124 / 202001174 | Hometown: Kerala | Assigned Seat: I27"
   },
   {
     "id": "att-stu-j-b-adithyakiran",
@@ -2284,8 +2288,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "adithyakiranjb@gmail.com",
     "phone": "9645919222",
     "categoryId": "mbbs",
-    "seatId": "K26",
-    "notes": "Enrollment No: 20190115 | Hometown: Kozhikode | Assigned Seat: K26"
+    "seatId": "I26",
+    "notes": "Enrollment No: 20190115 | Hometown: Kozhikode | Assigned Seat: I26"
   },
   {
     "id": "att-stu-mourupa-sarkar",
@@ -2296,8 +2300,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mourupa.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6295614611",
     "categoryId": "mbbs",
-    "seatId": "K25",
-    "notes": "Enrollment No: 20200114 | Hometown: Alipur Duar | Assigned Seat: K25"
+    "seatId": "I25",
+    "notes": "Enrollment No: 20200114 | Hometown: Alipur Duar | Assigned Seat: I25"
   },
   {
     "id": "att-stu-abhilasha-saboth",
@@ -2308,8 +2312,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sabothabhilasha@gmail.com",
     "phone": "9337129829",
     "categoryId": "mbbs",
-    "seatId": "K24",
-    "notes": "Enrollment No: 20200151 | Hometown: Bhubaneswar, Odisha | Assigned Seat: K24"
+    "seatId": "I24",
+    "notes": "Enrollment No: 20200151 | Hometown: Bhubaneswar, Odisha | Assigned Seat: I24"
   },
   {
     "id": "att-stu-abil-kumar",
@@ -2320,8 +2324,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "abhisaini00011@gmail.com",
     "phone": "9671886427",
     "categoryId": "mbbs",
-    "seatId": "K23",
-    "notes": "Enrollment No: 20200152 | Hometown: Yamunanagar (haryana) | Assigned Seat: K23"
+    "seatId": "I23",
+    "notes": "Enrollment No: 20200152 | Hometown: Yamunanagar (haryana) | Assigned Seat: I23"
   },
   {
     "id": "att-stu-adithya-bijith",
@@ -2332,8 +2336,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "adibij02mai@gmail.com",
     "phone": "8590209664",
     "categoryId": "mbbs",
-    "seatId": "K22",
-    "notes": "Enrollment No: 20200153 | Hometown: Arayoor ,kerala | Assigned Seat: K22"
+    "seatId": "I22",
+    "notes": "Enrollment No: 20200153 | Hometown: Arayoor ,kerala | Assigned Seat: I22"
   },
   {
     "id": "att-stu-aditya-kumar",
@@ -2344,8 +2348,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "draditya1199@gmail.com",
     "phone": "8102771334",
     "categoryId": "mbbs",
-    "seatId": "K21",
-    "notes": "Enrollment No: 20200155 | Hometown: Pagra, Dalsinghsarai | Assigned Seat: K21"
+    "seatId": "I21",
+    "notes": "Enrollment No: 20200155 | Hometown: Pagra, Dalsinghsarai | Assigned Seat: I21"
   },
   {
     "id": "att-stu-akshay-sharma",
@@ -2356,8 +2360,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "xaysharma6365@gmail.com",
     "phone": "8016283467",
     "categoryId": "mbbs",
-    "seatId": "L27",
-    "notes": "Enrollment No: 20200157 | Hometown: Sikar | Assigned Seat: L27"
+    "seatId": "J27",
+    "notes": "Enrollment No: 20200157 | Hometown: Sikar | Assigned Seat: J27"
   },
   {
     "id": "att-stu-altaf-khan",
@@ -2368,11 +2372,11 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "Altaf.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9453612551",
     "categoryId": "mbbs",
-    "seatId": "L26",
-    "notes": "Enrollment No: 20200158 | Hometown: Lucknow | Assigned Seat: L26"
+    "seatId": "J26",
+    "notes": "Enrollment No: 20200158 | Hometown: Lucknow | Assigned Seat: J26"
   },
   {
-    "id": "att-stu-aman-kumar",
+    "id": "att-stu-aman-kumar-2",
     "name": "AMAN KUMAR",
     "designation": "MBBS Graduate",
     "department": "MBBS 2020",
@@ -2380,8 +2384,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aman2.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8637357310",
     "categoryId": "mbbs",
-    "seatId": "L25",
-    "notes": "Enrollment No: 20200161 | Hometown: Samastipur | Assigned Seat: L25"
+    "seatId": "J25",
+    "notes": "Enrollment No: 20200161 | Hometown: Samastipur | Assigned Seat: J25"
   },
   {
     "id": "att-stu-amrit-raj-anand",
@@ -2392,8 +2396,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "amritrajanand51054@gmail.com",
     "phone": "7484027360",
     "categoryId": "mbbs",
-    "seatId": "L24",
-    "notes": "Enrollment No: 20200163 | Hometown: Chhapra | Assigned Seat: L24"
+    "seatId": "J24",
+    "notes": "Enrollment No: 20200163 | Hometown: Chhapra | Assigned Seat: J24"
   },
   {
     "id": "att-stu-ananya-aryankita",
@@ -2404,8 +2408,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aryankita5@gmail.com",
     "phone": "9078841355",
     "categoryId": "mbbs",
-    "seatId": "L23",
-    "notes": "Enrollment No: 20200164 | Hometown: Bhubaneswar | Assigned Seat: L23"
+    "seatId": "J23",
+    "notes": "Enrollment No: 20200164 | Hometown: Bhubaneswar | Assigned Seat: J23"
   },
   {
     "id": "att-stu-ananya-pandey",
@@ -2416,8 +2420,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "quantum101p@gmail.com",
     "phone": "8855042775",
     "categoryId": "mbbs",
-    "seatId": "L22",
-    "notes": "Enrollment No: 20200165 | Hometown: Ahilyanagar,Maharashtra | Assigned Seat: L22"
+    "seatId": "J22",
+    "notes": "Enrollment No: 20200165 | Hometown: Ahilyanagar,Maharashtra | Assigned Seat: J22"
   },
   {
     "id": "att-stu-anubhab-saha",
@@ -2428,8 +2432,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "anubhabsaha.med@gmail.com",
     "phone": "9591180260",
     "categoryId": "mbbs",
-    "seatId": "L21",
-    "notes": "Enrollment No: 20200169 | Hometown: Bangalore | Assigned Seat: L21"
+    "seatId": "J21",
+    "notes": "Enrollment No: 20200169 | Hometown: Bangalore | Assigned Seat: J21"
   },
   {
     "id": "att-stu-anusree-jayan",
@@ -2440,8 +2444,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "anusreejayan77@gmail.com",
     "phone": "7510692429",
     "categoryId": "mbbs",
-    "seatId": "M27",
-    "notes": "Enrollment No: 20200172 | Hometown: Edappal, Kerala | Assigned Seat: M27"
+    "seatId": "K27",
+    "notes": "Enrollment No: 20200172 | Hometown: Edappal, Kerala | Assigned Seat: K27"
   },
   {
     "id": "att-stu-aprajita",
@@ -2452,8 +2456,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aprajita.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9142852466",
     "categoryId": "mbbs",
-    "seatId": "M26",
-    "notes": "Enrollment No: 20200173 | Hometown: Bihar | Assigned Seat: M26"
+    "seatId": "K26",
+    "notes": "Enrollment No: 20200173 | Hometown: Bihar | Assigned Seat: K26"
   },
   {
     "id": "att-stu-arman-ansari",
@@ -2464,8 +2468,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "arman.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9110037439",
     "categoryId": "mbbs",
-    "seatId": "M25",
-    "notes": "Enrollment No: 20200175 | Hometown: Pakur | Assigned Seat: M25"
+    "seatId": "K25",
+    "notes": "Enrollment No: 20200175 | Hometown: Pakur | Assigned Seat: K25"
   },
   {
     "id": "att-stu-ashish-gaurav",
@@ -2476,8 +2480,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "gauravdrashish@gmail.com",
     "phone": "7352453050",
     "categoryId": "mbbs",
-    "seatId": "M24",
-    "notes": "Enrollment No: 20200176 | Hometown: Mashrak, chapra | Assigned Seat: M24"
+    "seatId": "K24",
+    "notes": "Enrollment No: 20200176 | Hometown: Mashrak, chapra | Assigned Seat: K24"
   },
   {
     "id": "att-stu-ashok-kumar",
@@ -2488,8 +2492,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ashok.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9610132738",
     "categoryId": "mbbs",
-    "seatId": "M23",
-    "notes": "Enrollment No: 20200177 | Hometown: Gudamalani, Barmer, Rajasthan | Assigned Seat: M23"
+    "seatId": "K23",
+    "notes": "Enrollment No: 20200177 | Hometown: Gudamalani, Barmer, Rajasthan | Assigned Seat: K23"
   },
   {
     "id": "att-stu-avtans-khajuria",
@@ -2500,8 +2504,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "avtans.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9622113289",
     "categoryId": "mbbs",
-    "seatId": "M22",
-    "notes": "Enrollment No: 20200180 | Hometown: Kathua J and K | Assigned Seat: M22"
+    "seatId": "K22",
+    "notes": "Enrollment No: 20200180 | Hometown: Kathua J and K | Assigned Seat: K22"
   },
   {
     "id": "att-stu-bharath-krishna",
@@ -2512,8 +2516,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "bharathkrishna500@gmail.com",
     "phone": "9526106877",
     "categoryId": "mbbs",
-    "seatId": "M21",
-    "notes": "Enrollment No: 20200186 | Hometown: Kerala | Assigned Seat: M21"
+    "seatId": "K21",
+    "notes": "Enrollment No: 20200186 | Hometown: Kerala | Assigned Seat: K21"
   },
   {
     "id": "att-stu-bijit-sarkar",
@@ -2524,8 +2528,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "bijit.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9593374105",
     "categoryId": "mbbs",
-    "seatId": "N27",
-    "notes": "Enrollment No: 20200187 | Hometown: Coochbehar ,West Bengal | Assigned Seat: N27"
+    "seatId": "L27",
+    "notes": "Enrollment No: 20200187 | Hometown: Coochbehar ,West Bengal | Assigned Seat: L27"
   },
   {
     "id": "att-stu-chongtham-paritiya-singh",
@@ -2536,8 +2540,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "chongtham.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7011342677",
     "categoryId": "mbbs",
-    "seatId": "N26",
-    "notes": "Enrollment No: 20200188 | Hometown: Imphal, Manipur | Assigned Seat: N26"
+    "seatId": "L26",
+    "notes": "Enrollment No: 20200188 | Hometown: Imphal, Manipur | Assigned Seat: L26"
   },
   {
     "id": "att-stu-dannana-gayathri",
@@ -2548,8 +2552,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "dannana.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9381481345",
     "categoryId": "mbbs",
-    "seatId": "N25",
-    "notes": "Enrollment No: 20200190 | Hometown: Srikakulam | Assigned Seat: N25"
+    "seatId": "L25",
+    "notes": "Enrollment No: 20200190 | Hometown: Srikakulam | Assigned Seat: L25"
   },
   {
     "id": "att-stu-debbani-bose",
@@ -2560,8 +2564,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "debbanibose@gmail.com",
     "phone": "9945925702",
     "categoryId": "mbbs",
-    "seatId": "N24",
-    "notes": "Enrollment No: 20200191 | Hometown: Bangalore, Karnataka. | Assigned Seat: N24"
+    "seatId": "L24",
+    "notes": "Enrollment No: 20200191 | Hometown: Bangalore, Karnataka. | Assigned Seat: L24"
   },
   {
     "id": "att-stu-devi-nambiar",
@@ -2572,8 +2576,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "devi.d.nambiar@gmail.com",
     "phone": "7356912559",
     "categoryId": "mbbs",
-    "seatId": "N23",
-    "notes": "Enrollment No: 20200193 | Hometown: BANGALORE | Assigned Seat: N23"
+    "seatId": "L23",
+    "notes": "Enrollment No: 20200193 | Hometown: BANGALORE | Assigned Seat: L23"
   },
   {
     "id": "att-stu-dilshana",
@@ -2584,8 +2588,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "dilshana.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9048548253",
     "categoryId": "mbbs",
-    "seatId": "N22",
-    "notes": "Enrollment No: 20200196 | Hometown: Manjeri | Assigned Seat: N22"
+    "seatId": "L22",
+    "notes": "Enrollment No: 20200196 | Hometown: Manjeri | Assigned Seat: L22"
   },
   {
     "id": "att-stu-disha-mandal",
@@ -2596,8 +2600,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mandaldisha21@gmail.com",
     "phone": "9933492817",
     "categoryId": "mbbs",
-    "seatId": "N21",
-    "notes": "Enrollment No: 20200197 | Hometown: Bankura | Assigned Seat: N21"
+    "seatId": "L21",
+    "notes": "Enrollment No: 20200197 | Hometown: Bankura | Assigned Seat: L21"
   },
   {
     "id": "att-stu-druvan-j",
@@ -2608,8 +2612,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "druvanj@gmail.com",
     "phone": "7558930045",
     "categoryId": "mbbs",
-    "seatId": "O27",
-    "notes": "Enrollment No: 20200198 | Hometown: Malappuram | Assigned Seat: O27"
+    "seatId": "M27",
+    "notes": "Enrollment No: 20200198 | Hometown: Malappuram | Assigned Seat: M27"
   },
   {
     "id": "att-stu-gowtham-s",
@@ -2620,8 +2624,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "gowtham.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8113071161",
     "categoryId": "mbbs",
-    "seatId": "O26",
-    "notes": "Enrollment No: 20200199 | Hometown: Chathenkary, Thiruvalla, Kerala | Assigned Seat: O26"
+    "seatId": "M26",
+    "notes": "Enrollment No: 20200199 | Hometown: Chathenkary, Thiruvalla, Kerala | Assigned Seat: M26"
   },
   {
     "id": "att-stu-sayak-saha",
@@ -2632,8 +2636,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sayak.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6290592637",
     "categoryId": "mbbs",
-    "seatId": "O25",
-    "notes": "Enrollment No: 20201137 | Hometown: Rishra | Assigned Seat: O25"
+    "seatId": "M25",
+    "notes": "Enrollment No: 20201137 | Hometown: Rishra | Assigned Seat: M25"
   },
   {
     "id": "att-stu-jajoo-raghav-bhushan",
@@ -2644,8 +2648,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "dr.raghavjajoo@gmail.com",
     "phone": "9028844721",
     "categoryId": "mbbs",
-    "seatId": "O24",
-    "notes": "Enrollment No: 202001104 | Hometown: Akola, Maharashtra | Assigned Seat: O24"
+    "seatId": "M24",
+    "notes": "Enrollment No: 202001104 | Hometown: Akola, Maharashtra | Assigned Seat: M24"
   },
   {
     "id": "att-stu-krishnendu-mondal",
@@ -2656,8 +2660,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mondalkrish958@gmail.com",
     "phone": "6294794461",
     "categoryId": "mbbs",
-    "seatId": "O23",
-    "notes": "Enrollment No: 202001109 | Hometown: Bardhaman | Assigned Seat: O23"
+    "seatId": "M23",
+    "notes": "Enrollment No: 202001109 | Hometown: Bardhaman | Assigned Seat: M23"
   },
   {
     "id": "att-stu-mansi-subba",
@@ -2668,8 +2672,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mansi.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9679315598",
     "categoryId": "mbbs",
-    "seatId": "O22",
-    "notes": "Enrollment No: 202001110 | Hometown: Gangtok, Sikkim | Assigned Seat: O22"
+    "seatId": "M22",
+    "notes": "Enrollment No: 202001110 | Hometown: Gangtok, Sikkim | Assigned Seat: M22"
   },
   {
     "id": "att-stu-meenakshi-mina",
@@ -2680,8 +2684,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "meenakshi.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6367552915",
     "categoryId": "mbbs",
-    "seatId": "O21",
-    "notes": "Enrollment No: 202001111 | Hometown: Jhalawar | Assigned Seat: O21"
+    "seatId": "M21",
+    "notes": "Enrollment No: 202001111 | Hometown: Jhalawar | Assigned Seat: M21"
   },
   {
     "id": "att-stu-megha-hazarika",
@@ -2692,8 +2696,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "meghahazarika270701@gmail.com",
     "phone": "9518596484",
     "categoryId": "mbbs",
-    "seatId": "P27",
-    "notes": "Enrollment No: 202001112 | Hometown: Guwahati | Assigned Seat: P27"
+    "seatId": "N27",
+    "notes": "Enrollment No: 202001112 | Hometown: Guwahati | Assigned Seat: N27"
   },
   {
     "id": "att-stu-nilesh-bharti",
@@ -2704,8 +2708,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "nilesh.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7292903856",
     "categoryId": "mbbs",
-    "seatId": "P26",
-    "notes": "Enrollment No: 202001116 | Hometown: Samastipur, Bihar | Assigned Seat: P26"
+    "seatId": "N26",
+    "notes": "Enrollment No: 202001116 | Hometown: Samastipur, Bihar | Assigned Seat: N26"
   },
   {
     "id": "att-stu-patel-shruti-rutanju",
@@ -2716,8 +2720,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "starv2888@gmail.com",
     "phone": "7644977977",
     "categoryId": "mbbs",
-    "seatId": "P25",
-    "notes": "Enrollment No: 202001117 | Hometown: Scarborough, Maine & Anand, Gujarat | Assigned Seat: P25"
+    "seatId": "N25",
+    "notes": "Enrollment No: 202001117 | Hometown: Scarborough, Maine & Anand, Gujarat | Assigned Seat: N25"
   },
   {
     "id": "att-stu-punya-prakash-k",
@@ -2728,8 +2732,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "punyaprakashk2001@gmail.com",
     "phone": "8129749735",
     "categoryId": "mbbs",
-    "seatId": "P24",
-    "notes": "Enrollment No: 202001121 | Hometown: Malappuram, Kerala | Assigned Seat: P24"
+    "seatId": "N24",
+    "notes": "Enrollment No: 202001121 | Hometown: Malappuram, Kerala | Assigned Seat: N24"
   },
   {
     "id": "att-stu-rahul",
@@ -2740,8 +2744,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "rahulsaini786xx@gmail.com",
     "phone": "8708840109",
     "categoryId": "mbbs",
-    "seatId": "P23",
-    "notes": "Enrollment No: 202001122 | Hometown: Bhiwani, Haryana | Assigned Seat: P23"
+    "seatId": "N23",
+    "notes": "Enrollment No: 202001122 | Hometown: Bhiwani, Haryana | Assigned Seat: N23"
   },
   {
     "id": "att-stu-rajshree",
@@ -2752,8 +2756,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "rajshree.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6204953438",
     "categoryId": "mbbs",
-    "seatId": "P22",
-    "notes": "Enrollment No: 202001123 | Hometown: Patna, Bihar | Assigned Seat: P22"
+    "seatId": "N22",
+    "notes": "Enrollment No: 202001123 | Hometown: Patna, Bihar | Assigned Seat: N22"
   },
   {
     "id": "att-stu-rakesh-raushan",
@@ -2764,8 +2768,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "Rakeshraushan112@gmail.com",
     "phone": "9799092569",
     "categoryId": "mbbs",
-    "seatId": "P21",
-    "notes": "Enrollment No: 202001124 | Hometown: Saharsa | Assigned Seat: P21"
+    "seatId": "N21",
+    "notes": "Enrollment No: 202001124 | Hometown: Saharsa | Assigned Seat: N21"
   },
   {
     "id": "att-stu-ritik-kothari",
@@ -2776,8 +2780,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ritikkotharigrd2000@gmail.com",
     "phone": "7632894316",
     "categoryId": "mbbs",
-    "seatId": "Q27",
-    "notes": "Enrollment No: 202001126 | Hometown: Giridih | Assigned Seat: Q27"
+    "seatId": "O27",
+    "notes": "Enrollment No: 202001126 | Hometown: Giridih | Assigned Seat: O27"
   },
   {
     "id": "att-stu-riya-ben",
@@ -2788,8 +2792,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "riya.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8606774642",
     "categoryId": "mbbs",
-    "seatId": "Q26",
-    "notes": "Enrollment No: 202001127 | Hometown: Palakkad,Kerala | Assigned Seat: Q26"
+    "seatId": "O26",
+    "notes": "Enrollment No: 202001127 | Hometown: Palakkad,Kerala | Assigned Seat: O26"
   },
   {
     "id": "att-stu-rohit-kr-sahani",
@@ -2800,8 +2804,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "rohitkrsahani2@gmail.com",
     "phone": "7890847759",
     "categoryId": "mbbs",
-    "seatId": "Q25",
-    "notes": "Enrollment No: 202001128 | Hometown: Barrackpore | Assigned Seat: Q25"
+    "seatId": "O25",
+    "notes": "Enrollment No: 202001128 | Hometown: Barrackpore | Assigned Seat: O25"
   },
   {
     "id": "att-stu-sabita-meher",
@@ -2812,8 +2816,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sabitameher054@gmail.com",
     "phone": "8260607752",
     "categoryId": "mbbs",
-    "seatId": "Q24",
-    "notes": "Enrollment No: 202001130 | Hometown: Duajhar, khariar , Nuapada , Odisha | Assigned Seat: Q24"
+    "seatId": "O24",
+    "notes": "Enrollment No: 202001130 | Hometown: Duajhar, khariar , Nuapada , Odisha | Assigned Seat: O24"
   },
   {
     "id": "att-stu-sandeep-kumar",
@@ -2824,8 +2828,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sandeep.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9142602801",
     "categoryId": "mbbs",
-    "seatId": "Q23",
-    "notes": "Enrollment No: 202001132 | Hometown: Jehanabad | Assigned Seat: Q23"
+    "seatId": "O23",
+    "notes": "Enrollment No: 202001132 | Hometown: Jehanabad | Assigned Seat: O23"
   },
   {
     "id": "att-stu-sandeep-kumar-patro",
@@ -2836,8 +2840,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sandeepp.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7205409551",
     "categoryId": "mbbs",
-    "seatId": "Q22",
-    "notes": "Enrollment No: 202001133 | Hometown: Bhubaneswar | Assigned Seat: Q22"
+    "seatId": "O22",
+    "notes": "Enrollment No: 202001133 | Hometown: Bhubaneswar | Assigned Seat: O22"
   },
   {
     "id": "att-stu-satyajeet-raj",
@@ -2848,8 +2852,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "satyajeet.mbbs-2020@aiimskalyani.edu.in",
     "phone": "7564035942",
     "categoryId": "mbbs",
-    "seatId": "Q21",
-    "notes": "Enrollment No: 202001135 | Hometown: Munger | Assigned Seat: Q21"
+    "seatId": "O21",
+    "notes": "Enrollment No: 202001135 | Hometown: Munger | Assigned Seat: O21"
   },
   {
     "id": "att-stu-sharmistha-rout",
@@ -2860,8 +2864,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sharmistha.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8905157891",
     "categoryId": "mbbs",
-    "seatId": "R27",
-    "notes": "Enrollment No: 202001139 | Hometown: Bhubaneswar | Assigned Seat: R27"
+    "seatId": "P27",
+    "notes": "Enrollment No: 202001139 | Hometown: Bhubaneswar | Assigned Seat: P27"
   },
   {
     "id": "att-stu-shifana-t",
@@ -2872,8 +2876,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shifana.mbbs-2020@aiimskalyani.edu.in",
     "phone": "6238885248",
     "categoryId": "mbbs",
-    "seatId": "R26",
-    "notes": "Enrollment No: 202001140 | Hometown: Kerala | Assigned Seat: R26"
+    "seatId": "P26",
+    "notes": "Enrollment No: 202001140 | Hometown: Kerala | Assigned Seat: P26"
   },
   {
     "id": "att-stu-shivam-rajesh-chauhan",
@@ -2884,8 +2888,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shivam10chauhan@gmail.com",
     "phone": "9958065849",
     "categoryId": "mbbs",
-    "seatId": "R25",
-    "notes": "Enrollment No: 202001141 | Hometown: Gurgaon | Assigned Seat: R25"
+    "seatId": "P25",
+    "notes": "Enrollment No: 202001141 | Hometown: Gurgaon | Assigned Seat: P25"
   },
   {
     "id": "att-stu-shivani-kumari",
@@ -2896,8 +2900,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shivani.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9199180555",
     "categoryId": "mbbs",
-    "seatId": "R24",
-    "notes": "Enrollment No: 202001142 | Hometown: Patna | Assigned Seat: R24"
+    "seatId": "P24",
+    "notes": "Enrollment No: 202001142 | Hometown: Patna | Assigned Seat: P24"
   },
   {
     "id": "att-stu-shubhrajit-sahoo",
@@ -2908,8 +2912,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shubhrajit2018@gmail.com",
     "phone": "7848805484",
     "categoryId": "mbbs",
-    "seatId": "R23",
-    "notes": "Enrollment No: 202001145 | Hometown: Bhadrak | Assigned Seat: R23"
+    "seatId": "P23",
+    "notes": "Enrollment No: 202001145 | Hometown: Bhadrak | Assigned Seat: P23"
   },
   {
     "id": "att-stu-soumya-parida",
@@ -2920,8 +2924,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "paridasoumya1@gmail.com",
     "phone": "7735479962",
     "categoryId": "mbbs",
-    "seatId": "R22",
-    "notes": "Enrollment No: 202001148 | Hometown: Kendrapada , Odisha | Assigned Seat: R22"
+    "seatId": "P22",
+    "notes": "Enrollment No: 202001148 | Hometown: Kendrapada , Odisha | Assigned Seat: P22"
   },
   {
     "id": "att-stu-tiyasha-chatterjee",
@@ -2932,8 +2936,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "tiyasha.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9674622440",
     "categoryId": "mbbs",
-    "seatId": "R21",
-    "notes": "Enrollment No: 202001157 | Hometown: Kolkata | Assigned Seat: R21"
+    "seatId": "P21",
+    "notes": "Enrollment No: 202001157 | Hometown: Kolkata | Assigned Seat: P21"
   },
   {
     "id": "att-stu-varuna-vinod-a",
@@ -2944,8 +2948,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "iamvaruna20@gmail.com",
     "phone": "9656756730",
     "categoryId": "mbbs",
-    "seatId": "S27",
-    "notes": "Enrollment No: 202001160 | Hometown: Kerala | Assigned Seat: S27"
+    "seatId": "Q27",
+    "notes": "Enrollment No: 202001160 | Hometown: Kerala | Assigned Seat: Q27"
   },
   {
     "id": "att-stu-vineeta-meena",
@@ -2956,8 +2960,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "vineeta.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8824036959",
     "categoryId": "mbbs",
-    "seatId": "S26",
-    "notes": "Enrollment No: 202001162 | Hometown: Sikar | Assigned Seat: S26"
+    "seatId": "Q26",
+    "notes": "Enrollment No: 202001162 | Hometown: Sikar | Assigned Seat: Q26"
   },
   {
     "id": "att-stu-vulasala-venkata-sai-charan",
@@ -2968,8 +2972,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "vulasala.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8341737691",
     "categoryId": "mbbs",
-    "seatId": "S25",
-    "notes": "Enrollment No: 202001163 | Hometown: Proddatur, Andhra Pradesh | Assigned Seat: S25"
+    "seatId": "Q25",
+    "notes": "Enrollment No: 202001163 | Hometown: Proddatur, Andhra Pradesh | Assigned Seat: Q25"
   },
   {
     "id": "att-stu-divyansh-charan",
@@ -2980,8 +2984,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "divyansh.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8824714602",
     "categoryId": "mbbs",
-    "seatId": "S24",
-    "notes": "Enrollment No: 202001168 | Hometown: Pali, Rajasthan | Assigned Seat: S24"
+    "seatId": "Q24",
+    "notes": "Enrollment No: 202001168 | Hometown: Pali, Rajasthan | Assigned Seat: Q24"
   },
   {
     "id": "att-stu-lucky-bansal",
@@ -2992,8 +2996,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "lucky.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8824926103",
     "categoryId": "mbbs",
-    "seatId": "S23",
-    "notes": "Enrollment No: 202001170 | Hometown: Jaipur , Rajasthan | Assigned Seat: S23"
+    "seatId": "Q23",
+    "notes": "Enrollment No: 202001170 | Hometown: Jaipur , Rajasthan | Assigned Seat: Q23"
   },
   {
     "id": "att-stu-manisha-kanwar",
@@ -3004,8 +3008,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "manisha.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8100143700",
     "categoryId": "mbbs",
-    "seatId": "S22",
-    "notes": "Enrollment No: 202001172 | Hometown: Nagaur Rajasthan | Assigned Seat: S22"
+    "seatId": "Q22",
+    "notes": "Enrollment No: 202001172 | Hometown: Nagaur Rajasthan | Assigned Seat: Q22"
   },
   {
     "id": "att-stu-murari-sharma",
@@ -3016,8 +3020,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sharmamd1405@gmail.com",
     "phone": "7424949993",
     "categoryId": "mbbs",
-    "seatId": "S21",
-    "notes": "Enrollment No: 202001173 | Hometown: jaipur | Assigned Seat: S21"
+    "seatId": "Q21",
+    "notes": "Enrollment No: 202001173 | Hometown: jaipur | Assigned Seat: Q21"
   },
   {
     "id": "att-stu-awantika-jha",
@@ -3028,8 +3032,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "awantika.mbbs-2020@aiimskalyani.edu.in",
     "phone": "8918275082",
     "categoryId": "mbbs",
-    "seatId": "T27",
-    "notes": "Enrollment No: Enrolment number: 20200181 | Hometown: Durgapur | Assigned Seat: T27"
+    "seatId": "R27",
+    "notes": "Enrollment No: Enrolment number: 20200181 | Hometown: Durgapur | Assigned Seat: R27"
   },
   {
     "id": "att-stu-kinshuk-khalua",
@@ -3040,8 +3044,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "kinshuk.mbbs-2020@aiimskalyani.edu.in",
     "phone": "9339307495",
     "categoryId": "mbbs",
-    "seatId": "T26",
-    "notes": "Enrollment No: Roll :-57 / Enrollment no:- 202001107 | Hometown: Moyna, Purba Medinipur , 721642 | Assigned Seat: T26"
+    "seatId": "R26",
+    "notes": "Enrollment No: Roll :-57 / Enrollment no:- 202001107 | Hometown: Moyna, Purba Medinipur , 721642 | Assigned Seat: R26"
   },
   {
     "id": "att-stu-mihir-sutradhar",
@@ -3052,20 +3056,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mihir.sutradhar154@gmail.com",
     "phone": "8822602193",
     "categoryId": "mbbs",
-    "seatId": "T25",
-    "notes": "Enrollment No: Roll no. 63/ enrolment no. 202001113 | Hometown: Silchar,Assam | Assigned Seat: T25"
-  },
-  {
-    "id": "att-stu-sharafudheen-ep",
-    "name": "SHARAFUDHEEN EP",
-    "designation": "MBBS Graduate",
-    "department": "MBBS 2020",
-    "institution": "AIIMS Kalyani",
-    "email": "sharafudheencu@gmail.com",
-    "phone": "6383560594",
-    "categoryId": "mbbs",
-    "seatId": "T24",
-    "notes": "Enrollment No: Roll no.88/ enrollment no.202001138 | Hometown: Kozhikode | Assigned Seat: T24"
+    "seatId": "R25",
+    "notes": "Enrollment No: Roll no. 63/ enrolment no. 202001113 | Hometown: Silchar,Assam | Assigned Seat: R25"
   },
   {
     "id": "att-stu-aditi-mandal",
@@ -3076,8 +3068,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aditimandal0328@gmail.com",
     "phone": "7584874474",
     "categoryId": "nursing",
-    "seatId": "V27",
-    "notes": "Enrollment No: 20210201 | Hometown: Purba Barddhaman, West Bengal | Assigned Seat: V27"
+    "seatId": "T20",
+    "notes": "Enrollment No: 20210201 | Hometown: Purba Barddhaman, West Bengal | Assigned Seat: T20"
   },
   {
     "id": "att-stu-adrita-mukherjee",
@@ -3088,8 +3080,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mukherjeeadrita8@gmail.com",
     "phone": "9382419184",
     "categoryId": "nursing",
-    "seatId": "V26",
-    "notes": "Enrollment No: 20210202 | Hometown: Midnapore | Assigned Seat: V26"
+    "seatId": "T19",
+    "notes": "Enrollment No: 20210202 | Hometown: Midnapore | Assigned Seat: T19"
   },
   {
     "id": "att-stu-agnibha-paul",
@@ -3100,8 +3092,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "agnibha.bscnursing-2021@aiimskalyani.edu.in",
     "phone": "6296247051",
     "categoryId": "nursing",
-    "seatId": "V25",
-    "notes": "Enrollment No: 20210203 | Hometown: Coochbehar, West Bengal | Assigned Seat: V25"
+    "seatId": "T18",
+    "notes": "Enrollment No: 20210203 | Hometown: Coochbehar, West Bengal | Assigned Seat: T18"
   },
   {
     "id": "att-stu-anjali-kumari",
@@ -3112,8 +3104,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "anjalisingh11sep2001@gmail.com",
     "phone": "9523587958",
     "categoryId": "nursing",
-    "seatId": "V24",
-    "notes": "Enrollment No: 20210204 | Hometown: Bihar | Assigned Seat: V24"
+    "seatId": "T17",
+    "notes": "Enrollment No: 20210204 | Hometown: Bihar | Assigned Seat: T17"
   },
   {
     "id": "att-stu-ankita-ghosh",
@@ -3124,8 +3116,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ghoshankita9732@gmail.com",
     "phone": "7550811864",
     "categoryId": "nursing",
-    "seatId": "V23",
-    "notes": "Enrollment No: 20210205 | Hometown: Howrah | Assigned Seat: V23"
+    "seatId": "T16",
+    "notes": "Enrollment No: 20210205 | Hometown: Howrah | Assigned Seat: T16"
   },
   {
     "id": "att-stu-ayantika-halder",
@@ -3136,8 +3128,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "halderayantika834@gmail.com",
     "phone": "7810816310",
     "categoryId": "nursing",
-    "seatId": "V22",
-    "notes": "Enrollment No: 20210206 | Hometown: Bongaon | Assigned Seat: V22"
+    "seatId": "T15",
+    "notes": "Enrollment No: 20210206 | Hometown: Bongaon | Assigned Seat: T15"
   },
   {
     "id": "att-stu-basira-sultana",
@@ -3148,8 +3140,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sultanabasira803@gmail.com",
     "phone": "8945998122",
     "categoryId": "nursing",
-    "seatId": "V21",
-    "notes": "Enrollment No: 20210207 | Hometown: Bagnan, Howrah,west bengal | Assigned Seat: V21"
+    "seatId": "T14",
+    "notes": "Enrollment No: 20210207 | Hometown: Bagnan, Howrah,west bengal | Assigned Seat: T14"
   },
   {
     "id": "att-stu-bidisha-chunari",
@@ -3160,8 +3152,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "bidishachunari46@gmail.com",
     "phone": "6295520563",
     "categoryId": "nursing",
-    "seatId": "W27",
-    "notes": "Enrollment No: 20210208 | Hometown: Krishnanagar | Assigned Seat: W27"
+    "seatId": "T13",
+    "notes": "Enrollment No: 20210208 | Hometown: Krishnanagar | Assigned Seat: T13"
   },
   {
     "id": "att-stu-chayanika-bhattacharyya",
@@ -3172,8 +3164,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "chayanikabhattacharyya4948@gmail.com",
     "phone": "9830079476",
     "categoryId": "nursing",
-    "seatId": "W26",
-    "notes": "Enrollment No: 20210210 | Hometown: Sodepur | Assigned Seat: W26"
+    "seatId": "T12",
+    "notes": "Enrollment No: 20210210 | Hometown: Sodepur | Assigned Seat: T12"
   },
   {
     "id": "att-stu-dipanjana-dey",
@@ -3184,8 +3176,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "dipanjanad597@gmail.com",
     "phone": "6290455131",
     "categoryId": "nursing",
-    "seatId": "W25",
-    "notes": "Enrollment No: 20210212 | Hometown: Madhyamgram | Assigned Seat: W25"
+    "seatId": "T11",
+    "notes": "Enrollment No: 20210212 | Hometown: Madhyamgram | Assigned Seat: T11"
   },
   {
     "id": "att-stu-khushboo-kumari",
@@ -3196,8 +3188,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "kumarikhushboo0123@gmail.com",
     "phone": "9973417831",
     "categoryId": "nursing",
-    "seatId": "W24",
-    "notes": "Enrollment No: 20210216 | Hometown: Jogbani (Bihar) | Assigned Seat: W24"
+    "seatId": "T10",
+    "notes": "Enrollment No: 20210216 | Hometown: Jogbani (Bihar) | Assigned Seat: T10"
   },
   {
     "id": "att-stu-koyel-bindu",
@@ -3208,8 +3200,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "bindukoyel2000@gmail.com",
     "phone": "6295040670",
     "categoryId": "nursing",
-    "seatId": "W23",
-    "notes": "Enrollment No: 20210217 | Hometown: Falta ( West Bengal ) | Assigned Seat: W23"
+    "seatId": "T9",
+    "notes": "Enrollment No: 20210217 | Hometown: Falta ( West Bengal ) | Assigned Seat: T9"
   },
   {
     "id": "att-stu-kriti-rani",
@@ -3220,8 +3212,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "kritirani09@gmail.com",
     "phone": "8017475967",
     "categoryId": "nursing",
-    "seatId": "W22",
-    "notes": "Enrollment No: 20210218 | Hometown: Patna, Kolkata | Assigned Seat: W22"
+    "seatId": "T8",
+    "notes": "Enrollment No: 20210218 | Hometown: Patna, Kolkata | Assigned Seat: T8"
   },
   {
     "id": "att-stu-madhurima-pal",
@@ -3232,8 +3224,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "pal.madhurima2002@gmail.com",
     "phone": "7076867322",
     "categoryId": "nursing",
-    "seatId": "W21",
-    "notes": "Enrollment No: 20210219 | Hometown: Nagarukhra, Nadia | Assigned Seat: W21"
+    "seatId": "U20",
+    "notes": "Enrollment No: 20210219 | Hometown: Nagarukhra, Nadia | Assigned Seat: U20"
   },
   {
     "id": "att-stu-megha-maiti",
@@ -3244,8 +3236,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "meghamaiti288@gmail.com",
     "phone": "9593286407",
     "categoryId": "nursing",
-    "seatId": "X14",
-    "notes": "Enrollment No: 20210221 | Hometown: Dakshin Mechogram, Panskura, Purba Medinipur | Assigned Seat: X14"
+    "seatId": "U19",
+    "notes": "Enrollment No: 20210221 | Hometown: Dakshin Mechogram, Panskura, Purba Medinipur | Assigned Seat: U19"
   },
   {
     "id": "att-stu-megha-shaw",
@@ -3256,8 +3248,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "shawmegha451@gmail.com",
     "phone": "7908304766",
     "categoryId": "nursing",
-    "seatId": "X13",
-    "notes": "Enrollment No: 20210222 | Hometown: Kakdwip,south 24 pargana west bengal | Assigned Seat: X13"
+    "seatId": "U18",
+    "notes": "Enrollment No: 20210222 | Hometown: Kakdwip,south 24 pargana west bengal | Assigned Seat: U18"
   },
   {
     "id": "att-stu-mobina-parveen",
@@ -3268,8 +3260,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mobinaparveen12@gmail.com",
     "phone": "9593972644",
     "categoryId": "nursing",
-    "seatId": "X12",
-    "notes": "Enrollment No: 20210224 | Hometown: West bengal | Assigned Seat: X12"
+    "seatId": "U17",
+    "notes": "Enrollment No: 20210224 | Hometown: West bengal | Assigned Seat: U17"
   },
   {
     "id": "att-stu-mohua-khatun",
@@ -3280,8 +3272,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mohua.bscnursing-2021@aiimskalyani.edu.in",
     "phone": "7074559669",
     "categoryId": "nursing",
-    "seatId": "X11",
-    "notes": "Enrollment No: 20210225 | Hometown: Arambagh, Hooghly, West Bengal | Assigned Seat: X11"
+    "seatId": "U16",
+    "notes": "Enrollment No: 20210225 | Hometown: Arambagh, Hooghly, West Bengal | Assigned Seat: U16"
   },
   {
     "id": "att-stu-nargis-banu",
@@ -3292,8 +3284,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "nargisbanu004@gmail.com",
     "phone": "7501758665",
     "categoryId": "nursing",
-    "seatId": "X10",
-    "notes": "Enrollment No: 20210230 | Hometown: Uttar Dinajpur | Assigned Seat: X10"
+    "seatId": "U15",
+    "notes": "Enrollment No: 20210230 | Hometown: Uttar Dinajpur | Assigned Seat: U15"
   },
   {
     "id": "att-stu-neha-bharti",
@@ -3304,8 +3296,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "nehabharti8257@gmail.com",
     "phone": "9534028858",
     "categoryId": "nursing",
-    "seatId": "X9",
-    "notes": "Enrollment No: 20210231 | Hometown: Bihar | Assigned Seat: X9"
+    "seatId": "U14",
+    "notes": "Enrollment No: 20210231 | Hometown: Bihar | Assigned Seat: U14"
   },
   {
     "id": "att-stu-paromita-ghoshal",
@@ -3316,8 +3308,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "paromitaghoshal10@gmail.com",
     "phone": "6289704330",
     "categoryId": "nursing",
-    "seatId": "X8",
-    "notes": "Enrollment No: 20210234 | Hometown: Baruipur | Assigned Seat: X8"
+    "seatId": "U13",
+    "notes": "Enrollment No: 20210234 | Hometown: Baruipur | Assigned Seat: U13"
   },
   {
     "id": "att-stu-pinki-sharma",
@@ -3328,8 +3320,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "pinkisharma.sant1996@gmail.com",
     "phone": "9667437706",
     "categoryId": "nursing",
-    "seatId": "UB1-27",
-    "notes": "Enrollment No: 20210235 | Hometown: Delhi | Assigned Seat: UB1-27"
+    "seatId": "U12",
+    "notes": "Enrollment No: 20210235 | Hometown: Delhi | Assigned Seat: U12"
   },
   {
     "id": "att-stu-preeti-dutta",
@@ -3340,8 +3332,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "preetidutta2021@gmail.com",
     "phone": "7074977255",
     "categoryId": "nursing",
-    "seatId": "UB1-26",
-    "notes": "Enrollment No: 20210237 | Hometown: Bankura | Assigned Seat: UB1-26"
+    "seatId": "U11",
+    "notes": "Enrollment No: 20210237 | Hometown: Bankura | Assigned Seat: U11"
   },
   {
     "id": "att-stu-pritha-roy",
@@ -3352,8 +3344,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "pritha1405@gmail.com",
     "phone": "8777026833",
     "categoryId": "nursing",
-    "seatId": "UB1-25",
-    "notes": "Enrollment No: 20210238 | Hometown: Kolkata | Assigned Seat: UB1-25"
+    "seatId": "U10",
+    "notes": "Enrollment No: 20210238 | Hometown: Kolkata | Assigned Seat: U10"
   },
   {
     "id": "att-stu-puspita-biswas",
@@ -3364,8 +3356,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "puspitatitli@gmail.com",
     "phone": "7001892495",
     "categoryId": "nursing",
-    "seatId": "UB1-24",
-    "notes": "Enrollment No: 20210242 | Hometown: Adra, Purulia, West Bengal | Assigned Seat: UB1-24"
+    "seatId": "U9",
+    "notes": "Enrollment No: 20210242 | Hometown: Adra, Purulia, West Bengal | Assigned Seat: U9"
   },
   {
     "id": "att-stu-samina-yasmin",
@@ -3376,8 +3368,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "yasminsamina2312@gmail.com",
     "phone": "8529460880",
     "categoryId": "nursing",
-    "seatId": "UB1-23",
-    "notes": "Enrollment No: 20210243 | Hometown: Uttar Dinajpur | Assigned Seat: UB1-23"
+    "seatId": "U8",
+    "notes": "Enrollment No: 20210243 | Hometown: Uttar Dinajpur | Assigned Seat: U8"
   },
   {
     "id": "att-stu-sananda-das",
@@ -3388,8 +3380,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sanandaavidipta@gmail.com",
     "phone": "9330715505",
     "categoryId": "nursing",
-    "seatId": "UB1-22",
-    "notes": "Enrollment No: 20210244 | Hometown: Tarakeswar | Assigned Seat: UB1-22"
+    "seatId": "V20",
+    "notes": "Enrollment No: 20210244 | Hometown: Tarakeswar | Assigned Seat: V20"
   },
   {
     "id": "att-stu-sarmin-sultana",
@@ -3400,8 +3392,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sarmins2000@gmail.com",
     "phone": "8436365622",
     "categoryId": "nursing",
-    "seatId": "UB1-21",
-    "notes": "Enrollment No: 20210247 | Hometown: Barasat | Assigned Seat: UB1-21"
+    "seatId": "V19",
+    "notes": "Enrollment No: 20210247 | Hometown: Barasat | Assigned Seat: V19"
   },
   {
     "id": "att-stu-shabnam-parvin",
@@ -3412,8 +3404,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "parvinshabnam2002@gmail.com",
     "phone": "6297820802",
     "categoryId": "nursing",
-    "seatId": "UB2-27",
-    "notes": "Enrollment No: 20210248 | Hometown: Bharatpur | Assigned Seat: UB2-27"
+    "seatId": "V18",
+    "notes": "Enrollment No: 20210248 | Hometown: Bharatpur | Assigned Seat: V18"
   },
   {
     "id": "att-stu-sonam-kumari",
@@ -3424,8 +3416,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sonamriva20@gmail.com",
     "phone": "8404882688",
     "categoryId": "nursing",
-    "seatId": "UB2-26",
-    "notes": "Enrollment No: 20210250 | Hometown: Bihar | Assigned Seat: UB2-26"
+    "seatId": "V17",
+    "notes": "Enrollment No: 20210250 | Hometown: Bihar | Assigned Seat: V17"
   },
   {
     "id": "att-stu-suchismita-tikadar",
@@ -3436,8 +3428,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "suchismitatikadar06@gmail.com",
     "phone": "8167823201",
     "categoryId": "nursing",
-    "seatId": "UB2-25",
-    "notes": "Enrollment No: 20210252 | Hometown: Barrackpore | Assigned Seat: UB2-25"
+    "seatId": "V16",
+    "notes": "Enrollment No: 20210252 | Hometown: Barrackpore | Assigned Seat: V16"
   },
   {
     "id": "att-stu-sukanya-banerjee",
@@ -3448,8 +3440,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "tuabanerjee1998@gmail.com",
     "phone": "8967823183",
     "categoryId": "nursing",
-    "seatId": "UB2-24",
-    "notes": "Enrollment No: 20210254 | Hometown: Basirhat | Assigned Seat: UB2-24"
+    "seatId": "V15",
+    "notes": "Enrollment No: 20210254 | Hometown: Basirhat | Assigned Seat: V15"
   },
   {
     "id": "att-stu-sushmita-mondal",
@@ -3460,8 +3452,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sushmitadna21@gmail.com",
     "phone": "7501786976",
     "categoryId": "nursing",
-    "seatId": "UB2-23",
-    "notes": "Enrollment No: 20210255 | Hometown: Bagnan | Assigned Seat: UB2-23"
+    "seatId": "V14",
+    "notes": "Enrollment No: 20210255 | Hometown: Bagnan | Assigned Seat: V14"
   },
   {
     "id": "att-stu-tanisha-biswas",
@@ -3472,8 +3464,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "tanishabiswas2412@gmail.com",
     "phone": "9735901944",
     "categoryId": "nursing",
-    "seatId": "UB2-22",
-    "notes": "Enrollment No: 20210256 | Hometown: Krishnanagar, Nadia | Assigned Seat: UB2-22"
+    "seatId": "V13",
+    "notes": "Enrollment No: 20210256 | Hometown: Krishnanagar, Nadia | Assigned Seat: V13"
   },
   {
     "id": "att-stu-nabanita-de",
@@ -3484,8 +3476,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "denabanita2020@gmail.com",
     "phone": "9163114520",
     "categoryId": "nursing",
-    "seatId": "UB2-21",
-    "notes": "Enrollment No: 20210259 | Hometown: DumDum west bengal | Assigned Seat: UB2-21"
+    "seatId": "V12",
+    "notes": "Enrollment No: 20210259 | Hometown: DumDum west bengal | Assigned Seat: V12"
   },
   {
     "id": "att-stu-shreyasi-hati",
@@ -3496,8 +3488,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "harukinanase1999@gmail.com",
     "phone": "6297209181",
     "categoryId": "nursing",
-    "seatId": "UB3-27",
-    "notes": "Enrollment No: 20210260 | Hometown: Jamuria, Asansol | Assigned Seat: UB3-27"
+    "seatId": "V11",
+    "notes": "Enrollment No: 20210260 | Hometown: Jamuria, Asansol | Assigned Seat: V11"
   },
   {
     "id": "att-stu-soni-kumari",
@@ -3508,8 +3500,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sahnisoni05@gmail.com",
     "phone": "9660339459",
     "categoryId": "nursing",
-    "seatId": "UB3-26",
-    "notes": "Enrollment No: 20210261 | Hometown: Patna, Bihar | Assigned Seat: UB3-26"
+    "seatId": "V10",
+    "notes": "Enrollment No: 20210261 | Hometown: Patna, Bihar | Assigned Seat: V10"
   },
   {
     "id": "att-stu-aprajita-pal",
@@ -3520,8 +3512,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "aprajitapal01@gmail.com",
     "phone": "8294678844",
     "categoryId": "nursing",
-    "seatId": "UB3-25",
-    "notes": "Enrollment No: 20230401 | Hometown: Bhagalpur | Assigned Seat: UB3-25"
+    "seatId": "V9",
+    "notes": "Enrollment No: 20230401 | Hometown: Bhagalpur | Assigned Seat: V9"
   },
   {
     "id": "att-stu-sashi-bag",
@@ -3532,8 +3524,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sashi.mscnursing-2023@aiimskalyani.edu.in",
     "phone": "8018894955",
     "categoryId": "nursing",
-    "seatId": "UB3-24",
-    "notes": "Enrollment No: 20230406 | Hometown: Nuapada, Odisha | Assigned Seat: UB3-24"
+    "seatId": "V8",
+    "notes": "Enrollment No: 20230406 | Hometown: Nuapada, Odisha | Assigned Seat: V8"
   },
   {
     "id": "att-stu-mandabi-sarkar",
@@ -3544,8 +3536,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mandabisarkar@gmail.com",
     "phone": "8900105792",
     "categoryId": "nursing",
-    "seatId": "UB3-23",
-    "notes": "Enrollment No: 20240407 | Hometown: Berhampore | Assigned Seat: UB3-23"
+    "seatId": "W20",
+    "notes": "Enrollment No: 20240407 | Hometown: Berhampore | Assigned Seat: W20"
   },
   {
     "id": "att-stu-moumita-maji",
@@ -3556,8 +3548,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "majimoumita4m@gmail.com",
     "phone": "9134582166",
     "categoryId": "nursing",
-    "seatId": "UB3-22",
-    "notes": "Enrollment No: 20240408 | Hometown: Asansol | Assigned Seat: UB3-22"
+    "seatId": "W19",
+    "notes": "Enrollment No: 20240408 | Hometown: Asansol | Assigned Seat: W19"
   },
   {
     "id": "att-stu-prama-chatterjee",
@@ -3568,8 +3560,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "prama.mscnursing-2024@aiimskalyani.edu.in",
     "phone": "8420623906",
     "categoryId": "nursing",
-    "seatId": "UB3-21",
-    "notes": "Enrollment No: 20240409 | Hometown: Kolkata, West Bengal | Assigned Seat: UB3-21"
+    "seatId": "W18",
+    "notes": "Enrollment No: 20240409 | Hometown: Kolkata, West Bengal | Assigned Seat: W18"
   },
   {
     "id": "att-stu-roji-mandal",
@@ -3580,8 +3572,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "rojimandal000@gmail.com",
     "phone": "6291421596",
     "categoryId": "nursing",
-    "seatId": "UB4-27",
-    "notes": "Enrollment No: 20240410 | Hometown: Ranaghat, west bengal | Assigned Seat: UB4-27"
+    "seatId": "W17",
+    "notes": "Enrollment No: 20240410 | Hometown: Ranaghat, west bengal | Assigned Seat: W17"
   },
   {
     "id": "att-stu-swati-sonam",
@@ -3592,8 +3584,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "swatisonam3300@gmail.com",
     "phone": "8677000790",
     "categoryId": "nursing",
-    "seatId": "UB4-26",
-    "notes": "Enrollment No: 20240411 | Hometown: Patna | Assigned Seat: UB4-26"
+    "seatId": "W16",
+    "notes": "Enrollment No: 20240411 | Hometown: Patna | Assigned Seat: W16"
   },
   {
     "id": "att-stu-nidhi",
@@ -3604,8 +3596,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "nidhidhandhi29@gmail.com",
     "phone": "7015693798",
     "categoryId": "nursing",
-    "seatId": "UB4-25",
-    "notes": "Enrollment No: 20240412 | Hometown: Haryana | Assigned Seat: UB4-25"
+    "seatId": "W15",
+    "notes": "Enrollment No: 20240412 | Hometown: Haryana | Assigned Seat: W15"
   },
   {
     "id": "att-stu-arundhati-mukherjee",
@@ -3616,8 +3608,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "tutul.9711@gmail.com",
     "phone": "9051909471",
     "categoryId": "pg",
-    "seatId": "UB2-20",
-    "notes": "Enrollment No: 2023032 | Hometown: Kolkata | Assigned Seat: UB2-20"
+    "seatId": "S27",
+    "notes": "Enrollment No: 2023032 | Hometown: Kolkata | Assigned Seat: S27"
   },
   {
     "id": "att-stu-grace-lhinghoithem-haokip",
@@ -3628,8 +3620,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "gracehaokip8@gmail.com",
     "phone": "9831529419",
     "categoryId": "pg",
-    "seatId": "UB2-19",
-    "notes": "Enrollment No: 2023033 | Hometown: CHURACHANDPUR , MANIPUR | Assigned Seat: UB2-19"
+    "seatId": "S26",
+    "notes": "Enrollment No: 2023033 | Hometown: CHURACHANDPUR , MANIPUR | Assigned Seat: S26"
   },
   {
     "id": "att-stu-jayashree-kalita",
@@ -3640,8 +3632,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "jayashreeas5697@gmail.com",
     "phone": "8723959725",
     "categoryId": "pg",
-    "seatId": "UB2-18",
-    "notes": "Enrollment No: 2023035 | Hometown: guwahati | Assigned Seat: UB2-18"
+    "seatId": "S25",
+    "notes": "Enrollment No: 2023035 | Hometown: guwahati | Assigned Seat: S25"
   },
   {
     "id": "att-stu-kshetrimayum-ammy",
@@ -3652,8 +3644,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "kshetrimayum.micro_pgt23@aiimskalyani.edu.in",
     "phone": "8979219518",
     "categoryId": "pg",
-    "seatId": "UB2-17",
-    "notes": "Enrollment No: 2023036 | Hometown: Manipur | Assigned Seat: UB2-17"
+    "seatId": "S24",
+    "notes": "Enrollment No: 2023036 | Hometown: Manipur | Assigned Seat: S24"
   },
   {
     "id": "att-stu-dr-manshi-kumari",
@@ -3664,8 +3656,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "mansi.singh2021@gmail.com",
     "phone": "8207207670",
     "categoryId": "pg",
-    "seatId": "UB2-16",
-    "notes": "Enrollment No: 2023037 | Hometown: Varanasi,Uttar Pradesh | Assigned Seat: UB2-16"
+    "seatId": "S23",
+    "notes": "Enrollment No: 2023037 | Hometown: Varanasi,Uttar Pradesh | Assigned Seat: S23"
   },
   {
     "id": "att-stu-peeyush-kiran-tripathy",
@@ -3676,8 +3668,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "peeyushkirantripathy@gmail.com",
     "phone": "7978924859",
     "categoryId": "pg",
-    "seatId": "UB2-15",
-    "notes": "Enrollment No: 2023038 | Hometown: Bargarh, odisha | Assigned Seat: UB2-15"
+    "seatId": "S22",
+    "notes": "Enrollment No: 2023038 | Hometown: Bargarh, odisha | Assigned Seat: S22"
   },
   {
     "id": "att-stu-dr-ramya-kp",
@@ -3688,8 +3680,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ramyakp1209@gmail.com",
     "phone": "7019124752",
     "categoryId": "pg",
-    "seatId": "UB2-14",
-    "notes": "Enrollment No: 20230310 | Hometown: Chikamgalur Karnataka | Assigned Seat: UB2-14"
+    "seatId": "S21",
+    "notes": "Enrollment No: 20230310 | Hometown: Chikamgalur Karnataka | Assigned Seat: S21"
   },
   {
     "id": "att-stu-samya-mitra",
@@ -3700,8 +3692,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "samyamitra120598@gmail.com",
     "phone": "8967968556",
     "categoryId": "pg",
-    "seatId": "UB2-13",
-    "notes": "Enrollment No: 20230311 | Hometown: RAIGANJ | Assigned Seat: UB2-13"
+    "seatId": "T27",
+    "notes": "Enrollment No: 20230311 | Hometown: RAIGANJ | Assigned Seat: T27"
   },
   {
     "id": "att-stu-dr-sanith-mani",
@@ -3712,8 +3704,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "sanithmani@gmail.com",
     "phone": "9496900091",
     "categoryId": "pg",
-    "seatId": "UB2-12",
-    "notes": "Enrollment No: 20230312 | Hometown: Kottayam, kerala | Assigned Seat: UB2-12"
+    "seatId": "T26",
+    "notes": "Enrollment No: 20230312 | Hometown: Kottayam, kerala | Assigned Seat: T26"
   },
   {
     "id": "att-stu-b-saravana-prathap",
@@ -3724,8 +3716,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "saravana.dentistry_pgt23@aiimskalyani.edu.in",
     "phone": "9789409492",
     "categoryId": "pg",
-    "seatId": "UB2-11",
-    "notes": "Enrollment No: 20230313 | Hometown: Coimbatore | Assigned Seat: UB2-11"
+    "seatId": "T25",
+    "notes": "Enrollment No: 20230313 | Hometown: Coimbatore | Assigned Seat: T25"
   },
   {
     "id": "att-stu-souvik-bhattacharya",
@@ -3736,8 +3728,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "svkbhttchr@live.in",
     "phone": "8017164337",
     "categoryId": "pg",
-    "seatId": "UB2-10",
-    "notes": "Enrollment No: 20230315 | Hometown: Kolkata | Assigned Seat: UB2-10"
+    "seatId": "T24",
+    "notes": "Enrollment No: 20230315 | Hometown: Kolkata | Assigned Seat: T24"
   },
   {
     "id": "att-stu-abhishek-kumar-giri",
@@ -3748,8 +3740,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "ABHISHEK.COMJNMH@GMAIL.COM",
     "phone": "7686943337",
     "categoryId": "pg",
-    "seatId": "UB2-9",
-    "notes": "Enrollment No: 20230316 | Hometown: Kolkata | Assigned Seat: UB2-9"
+    "seatId": "T23",
+    "notes": "Enrollment No: 20230316 | Hometown: Kolkata | Assigned Seat: T23"
   },
   {
     "id": "att-stu-dr-aryalekshmi-p",
@@ -3760,8 +3752,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "draryalekshmi.p2020@gmail.com",
     "phone": "8547621028",
     "categoryId": "pg",
-    "seatId": "UB2-8",
-    "notes": "Enrollment No: 20230317 | Hometown: Thiruvananthapuram | Assigned Seat: UB2-8"
+    "seatId": "T22",
+    "notes": "Enrollment No: 20230317 | Hometown: Thiruvananthapuram | Assigned Seat: T22"
   },
   {
     "id": "att-stu-dr-monalisa-mahajan",
@@ -3772,8 +3764,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "monalisa.biochem_pgt23@aiimskalyani.edu.in",
     "phone": "9531754461",
     "categoryId": "pg",
-    "seatId": "UB1-10",
-    "notes": "Enrollment No: 20230319 | Hometown: Bankura | Assigned Seat: UB1-10"
+    "seatId": "T21",
+    "notes": "Enrollment No: 20230319 | Hometown: Bankura | Assigned Seat: T21"
   },
   {
     "id": "att-stu-prasanjit-das",
@@ -3784,8 +3776,8 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "email": "docprasanjitdas@gmail.com",
     "phone": "9476084509",
     "categoryId": "pg",
-    "seatId": "UB1-9",
-    "notes": "Enrollment No: 20230320 | Hometown: PORT BLAIR | Assigned Seat: UB1-9"
+    "seatId": "U27",
+    "notes": "Enrollment No: 20230320 | Hometown: PORT BLAIR | Assigned Seat: U27"
   }
 ];
 
@@ -3799,8 +3791,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B7",
-    "notes": "FATHER of ARUNDHATI MUKHERJEE | Assigned Seat: B7"
+    "seatId": "F7",
+    "notes": "FATHER of ARUNDHATI MUKHERJEE | Assigned Seat: F7"
   },
   {
     "id": "att-guest-baishakhi-mukherjee-1",
@@ -3811,8 +3803,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B6",
-    "notes": "MOTHER of ARUNDHATI MUKHERJEE | Assigned Seat: B6"
+    "seatId": "F6",
+    "notes": "MOTHER of ARUNDHATI MUKHERJEE | Assigned Seat: F6"
   },
   {
     "id": "att-guest-lalam-haokip-2",
@@ -3823,8 +3815,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B5",
-    "notes": "MOTHER of GRACE LHINGHOITHEM HAOKIP | Assigned Seat: B5"
+    "seatId": "F5",
+    "notes": "MOTHER of GRACE LHINGHOITHEM HAOKIP | Assigned Seat: F5"
   },
   {
     "id": "att-guest-nengzalam-3",
@@ -3835,8 +3827,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B4",
-    "notes": "GRANDMOTHER of GRACE LHINGHOITHEM HAOKIP | Assigned Seat: B4"
+    "seatId": "F4",
+    "notes": "GRANDMOTHER of GRACE LHINGHOITHEM HAOKIP | Assigned Seat: F4"
   },
   {
     "id": "att-guest-mr-raj-kumar-singh-4",
@@ -3847,8 +3839,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B3",
-    "notes": "Father of DR MANSHI KUMARI | Assigned Seat: B3"
+    "seatId": "F3",
+    "notes": "Father of DR MANSHI KUMARI | Assigned Seat: F3"
   },
   {
     "id": "att-guest-dr-rishi-singh-5",
@@ -3859,8 +3851,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B2",
-    "notes": "Husband of DR MANSHI KUMARI | Assigned Seat: B2"
+    "seatId": "F2",
+    "notes": "Husband of DR MANSHI KUMARI | Assigned Seat: F2"
   },
   {
     "id": "att-guest-shankar-tripathy-6",
@@ -3871,8 +3863,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "B1",
-    "notes": "Father of PEEYUSH KIRAN TRIPATHY | Assigned Seat: B1"
+    "seatId": "F1",
+    "notes": "Father of PEEYUSH KIRAN TRIPATHY | Assigned Seat: F1"
   },
   {
     "id": "att-guest-namita-tripathy-7",
@@ -3883,8 +3875,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C7",
-    "notes": "Mother of PEEYUSH KIRAN TRIPATHY | Assigned Seat: C7"
+    "seatId": "G7",
+    "notes": "Mother of PEEYUSH KIRAN TRIPATHY | Assigned Seat: G7"
   },
   {
     "id": "att-guest-dr-dayanand-sagar-p-8",
@@ -3895,8 +3887,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C6",
-    "notes": "Husband of Dr. Ramya KP | Assigned Seat: C6"
+    "seatId": "G6",
+    "notes": "Husband of Dr. Ramya KP | Assigned Seat: G6"
   },
   {
     "id": "att-guest-madhumita-guha-9",
@@ -3907,8 +3899,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C5",
-    "notes": "AUNT of SAMYA MITRA | Assigned Seat: C5"
+    "seatId": "G5",
+    "notes": "AUNT of SAMYA MITRA | Assigned Seat: G5"
   },
   {
     "id": "att-guest-merlin-sabu-10",
@@ -3919,8 +3911,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C4",
-    "notes": "SPOUSE of Dr. Sanith Mani | Assigned Seat: C4"
+    "seatId": "G4",
+    "notes": "SPOUSE of Dr. Sanith Mani | Assigned Seat: G4"
   },
   {
     "id": "att-guest-saswata-bhattacharyya-11",
@@ -3931,8 +3923,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C3",
-    "notes": "Father of SOUVIK BHATTACHARYA | Assigned Seat: C3"
+    "seatId": "G3",
+    "notes": "Father of SOUVIK BHATTACHARYA | Assigned Seat: G3"
   },
   {
     "id": "att-guest-sanghamitra-bhattacharya-12",
@@ -3943,8 +3935,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C2",
-    "notes": "Mother of SOUVIK BHATTACHARYA | Assigned Seat: C2"
+    "seatId": "G2",
+    "notes": "Mother of SOUVIK BHATTACHARYA | Assigned Seat: G2"
   },
   {
     "id": "att-guest-hridya-shanker-giri-13",
@@ -3955,8 +3947,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "C1",
-    "notes": "Father of Abhishek Kumar Giri | Assigned Seat: C1"
+    "seatId": "G1",
+    "notes": "Father of Abhishek Kumar Giri | Assigned Seat: G1"
   },
   {
     "id": "att-guest-rani-giri-14",
@@ -3967,8 +3959,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D7",
-    "notes": "Mother of Abhishek Kumar Giri | Assigned Seat: D7"
+    "seatId": "H7",
+    "notes": "Mother of Abhishek Kumar Giri | Assigned Seat: H7"
   },
   {
     "id": "att-guest-dr-kannan-v-b-15",
@@ -3979,8 +3971,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D6",
-    "notes": "Husband of Dr. ARYALEKSHMI. P | Assigned Seat: D6"
+    "seatId": "H6",
+    "notes": "Husband of Dr. ARYALEKSHMI. P | Assigned Seat: H6"
   },
   {
     "id": "att-guest-arjun-v-b-16",
@@ -3991,8 +3983,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D5",
-    "notes": "Brother of Dr. ARYALEKSHMI. P | Assigned Seat: D5"
+    "seatId": "H5",
+    "notes": "Brother of Dr. ARYALEKSHMI. P | Assigned Seat: H5"
   },
   {
     "id": "att-guest-madhab-kumar-mahajan-17",
@@ -4003,8 +3995,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D4",
-    "notes": "FATHER of DR. MONALISA MAHAJAN | Assigned Seat: D4"
+    "seatId": "H4",
+    "notes": "FATHER of DR. MONALISA MAHAJAN | Assigned Seat: H4"
   },
   {
     "id": "att-guest-soma-mahajan-18",
@@ -4015,8 +4007,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D3",
-    "notes": "MOTHER of DR. MONALISA MAHAJAN | Assigned Seat: D3"
+    "seatId": "H3",
+    "notes": "MOTHER of DR. MONALISA MAHAJAN | Assigned Seat: H3"
   },
   {
     "id": "att-guest-prasanta-kumar-das-19",
@@ -4027,8 +4019,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D2",
-    "notes": "FATHER of PRASANJIT DAS | Assigned Seat: D2"
+    "seatId": "H2",
+    "notes": "FATHER of PRASANJIT DAS | Assigned Seat: H2"
   },
   {
     "id": "att-guest-tapasi-rani-das-20",
@@ -4039,8 +4031,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "D1",
-    "notes": "MOTHER of PRASANJIT DAS | Assigned Seat: D1"
+    "seatId": "H1",
+    "notes": "MOTHER of PRASANJIT DAS | Assigned Seat: H1"
   },
   {
     "id": "att-guest-sweta-bharti-21",
@@ -4051,8 +4043,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E7",
-    "notes": "Sister of Aman Kumar | Assigned Seat: E7"
+    "seatId": "I7",
+    "notes": "Sister of Aman Kumar | Assigned Seat: I7"
   },
   {
     "id": "att-guest-barun-kumar-sarkar-22",
@@ -4063,8 +4055,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E6",
-    "notes": "Father of ANIKET SARKAR | Assigned Seat: E6"
+    "seatId": "I6",
+    "notes": "Father of ANIKET SARKAR | Assigned Seat: I6"
   },
   {
     "id": "att-guest-rinku-sarkar-23",
@@ -4075,8 +4067,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E5",
-    "notes": "Mother of ANIKET SARKAR | Assigned Seat: E5"
+    "seatId": "I5",
+    "notes": "Mother of ANIKET SARKAR | Assigned Seat: I5"
   },
   {
     "id": "att-guest-dr-vivek-gupta-24",
@@ -4087,8 +4079,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E4",
-    "notes": "Father of ANIRUDH GUPTA | Assigned Seat: E4"
+    "seatId": "I4",
+    "notes": "Father of ANIRUDH GUPTA | Assigned Seat: I4"
   },
   {
     "id": "att-guest-dr-madhu-gupta-25",
@@ -4099,8 +4091,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E3",
-    "notes": "Mother of ANIRUDH GUPTA | Assigned Seat: E3"
+    "seatId": "I3",
+    "notes": "Mother of ANIRUDH GUPTA | Assigned Seat: I3"
   },
   {
     "id": "att-guest-olli-chaudhury-26",
@@ -4111,8 +4103,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E2",
-    "notes": "Mother of ANOUSHKA CHAUDHURY | Assigned Seat: E2"
+    "seatId": "I2",
+    "notes": "Mother of ANOUSHKA CHAUDHURY | Assigned Seat: I2"
   },
   {
     "id": "att-guest-kaushik-chaudhury-27",
@@ -4123,8 +4115,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "E1",
-    "notes": "Father of ANOUSHKA CHAUDHURY | Assigned Seat: E1"
+    "seatId": "I1",
+    "notes": "Father of ANOUSHKA CHAUDHURY | Assigned Seat: I1"
   },
   {
     "id": "att-guest-sushanta-kumar-dash-28",
@@ -4135,8 +4127,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F7",
-    "notes": "Father of ANURAG DASH | Assigned Seat: F7"
+    "seatId": "J7",
+    "notes": "Father of ANURAG DASH | Assigned Seat: J7"
   },
   {
     "id": "att-guest-swarnalata-dash-29",
@@ -4147,8 +4139,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F6",
-    "notes": "Mother of ANURAG DASH | Assigned Seat: F6"
+    "seatId": "J6",
+    "notes": "Mother of ANURAG DASH | Assigned Seat: J6"
   },
   {
     "id": "att-guest-samaresh-samanta-30",
@@ -4159,8 +4151,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F5",
-    "notes": "Father of ANURAG SAMANTA | Assigned Seat: F5"
+    "seatId": "J5",
+    "notes": "Father of ANURAG SAMANTA | Assigned Seat: J5"
   },
   {
     "id": "att-guest-snigdha-samanta-31",
@@ -4171,8 +4163,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F4",
-    "notes": "Mother of ANURAG SAMANTA | Assigned Seat: F4"
+    "seatId": "J4",
+    "notes": "Mother of ANURAG SAMANTA | Assigned Seat: J4"
   },
   {
     "id": "att-guest-madhumita-ghosh-32",
@@ -4183,8 +4175,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F3",
-    "notes": "Mother of ARITPRIYO GHOSH | Assigned Seat: F3"
+    "seatId": "J3",
+    "notes": "Mother of ARITPRIYO GHOSH | Assigned Seat: J3"
   },
   {
     "id": "att-guest-rajib-ghosh-33",
@@ -4195,8 +4187,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F2",
-    "notes": "Father of ARITPRIYO GHOSH | Assigned Seat: F2"
+    "seatId": "J2",
+    "notes": "Father of ARITPRIYO GHOSH | Assigned Seat: J2"
   },
   {
     "id": "att-guest-uma-devi-34",
@@ -4207,8 +4199,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "F1",
-    "notes": "Mother of ASHUTOSH KUMAR | Assigned Seat: F1"
+    "seatId": "J1",
+    "notes": "Mother of ASHUTOSH KUMAR | Assigned Seat: J1"
   },
   {
     "id": "att-guest-anokha-kumar-35",
@@ -4219,8 +4211,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G7",
-    "notes": "Brother of ASHUTOSH KUMAR | Assigned Seat: G7"
+    "seatId": "K7",
+    "notes": "Brother of ASHUTOSH KUMAR | Assigned Seat: K7"
   },
   {
     "id": "att-guest-sijo-c-j-36",
@@ -4231,8 +4223,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G6",
-    "notes": "Father of AYRIN C SIMON | Assigned Seat: G6"
+    "seatId": "K6",
+    "notes": "Father of AYRIN C SIMON | Assigned Seat: K6"
   },
   {
     "id": "att-guest-smitha-sijo-37",
@@ -4243,8 +4235,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G5",
-    "notes": "Mother of AYRIN C SIMON | Assigned Seat: G5"
+    "seatId": "K5",
+    "notes": "Mother of AYRIN C SIMON | Assigned Seat: K5"
   },
   {
     "id": "att-guest-debasis-banerjee-38",
@@ -4255,8 +4247,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G4",
-    "notes": "Father of DEBMALYA BANERJEE | Assigned Seat: G4"
+    "seatId": "K4",
+    "notes": "Father of DEBMALYA BANERJEE | Assigned Seat: K4"
   },
   {
     "id": "att-guest-mala-banerjee-39",
@@ -4267,8 +4259,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G3",
-    "notes": "Mother of DEBMALYA BANERJEE | Assigned Seat: G3"
+    "seatId": "K3",
+    "notes": "Mother of DEBMALYA BANERJEE | Assigned Seat: K3"
   },
   {
     "id": "att-guest-ngamlem-wangjen-40",
@@ -4279,8 +4271,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G2",
-    "notes": "Elder sister of HONKAP WANGJEN | Assigned Seat: G2"
+    "seatId": "K2",
+    "notes": "Elder sister of HONKAP WANGJEN | Assigned Seat: K2"
   },
   {
     "id": "att-guest-jayadeb-biswal-41",
@@ -4291,8 +4283,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "G1",
-    "notes": "Father of JAGRUTI BISWAL | Assigned Seat: G1"
+    "seatId": "K1",
+    "notes": "Father of JAGRUTI BISWAL | Assigned Seat: K1"
   },
   {
     "id": "att-guest-geetanjali-pradhan-42",
@@ -4303,8 +4295,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H7",
-    "notes": "Mother of JAGRUTI BISWAL | Assigned Seat: H7"
+    "seatId": "L7",
+    "notes": "Mother of JAGRUTI BISWAL | Assigned Seat: L7"
   },
   {
     "id": "att-guest-kaki-v-jayapal-babu-43",
@@ -4315,8 +4307,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H6",
-    "notes": "Father of Kaki Jessica Pal | Assigned Seat: H6"
+    "seatId": "L6",
+    "notes": "Father of Kaki Jessica Pal | Assigned Seat: L6"
   },
   {
     "id": "att-guest-n-yesumanimma-44",
@@ -4327,8 +4319,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H5",
-    "notes": "Mother of Kaki Jessica Pal | Assigned Seat: H5"
+    "seatId": "L5",
+    "notes": "Mother of Kaki Jessica Pal | Assigned Seat: L5"
   },
   {
     "id": "att-guest-ayesha-kalam-45",
@@ -4339,8 +4331,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H4",
-    "notes": "Sister of KHADIJA KALAM | Assigned Seat: H4"
+    "seatId": "L4",
+    "notes": "Sister of KHADIJA KALAM | Assigned Seat: L4"
   },
   {
     "id": "att-guest-tausif-ahmed-46",
@@ -4351,8 +4343,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H3",
-    "notes": "Brother of KHADIJA KALAM | Assigned Seat: H3"
+    "seatId": "L3",
+    "notes": "Brother of KHADIJA KALAM | Assigned Seat: L3"
   },
   {
     "id": "att-guest-mr-anupam-kumar-verma-47",
@@ -4363,8 +4355,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H2",
-    "notes": "Father of KRISHNAS MAHI | Assigned Seat: H2"
+    "seatId": "L2",
+    "notes": "Father of KRISHNAS MAHI | Assigned Seat: L2"
   },
   {
     "id": "att-guest-mrs-pankhuri-verma-48",
@@ -4375,8 +4367,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "H1",
-    "notes": "Mother of KRISHNAS MAHI | Assigned Seat: H1"
+    "seatId": "L1",
+    "notes": "Mother of KRISHNAS MAHI | Assigned Seat: L1"
   },
   {
     "id": "att-guest-madan-chugh-49",
@@ -4387,8 +4379,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I7",
-    "notes": "Father of NAMAN CHUGH | Assigned Seat: I7"
+    "seatId": "M7",
+    "notes": "Father of NAMAN CHUGH | Assigned Seat: M7"
   },
   {
     "id": "att-guest-geeta-chugh-50",
@@ -4399,8 +4391,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I6",
-    "notes": "Mother of NAMAN CHUGH | Assigned Seat: I6"
+    "seatId": "M6",
+    "notes": "Mother of NAMAN CHUGH | Assigned Seat: M6"
   },
   {
     "id": "att-guest-mr-ananda-bihari-sahu-51",
@@ -4411,8 +4403,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I5",
-    "notes": "Father of PRABESH KUMAR SAHU | Assigned Seat: I5"
+    "seatId": "M5",
+    "notes": "Father of PRABESH KUMAR SAHU | Assigned Seat: M5"
   },
   {
     "id": "att-guest-mrs-mamata-sahu-52",
@@ -4423,8 +4415,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I4",
-    "notes": "Mother of PRABESH KUMAR SAHU | Assigned Seat: I4"
+    "seatId": "M4",
+    "notes": "Mother of PRABESH KUMAR SAHU | Assigned Seat: M4"
   },
   {
     "id": "att-guest-dr-usha-kumari-53",
@@ -4435,8 +4427,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I3",
-    "notes": "Mother of PRAGYA BHARATI | Assigned Seat: I3"
+    "seatId": "M3",
+    "notes": "Mother of PRAGYA BHARATI | Assigned Seat: M3"
   },
   {
     "id": "att-guest-mr-manas-kumar-vatsal-54",
@@ -4447,8 +4439,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I2",
-    "notes": "Maternal Uncle of PRAGYA BHARATI | Assigned Seat: I2"
+    "seatId": "M2",
+    "notes": "Maternal Uncle of PRAGYA BHARATI | Assigned Seat: M2"
   },
   {
     "id": "att-guest-uma-shankar-das-55",
@@ -4459,8 +4451,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "I1",
-    "notes": "Father of PRITAM KUMAR DAS | Assigned Seat: I1"
+    "seatId": "M1",
+    "notes": "Father of PRITAM KUMAR DAS | Assigned Seat: M1"
   },
   {
     "id": "att-guest-nilam-devi-56",
@@ -4471,8 +4463,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J7",
-    "notes": "Mother of PRITAM KUMAR DAS | Assigned Seat: J7"
+    "seatId": "N7",
+    "notes": "Mother of PRITAM KUMAR DAS | Assigned Seat: N7"
   },
   {
     "id": "att-guest-arun-kumar-khandelwal-57",
@@ -4483,8 +4475,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J6",
-    "notes": "Father of ROHIT RAJ KHANDELWAL | Assigned Seat: J6"
+    "seatId": "N6",
+    "notes": "Father of ROHIT RAJ KHANDELWAL | Assigned Seat: N6"
   },
   {
     "id": "att-guest-sarita-gupta-58",
@@ -4495,8 +4487,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J5",
-    "notes": "Mother of ROHIT RAJ KHANDELWAL | Assigned Seat: J5"
+    "seatId": "N5",
+    "notes": "Mother of ROHIT RAJ KHANDELWAL | Assigned Seat: N5"
   },
   {
     "id": "att-guest-asad-ahmad-59",
@@ -4507,8 +4499,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J4",
-    "notes": "Father of SADIA ASAD | Assigned Seat: J4"
+    "seatId": "N4",
+    "notes": "Father of SADIA ASAD | Assigned Seat: N4"
   },
   {
     "id": "att-guest-nikhat-sultana-60",
@@ -4519,8 +4511,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J3",
-    "notes": "Mother of SADIA ASAD | Assigned Seat: J3"
+    "seatId": "N3",
+    "notes": "Mother of SADIA ASAD | Assigned Seat: N3"
   },
   {
     "id": "att-guest-sasmita-barik-61",
@@ -4531,8 +4523,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J2",
-    "notes": "Sister of SATYAJIT BEHERA | Assigned Seat: J2"
+    "seatId": "N2",
+    "notes": "Sister of SATYAJIT BEHERA | Assigned Seat: N2"
   },
   {
     "id": "att-guest-kashinath-barik-62",
@@ -4543,8 +4535,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "J1",
-    "notes": "Brother of SATYAJIT BEHERA | Assigned Seat: J1"
+    "seatId": "N1",
+    "notes": "Brother of SATYAJIT BEHERA | Assigned Seat: N1"
   },
   {
     "id": "att-guest-shabana-m-63",
@@ -4555,8 +4547,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K7",
-    "notes": "Mother of SHARAFUDHEEN EP | Assigned Seat: K7"
+    "seatId": "O7",
+    "notes": "Mother of SHARAFUDHEEN EP | Assigned Seat: O7"
   },
   {
     "id": "att-guest-yuseph-ep-64",
@@ -4567,8 +4559,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K6",
-    "notes": "Father of SHARAFUDHEEN EP | Assigned Seat: K6"
+    "seatId": "O6",
+    "notes": "Father of SHARAFUDHEEN EP | Assigned Seat: O6"
   },
   {
     "id": "att-guest-ishwari-matsyapal-65",
@@ -4579,8 +4571,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K5",
-    "notes": "Mother of SHRADDHA MATSYAPAL | Assigned Seat: K5"
+    "seatId": "O5",
+    "notes": "Mother of SHRADDHA MATSYAPAL | Assigned Seat: O5"
   },
   {
     "id": "att-guest-ramesh-kumar-joshi-66",
@@ -4591,8 +4583,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K4",
-    "notes": "Father of SHRUTI JOSHI | Assigned Seat: K4"
+    "seatId": "O4",
+    "notes": "Father of SHRUTI JOSHI | Assigned Seat: O4"
   },
   {
     "id": "att-guest-harsha-joshi-67",
@@ -4603,8 +4595,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K3",
-    "notes": "Mother of SHRUTI JOSHI | Assigned Seat: K3"
+    "seatId": "O3",
+    "notes": "Mother of SHRUTI JOSHI | Assigned Seat: O3"
   },
   {
     "id": "att-guest-somnath-mandal-68",
@@ -4615,8 +4607,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K2",
-    "notes": "Father of SOHAM MANDAL | Assigned Seat: K2"
+    "seatId": "O2",
+    "notes": "Father of SOHAM MANDAL | Assigned Seat: O2"
   },
   {
     "id": "att-guest-ruma-mandal-69",
@@ -4627,8 +4619,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "K1",
-    "notes": "Mother of SOHAM MANDAL | Assigned Seat: K1"
+    "seatId": "O1",
+    "notes": "Mother of SOHAM MANDAL | Assigned Seat: O1"
   },
   {
     "id": "att-guest-md-aslam-70",
@@ -4639,8 +4631,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L7",
-    "notes": "Father of SONY KHATOON | Assigned Seat: L7"
+    "seatId": "P7",
+    "notes": "Father of SONY KHATOON | Assigned Seat: P7"
   },
   {
     "id": "att-guest-husan-tara-khatoon-71",
@@ -4651,8 +4643,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L6",
-    "notes": "Mother of SONY KHATOON | Assigned Seat: L6"
+    "seatId": "P6",
+    "notes": "Mother of SONY KHATOON | Assigned Seat: P6"
   },
   {
     "id": "att-guest-raghunath-sur-72",
@@ -4663,8 +4655,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L5",
-    "notes": "Father of SOUTRIK SUR | Assigned Seat: L5"
+    "seatId": "P5",
+    "notes": "Father of SOUTRIK SUR | Assigned Seat: P5"
   },
   {
     "id": "att-guest-kalpana-sur-73",
@@ -4675,8 +4667,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L4",
-    "notes": "Mother of SOUTRIK SUR | Assigned Seat: L4"
+    "seatId": "P4",
+    "notes": "Mother of SOUTRIK SUR | Assigned Seat: P4"
   },
   {
     "id": "att-guest-sridhar-panja-74",
@@ -4687,8 +4679,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L3",
-    "notes": "Father of SUBHASIS PANJA | Assigned Seat: L3"
+    "seatId": "P3",
+    "notes": "Father of SUBHASIS PANJA | Assigned Seat: P3"
   },
   {
     "id": "att-guest-ambika-panja-75",
@@ -4699,8 +4691,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L2",
-    "notes": "Mother of SUBHASIS PANJA | Assigned Seat: L2"
+    "seatId": "P2",
+    "notes": "Mother of SUBHASIS PANJA | Assigned Seat: P2"
   },
   {
     "id": "att-guest-uday-chand-das-76",
@@ -4711,8 +4703,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "L1",
-    "notes": "Father of SUBHODIP DAS | Assigned Seat: L1"
+    "seatId": "P1",
+    "notes": "Father of SUBHODIP DAS | Assigned Seat: P1"
   },
   {
     "id": "att-guest-archana-das-77",
@@ -4723,8 +4715,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M7",
-    "notes": "Mother of SUBHODIP DAS | Assigned Seat: M7"
+    "seatId": "Q7",
+    "notes": "Mother of SUBHODIP DAS | Assigned Seat: Q7"
   },
   {
     "id": "att-guest-raghunath-chatterjee-78",
@@ -4735,8 +4727,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M6",
-    "notes": "Father of SUDIP CHATTERJEE | Assigned Seat: M6"
+    "seatId": "Q6",
+    "notes": "Father of SUDIP CHATTERJEE | Assigned Seat: Q6"
   },
   {
     "id": "att-guest-manasi-chatterjee-79",
@@ -4747,8 +4739,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M5",
-    "notes": "Mother of SUDIP CHATTERJEE | Assigned Seat: M5"
+    "seatId": "Q5",
+    "notes": "Mother of SUDIP CHATTERJEE | Assigned Seat: Q5"
   },
   {
     "id": "att-guest-chandra-kanta-mondal-80",
@@ -4759,8 +4751,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M4",
-    "notes": "FATHER of SUMIT KUMAR MONDAL | Assigned Seat: M4"
+    "seatId": "Q4",
+    "notes": "FATHER of SUMIT KUMAR MONDAL | Assigned Seat: Q4"
   },
   {
     "id": "att-guest-sathi-mondal-sarkar-81",
@@ -4771,8 +4763,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M3",
-    "notes": "MOTHER of SUMIT KUMAR MONDAL | Assigned Seat: M3"
+    "seatId": "Q3",
+    "notes": "MOTHER of SUMIT KUMAR MONDAL | Assigned Seat: Q3"
   },
   {
     "id": "att-guest-manoj-kumar-tripathy-82",
@@ -4783,8 +4775,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M2",
-    "notes": "FATHER of SWASTIK TRIPATHY | Assigned Seat: M2"
+    "seatId": "Q2",
+    "notes": "FATHER of SWASTIK TRIPATHY | Assigned Seat: Q2"
   },
   {
     "id": "att-guest-swagatika-sarangi-83",
@@ -4795,8 +4787,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "M1",
-    "notes": "MOTHER of SWASTIK TRIPATHY | Assigned Seat: M1"
+    "seatId": "Q1",
+    "notes": "MOTHER of SWASTIK TRIPATHY | Assigned Seat: Q1"
   },
   {
     "id": "att-guest-goutam-saha-84",
@@ -4807,8 +4799,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N7",
-    "notes": "Father of TANMAY SAHA | Assigned Seat: N7"
+    "seatId": "R7",
+    "notes": "Father of TANMAY SAHA | Assigned Seat: R7"
   },
   {
     "id": "att-guest-uma-saha-85",
@@ -4819,8 +4811,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N6",
-    "notes": "Mother of TANMAY SAHA | Assigned Seat: N6"
+    "seatId": "R6",
+    "notes": "Mother of TANMAY SAHA | Assigned Seat: R6"
   },
   {
     "id": "att-guest-dr-vc-sekhar-86",
@@ -4831,8 +4823,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N5",
-    "notes": "Father of VADDE SIDDHARTH ROY | Assigned Seat: N5"
+    "seatId": "R5",
+    "notes": "Father of VADDE SIDDHARTH ROY | Assigned Seat: R5"
   },
   {
     "id": "att-guest-v-shila-roy-87",
@@ -4843,8 +4835,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N4",
-    "notes": "Mother of VADDE SIDDHARTH ROY | Assigned Seat: N4"
+    "seatId": "R4",
+    "notes": "Mother of VADDE SIDDHARTH ROY | Assigned Seat: R4"
   },
   {
     "id": "att-guest-brahma-deo-rai-88",
@@ -4855,8 +4847,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N3",
-    "notes": "Father of VIKASH KUMAR RAI | Assigned Seat: N3"
+    "seatId": "R3",
+    "notes": "Father of VIKASH KUMAR RAI | Assigned Seat: R3"
   },
   {
     "id": "att-guest-sushila-devi-89",
@@ -4867,8 +4859,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N2",
-    "notes": "Mother of VIKASH KUMAR RAI | Assigned Seat: N2"
+    "seatId": "R2",
+    "notes": "Mother of VIKASH KUMAR RAI | Assigned Seat: R2"
   },
   {
     "id": "att-guest-hamza-t-k-90",
@@ -4879,8 +4871,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "N1",
-    "notes": "Father of Zinadin Zidan T K | Assigned Seat: N1"
+    "seatId": "R1",
+    "notes": "Father of Zinadin Zidan T K | Assigned Seat: R1"
   },
   {
     "id": "att-guest-rajeena-k-k-91",
@@ -4891,8 +4883,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O7",
-    "notes": "Mother of Zinadin Zidan T K | Assigned Seat: O7"
+    "seatId": "S7",
+    "notes": "Mother of Zinadin Zidan T K | Assigned Seat: S7"
   },
   {
     "id": "att-guest-mohan-kumar-t-92",
@@ -4903,8 +4895,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O6",
-    "notes": "FATHER of AJAY MOHAN | Assigned Seat: O6"
+    "seatId": "S6",
+    "notes": "FATHER of AJAY MOHAN | Assigned Seat: S6"
   },
   {
     "id": "att-guest-sreelatha-i-93",
@@ -4915,8 +4907,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O5",
-    "notes": "MOTHER of AJAY MOHAN | Assigned Seat: O5"
+    "seatId": "S5",
+    "notes": "MOTHER of AJAY MOHAN | Assigned Seat: S5"
   },
   {
     "id": "att-guest-yoosuf-94",
@@ -4927,8 +4919,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O4",
-    "notes": "Father of FAYIZA C | Assigned Seat: O4"
+    "seatId": "S4",
+    "notes": "Father of FAYIZA C | Assigned Seat: S4"
   },
   {
     "id": "att-guest-khadeeja-95",
@@ -4939,8 +4931,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O3",
-    "notes": "Mother of FAYIZA C | Assigned Seat: O3"
+    "seatId": "S3",
+    "notes": "Mother of FAYIZA C | Assigned Seat: S3"
   },
   {
     "id": "att-guest-jayaseeta-v-n-96",
@@ -4951,8 +4943,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O2",
-    "notes": "Mother of Sreeram R S | Assigned Seat: O2"
+    "seatId": "S2",
+    "notes": "Mother of Sreeram R S | Assigned Seat: S2"
   },
   {
     "id": "att-guest-jayakumar-k-n-97",
@@ -4963,8 +4955,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "O1",
-    "notes": "Father of J B ADITHYAKIRAN | Assigned Seat: O1"
+    "seatId": "S1",
+    "notes": "Father of J B ADITHYAKIRAN | Assigned Seat: S1"
   },
   {
     "id": "att-guest-beena-c-k-98",
@@ -4975,8 +4967,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P7",
-    "notes": "Mother of J B ADITHYAKIRAN | Assigned Seat: P7"
+    "seatId": "T7",
+    "notes": "Mother of J B ADITHYAKIRAN | Assigned Seat: T7"
   },
   {
     "id": "att-guest-mithu-das-sarkar-99",
@@ -4987,8 +4979,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P6",
-    "notes": "Mother of MOURUPA SARKAR | Assigned Seat: P6"
+    "seatId": "T6",
+    "notes": "Mother of MOURUPA SARKAR | Assigned Seat: T6"
   },
   {
     "id": "att-guest-ratan-sarkar-100",
@@ -4999,8 +4991,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P5",
-    "notes": "Father of MOURUPA SARKAR | Assigned Seat: P5"
+    "seatId": "T5",
+    "notes": "Father of MOURUPA SARKAR | Assigned Seat: T5"
   },
   {
     "id": "att-guest-prasant-kumar-saboth-101",
@@ -5011,8 +5003,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P4",
-    "notes": "Father of ABHILASHA SABOTH | Assigned Seat: P4"
+    "seatId": "T4",
+    "notes": "Father of ABHILASHA SABOTH | Assigned Seat: T4"
   },
   {
     "id": "att-guest-abhijithya-bijith-102",
@@ -5023,8 +5015,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P3",
-    "notes": "Sister of ADITHYA BIJITH | Assigned Seat: P3"
+    "seatId": "T3",
+    "notes": "Sister of ADITHYA BIJITH | Assigned Seat: T3"
   },
   {
     "id": "att-guest-brajimla-rejani-103",
@@ -5035,8 +5027,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P2",
-    "notes": "Mother of ADITHYA BIJITH | Assigned Seat: P2"
+    "seatId": "T2",
+    "notes": "Mother of ADITHYA BIJITH | Assigned Seat: T2"
   },
   {
     "id": "att-guest-mala-kumari-104",
@@ -5047,8 +5039,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "P1",
-    "notes": "Mother of ADITYA KUMAR | Assigned Seat: P1"
+    "seatId": "T1",
+    "notes": "Mother of ADITYA KUMAR | Assigned Seat: T1"
   },
   {
     "id": "att-guest-kiran-sharma-105",
@@ -5059,8 +5051,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q7",
-    "notes": "Mother of AKSHAY SHARMA | Assigned Seat: Q7"
+    "seatId": "U7",
+    "notes": "Mother of AKSHAY SHARMA | Assigned Seat: U7"
   },
   {
     "id": "att-guest-anil-kumar-sharma-106",
@@ -5071,8 +5063,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q6",
-    "notes": "Father of AKSHAY SHARMA | Assigned Seat: Q6"
+    "seatId": "U6",
+    "notes": "Father of AKSHAY SHARMA | Assigned Seat: U6"
   },
   {
     "id": "att-guest-ajay-kumar-yadav-107",
@@ -5083,8 +5075,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q5",
-    "notes": "Father of AMAN KUMAR | Assigned Seat: Q5"
+    "seatId": "U5",
+    "notes": "Father of AMAN KUMAR | Assigned Seat: U5"
   },
   {
     "id": "att-guest-poonam-devi-108",
@@ -5095,8 +5087,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q4",
-    "notes": "Mother of AMAN KUMAR | Assigned Seat: Q4"
+    "seatId": "U4",
+    "notes": "Mother of AMAN KUMAR | Assigned Seat: U4"
   },
   {
     "id": "att-guest-ram-anoop-shrma-109",
@@ -5107,8 +5099,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q3",
-    "notes": "Grandfather of AMRIT RAJ ANAND | Assigned Seat: Q3"
+    "seatId": "U3",
+    "notes": "Grandfather of AMRIT RAJ ANAND | Assigned Seat: U3"
   },
   {
     "id": "att-guest-nirmal-sharma-110",
@@ -5119,8 +5111,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q2",
-    "notes": "Uncle of AMRIT RAJ ANAND | Assigned Seat: Q2"
+    "seatId": "U2",
+    "notes": "Uncle of AMRIT RAJ ANAND | Assigned Seat: U2"
   },
   {
     "id": "att-guest-krishna-prasad-samantaray-111",
@@ -5131,8 +5123,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "Q1",
-    "notes": "Father of ANANYA ARYANKITA | Assigned Seat: Q1"
+    "seatId": "U1",
+    "notes": "Father of ANANYA ARYANKITA | Assigned Seat: U1"
   },
   {
     "id": "att-guest-jyotirmayee-nayak-112",
@@ -5143,8 +5135,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R7",
-    "notes": "Mother of ANANYA ARYANKITA | Assigned Seat: R7"
+    "seatId": "V7",
+    "notes": "Mother of ANANYA ARYANKITA | Assigned Seat: V7"
   },
   {
     "id": "att-guest-bithika-pandey-113",
@@ -5155,8 +5147,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R6",
-    "notes": "Mother of ANANYA PANDEY | Assigned Seat: R6"
+    "seatId": "V6",
+    "notes": "Mother of ANANYA PANDEY | Assigned Seat: V6"
   },
   {
     "id": "att-guest-aditi-pandey-114",
@@ -5167,8 +5159,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R5",
-    "notes": "Sister of ANANYA PANDEY | Assigned Seat: R5"
+    "seatId": "V5",
+    "notes": "Sister of ANANYA PANDEY | Assigned Seat: V5"
   },
   {
     "id": "att-guest-jayanta-kumar-saha-115",
@@ -5179,8 +5171,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R4",
-    "notes": "Father of Anubhab Saha | Assigned Seat: R4"
+    "seatId": "V4",
+    "notes": "Father of Anubhab Saha | Assigned Seat: V4"
   },
   {
     "id": "att-guest-jayeeta-saha-116",
@@ -5191,8 +5183,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R3",
-    "notes": "Mother of Anubhab Saha | Assigned Seat: R3"
+    "seatId": "V3",
+    "notes": "Mother of Anubhab Saha | Assigned Seat: V3"
   },
   {
     "id": "att-guest-ranjini-jayan-117",
@@ -5203,8 +5195,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R2",
-    "notes": "Mother of ANUSREE JAYAN | Assigned Seat: R2"
+    "seatId": "V2",
+    "notes": "Mother of ANUSREE JAYAN | Assigned Seat: V2"
   },
   {
     "id": "att-guest-jayan-k-k-118",
@@ -5215,8 +5207,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "R1",
-    "notes": "Father of ANUSREE JAYAN | Assigned Seat: R1"
+    "seatId": "V1",
+    "notes": "Father of ANUSREE JAYAN | Assigned Seat: V1"
   },
   {
     "id": "att-guest-kumar-manoj-119",
@@ -5227,8 +5219,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S7",
-    "notes": "Father of APRAJITA | Assigned Seat: S7"
+    "seatId": "W7",
+    "notes": "Father of APRAJITA | Assigned Seat: W7"
   },
   {
     "id": "att-guest-manju-devi-120",
@@ -5239,8 +5231,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S6",
-    "notes": "Mother of APRAJITA | Assigned Seat: S6"
+    "seatId": "W6",
+    "notes": "Mother of APRAJITA | Assigned Seat: W6"
   },
   {
     "id": "att-guest-rubi-begam-121",
@@ -5251,8 +5243,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S5",
-    "notes": "Mother of ARMAN ANSARI | Assigned Seat: S5"
+    "seatId": "W5",
+    "notes": "Mother of ARMAN ANSARI | Assigned Seat: W5"
   },
   {
     "id": "att-guest-liyakat-ali-122",
@@ -5263,8 +5255,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S4",
-    "notes": "Father of ARMAN ANSARI | Assigned Seat: S4"
+    "seatId": "W4",
+    "notes": "Father of ARMAN ANSARI | Assigned Seat: W4"
   },
   {
     "id": "att-guest-jay-kishor-singh-123",
@@ -5275,8 +5267,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S3",
-    "notes": "Father of ASHISH GAURAV | Assigned Seat: S3"
+    "seatId": "W3",
+    "notes": "Father of ASHISH GAURAV | Assigned Seat: W3"
   },
   {
     "id": "att-guest-ahilya-devi-124",
@@ -5287,8 +5279,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S2",
-    "notes": "Mother of ASHISH GAURAV | Assigned Seat: S2"
+    "seatId": "W2",
+    "notes": "Mother of ASHISH GAURAV | Assigned Seat: W2"
   },
   {
     "id": "att-guest-ishwar-125",
@@ -5299,8 +5291,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S1",
-    "notes": "Brother of ASHOK KUMAR | Assigned Seat: S1"
+    "seatId": "W1",
+    "notes": "Brother of ASHOK KUMAR | Assigned Seat: W1"
   },
   {
     "id": "att-guest-bindu-s-menon-126",
@@ -5311,8 +5303,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T7",
-    "notes": "Mother of BHARATH KRISHNA | Assigned Seat: T7"
+    "seatId": "X7",
+    "notes": "Mother of BHARATH KRISHNA | Assigned Seat: X7"
   },
   {
     "id": "att-guest-mr-bikash-sarkar-127",
@@ -5323,8 +5315,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T6",
-    "notes": "Father of BIJIT SARKAR | Assigned Seat: T6"
+    "seatId": "X6",
+    "notes": "Father of BIJIT SARKAR | Assigned Seat: X6"
   },
   {
     "id": "att-guest-sulekha-haldar-128",
@@ -5335,8 +5327,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T5",
-    "notes": "Mother of BIJIT SARKAR | Assigned Seat: T5"
+    "seatId": "X5",
+    "notes": "Mother of BIJIT SARKAR | Assigned Seat: X5"
   },
   {
     "id": "att-guest-chongtham-pureihanba-singh-129",
@@ -5347,8 +5339,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T4",
-    "notes": "Father of CHONGTHAM PARITIYA SINGH | Assigned Seat: T4"
+    "seatId": "X4",
+    "notes": "Father of CHONGTHAM PARITIYA SINGH | Assigned Seat: X4"
   },
   {
     "id": "att-guest-sreeja-sarkar-130",
@@ -5359,8 +5351,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T3",
-    "notes": "Cousin of CHONGTHAM PARITIYA SINGH | Assigned Seat: T3"
+    "seatId": "X3",
+    "notes": "Cousin of CHONGTHAM PARITIYA SINGH | Assigned Seat: X3"
   },
   {
     "id": "att-guest-d-gurunadham-naidu-131",
@@ -5371,8 +5363,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T2",
-    "notes": "Father of DANNANA GAYATHRI | Assigned Seat: T2"
+    "seatId": "X2",
+    "notes": "Father of DANNANA GAYATHRI | Assigned Seat: X2"
   },
   {
     "id": "att-guest-d-tarun-kumar-132",
@@ -5383,8 +5375,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T1",
-    "notes": "Brother of DANNANA GAYATHRI | Assigned Seat: T1"
+    "seatId": "X1",
+    "notes": "Brother of DANNANA GAYATHRI | Assigned Seat: X1"
   },
   {
     "id": "att-guest-anindita-bose-133",
@@ -5395,8 +5387,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U7",
-    "notes": "Grandmother of DEBBANI BOSE | Assigned Seat: U7"
+    "seatId": "UB1-27",
+    "notes": "Grandmother of DEBBANI BOSE | Assigned Seat: UB1-27"
   },
   {
     "id": "att-guest-chaitali-nag-134",
@@ -5407,8 +5399,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U6",
-    "notes": "Grandmother of DEBBANI BOSE | Assigned Seat: U6"
+    "seatId": "UB1-26",
+    "notes": "Grandmother of DEBBANI BOSE | Assigned Seat: UB1-26"
   },
   {
     "id": "att-guest-veena-s-n-135",
@@ -5419,8 +5411,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U5",
-    "notes": "MOTHER of DEVI NAMBIAR | Assigned Seat: U5"
+    "seatId": "UB1-25",
+    "notes": "MOTHER of DEVI NAMBIAR | Assigned Seat: UB1-25"
   },
   {
     "id": "att-guest-dileep-puravankara-136",
@@ -5431,8 +5423,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U4",
-    "notes": "FATHER of DEVI NAMBIAR | Assigned Seat: U4"
+    "seatId": "UB1-24",
+    "notes": "FATHER of DEVI NAMBIAR | Assigned Seat: UB1-24"
   },
   {
     "id": "att-guest-nazeer-137",
@@ -5443,8 +5435,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U3",
-    "notes": "Father of DILSHANA | Assigned Seat: U3"
+    "seatId": "UB1-23",
+    "notes": "Father of DILSHANA | Assigned Seat: UB1-23"
   },
   {
     "id": "att-guest-ameen-rasiyana-138",
@@ -5455,8 +5447,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U2",
-    "notes": "Mother of DILSHANA | Assigned Seat: U2"
+    "seatId": "UB1-22",
+    "notes": "Mother of DILSHANA | Assigned Seat: UB1-22"
   },
   {
     "id": "att-guest-mrinal-kanti-mandal-139",
@@ -5467,8 +5459,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U1",
-    "notes": "Father of DISHA MANDAL | Assigned Seat: U1"
+    "seatId": "UB1-21",
+    "notes": "Father of DISHA MANDAL | Assigned Seat: UB1-21"
   },
   {
     "id": "att-guest-babita-mandal-140",
@@ -5479,8 +5471,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V7",
-    "notes": "Mother of DISHA MANDAL | Assigned Seat: V7"
+    "seatId": "UB1-20",
+    "notes": "Mother of DISHA MANDAL | Assigned Seat: UB1-20"
   },
   {
     "id": "att-guest-jayandas-p-p-141",
@@ -5491,8 +5483,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V6",
-    "notes": "Father of DRUVAN J | Assigned Seat: V6"
+    "seatId": "UB1-19",
+    "notes": "Father of DRUVAN J | Assigned Seat: UB1-19"
   },
   {
     "id": "att-guest-nisha-balachandran-142",
@@ -5503,8 +5495,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V5",
-    "notes": "Mother of DRUVAN J | Assigned Seat: V5"
+    "seatId": "UB1-18",
+    "notes": "Mother of DRUVAN J | Assigned Seat: UB1-18"
   },
   {
     "id": "att-guest-santhosh-g-143",
@@ -5515,8 +5507,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V4",
-    "notes": "Father of GOWTHAM S | Assigned Seat: V4"
+    "seatId": "UB1-17",
+    "notes": "Father of GOWTHAM S | Assigned Seat: UB1-17"
   },
   {
     "id": "att-guest-sobha-vk-144",
@@ -5527,8 +5519,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V3",
-    "notes": "Mother of GOWTHAM S | Assigned Seat: V3"
+    "seatId": "UB1-16",
+    "notes": "Mother of GOWTHAM S | Assigned Seat: UB1-16"
   },
   {
     "id": "att-guest-prabhat-kumar-saha-145",
@@ -5539,8 +5531,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V2",
-    "notes": "Father of SAYAK SAHA | Assigned Seat: V2"
+    "seatId": "UB1-15",
+    "notes": "Father of SAYAK SAHA | Assigned Seat: UB1-15"
   },
   {
     "id": "att-guest-kalpana-saha-146",
@@ -5551,8 +5543,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V1",
-    "notes": "Mother of SAYAK SAHA | Assigned Seat: V1"
+    "seatId": "UB1-14",
+    "notes": "Mother of SAYAK SAHA | Assigned Seat: UB1-14"
   },
   {
     "id": "att-guest-bhushan-shyamsunder-jajoo-147",
@@ -5563,8 +5555,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W7",
-    "notes": "Father of Jajoo Raghav Bhushan | Assigned Seat: W7"
+    "seatId": "UB1-13",
+    "notes": "Father of Jajoo Raghav Bhushan | Assigned Seat: UB1-13"
   },
   {
     "id": "att-guest-rakhee-bhushan-jajoo-148",
@@ -5575,8 +5567,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W6",
-    "notes": "Mother of Jajoo Raghav Bhushan | Assigned Seat: W6"
+    "seatId": "UB1-12",
+    "notes": "Mother of Jajoo Raghav Bhushan | Assigned Seat: UB1-12"
   },
   {
     "id": "att-guest-raghupati-mondal-149",
@@ -5587,8 +5579,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W5",
-    "notes": "Father of Krishnendu Mondal | Assigned Seat: W5"
+    "seatId": "UB1-11",
+    "notes": "Father of Krishnendu Mondal | Assigned Seat: UB1-11"
   },
   {
     "id": "att-guest-susmita-mondal-150",
@@ -5599,8 +5591,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W4",
-    "notes": "Mother of Krishnendu Mondal | Assigned Seat: W4"
+    "seatId": "UB1-10",
+    "notes": "Mother of Krishnendu Mondal | Assigned Seat: UB1-10"
   },
   {
     "id": "att-guest-man-kumari-rai-151",
@@ -5611,8 +5603,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W3",
-    "notes": "Mother of MANSI SUBBA | Assigned Seat: W3"
+    "seatId": "UB1-9",
+    "notes": "Mother of MANSI SUBBA | Assigned Seat: UB1-9"
   },
   {
     "id": "att-guest-allen-subba-152",
@@ -5623,8 +5615,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W2",
-    "notes": "Sibling (Brother) of MANSI SUBBA | Assigned Seat: W2"
+    "seatId": "UB1-8",
+    "notes": "Sibling (Brother) of MANSI SUBBA | Assigned Seat: UB1-8"
   },
   {
     "id": "att-guest-madan-lal-mina-153",
@@ -5635,8 +5627,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W1",
-    "notes": "Father of MEENAKSHI MINA | Assigned Seat: W1"
+    "seatId": "UB1-7",
+    "notes": "Father of MEENAKSHI MINA | Assigned Seat: UB1-7"
   },
   {
     "id": "att-guest-sona-mina-154",
@@ -5647,8 +5639,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X7",
-    "notes": "Mother of MEENAKSHI MINA | Assigned Seat: X7"
+    "seatId": "UB1-6",
+    "notes": "Mother of MEENAKSHI MINA | Assigned Seat: UB1-6"
   },
   {
     "id": "att-guest-dr-alokesh-hazarika-155",
@@ -5659,8 +5651,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X6",
-    "notes": "Father of MEGHA HAZARIKA | Assigned Seat: X6"
+    "seatId": "UB1-5",
+    "notes": "Father of MEGHA HAZARIKA | Assigned Seat: UB1-5"
   },
   {
     "id": "att-guest-diya-156",
@@ -5671,8 +5663,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X5",
-    "notes": "Cousin of MEGHA HAZARIKA | Assigned Seat: X5"
+    "seatId": "UB1-4",
+    "notes": "Cousin of MEGHA HAZARIKA | Assigned Seat: UB1-4"
   },
   {
     "id": "att-guest-ashok-kumar-choudhary-157",
@@ -5683,8 +5675,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X4",
-    "notes": "Father of NILESH BHARTI | Assigned Seat: X4"
+    "seatId": "UB1-3",
+    "notes": "Father of NILESH BHARTI | Assigned Seat: UB1-3"
   },
   {
     "id": "att-guest-sudha-rani-158",
@@ -5695,8 +5687,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X3",
-    "notes": "Mother of NILESH BHARTI | Assigned Seat: X3"
+    "seatId": "UB1-2",
+    "notes": "Mother of NILESH BHARTI | Assigned Seat: UB1-2"
   },
   {
     "id": "att-guest-trupti-patel-159",
@@ -5707,8 +5699,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X2",
-    "notes": "Mother of PATEL SHRUTI RUTANJU | Assigned Seat: X2"
+    "seatId": "UB1-1",
+    "notes": "Mother of PATEL SHRUTI RUTANJU | Assigned Seat: UB1-1"
   },
   {
     "id": "att-guest-pranathi-nambiar-160",
@@ -5719,8 +5711,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "X1",
-    "notes": "Cousin of PATEL SHRUTI RUTANJU | Assigned Seat: X1"
+    "seatId": "UB2-27",
+    "notes": "Cousin of PATEL SHRUTI RUTANJU | Assigned Seat: UB2-27"
   },
   {
     "id": "att-guest-jayaprakash-kv-161",
@@ -5731,8 +5723,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-7",
-    "notes": "Father of PUNYA PRAKASH k | Assigned Seat: UB1-7"
+    "seatId": "UB2-26",
+    "notes": "Father of PUNYA PRAKASH k | Assigned Seat: UB2-26"
   },
   {
     "id": "att-guest-preetha-kumar-162",
@@ -5743,8 +5735,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-6",
-    "notes": "Mother of PUNYA PRAKASH k | Assigned Seat: UB1-6"
+    "seatId": "UB2-25",
+    "notes": "Mother of PUNYA PRAKASH k | Assigned Seat: UB2-25"
   },
   {
     "id": "att-guest-satish-kumar-verma-163",
@@ -5755,8 +5747,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-5",
-    "notes": "Father of RAJSHREE | Assigned Seat: UB1-5"
+    "seatId": "UB2-24",
+    "notes": "Father of RAJSHREE | Assigned Seat: UB2-24"
   },
   {
     "id": "att-guest-ribha-kumari-164",
@@ -5767,8 +5759,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-4",
-    "notes": "Mother of RAJSHREE | Assigned Seat: UB1-4"
+    "seatId": "UB2-23",
+    "notes": "Mother of RAJSHREE | Assigned Seat: UB2-23"
   },
   {
     "id": "att-guest-dilip-saw-165",
@@ -5779,8 +5771,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-3",
-    "notes": "Father of RITIK KOTHARI | Assigned Seat: UB1-3"
+    "seatId": "UB2-22",
+    "notes": "Father of RITIK KOTHARI | Assigned Seat: UB2-22"
   },
   {
     "id": "att-guest-geeta-devi-166",
@@ -5791,8 +5783,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-2",
-    "notes": "Mother of RITIK KOTHARI | Assigned Seat: UB1-2"
+    "seatId": "UB2-21",
+    "notes": "Mother of RITIK KOTHARI | Assigned Seat: UB2-21"
   },
   {
     "id": "att-guest-ben-167",
@@ -5803,8 +5795,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-1",
-    "notes": "Father of RIYA BEN | Assigned Seat: UB1-1"
+    "seatId": "UB2-20",
+    "notes": "Father of RIYA BEN | Assigned Seat: UB2-20"
   },
   {
     "id": "att-guest-rani-ben-168",
@@ -5815,8 +5807,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-7",
-    "notes": "Mother of RIYA BEN | Assigned Seat: UB2-7"
+    "seatId": "UB2-19",
+    "notes": "Mother of RIYA BEN | Assigned Seat: UB2-19"
   },
   {
     "id": "att-guest-binod-kr-sahani-169",
@@ -5827,8 +5819,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-6",
-    "notes": "Father of ROHIT KR SAHANI | Assigned Seat: UB2-6"
+    "seatId": "UB2-18",
+    "notes": "Father of ROHIT KR SAHANI | Assigned Seat: UB2-18"
   },
   {
     "id": "att-guest-neelam-devi-170",
@@ -5839,8 +5831,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-5",
-    "notes": "Mother of ROHIT KR SAHANI | Assigned Seat: UB2-5"
+    "seatId": "UB2-17",
+    "notes": "Mother of ROHIT KR SAHANI | Assigned Seat: UB2-17"
   },
   {
     "id": "att-guest-sanjukta-meher-171",
@@ -5851,8 +5843,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-4",
-    "notes": "Mother of SABITA MEHER | Assigned Seat: UB2-4"
+    "seatId": "UB2-16",
+    "notes": "Mother of SABITA MEHER | Assigned Seat: UB2-16"
   },
   {
     "id": "att-guest-bibatsa-meher-172",
@@ -5863,8 +5855,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-3",
-    "notes": "Father of SABITA MEHER | Assigned Seat: UB2-3"
+    "seatId": "UB2-15",
+    "notes": "Father of SABITA MEHER | Assigned Seat: UB2-15"
   },
   {
     "id": "att-guest-shree-upendra-prasad-173",
@@ -5875,8 +5867,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-2",
-    "notes": "Father of SANDEEP KUMAR | Assigned Seat: UB2-2"
+    "seatId": "UB2-14",
+    "notes": "Father of SANDEEP KUMAR | Assigned Seat: UB2-14"
   },
   {
     "id": "att-guest-shreemati-neelam-kumari-174",
@@ -5887,8 +5879,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB2-1",
-    "notes": "Mother of SANDEEP KUMAR | Assigned Seat: UB2-1"
+    "seatId": "UB2-13",
+    "notes": "Mother of SANDEEP KUMAR | Assigned Seat: UB2-13"
   },
   {
     "id": "att-guest-rabindra-nath-patro-175",
@@ -5899,8 +5891,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-7",
-    "notes": "Father of SANDEEP KUMAR PATRO | Assigned Seat: UB3-7"
+    "seatId": "UB2-12",
+    "notes": "Father of SANDEEP KUMAR PATRO | Assigned Seat: UB2-12"
   },
   {
     "id": "att-guest-sarita-patro-176",
@@ -5911,8 +5903,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-6",
-    "notes": "Mother of SANDEEP KUMAR PATRO | Assigned Seat: UB3-6"
+    "seatId": "UB2-11",
+    "notes": "Mother of SANDEEP KUMAR PATRO | Assigned Seat: UB2-11"
   },
   {
     "id": "att-guest-soni-devi-177",
@@ -5923,8 +5915,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-5",
-    "notes": "Mother of SATYAJEET RAJ | Assigned Seat: UB3-5"
+    "seatId": "UB2-10",
+    "notes": "Mother of SATYAJEET RAJ | Assigned Seat: UB2-10"
   },
   {
     "id": "att-guest-satyapriya-raj-178",
@@ -5935,8 +5927,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-4",
-    "notes": "Brother of SATYAJEET RAJ | Assigned Seat: UB3-4"
+    "seatId": "UB2-9",
+    "notes": "Brother of SATYAJEET RAJ | Assigned Seat: UB2-9"
   },
   {
     "id": "att-guest-surendra-kumar-rout-179",
@@ -5947,8 +5939,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-3",
-    "notes": "Father of SHARMISTHA ROUT | Assigned Seat: UB3-3"
+    "seatId": "UB2-8",
+    "notes": "Father of SHARMISTHA ROUT | Assigned Seat: UB2-8"
   },
   {
     "id": "att-guest-dr-krishna-patro-180",
@@ -5959,8 +5951,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-2",
-    "notes": "Mother of SHARMISTHA ROUT | Assigned Seat: UB3-2"
+    "seatId": "UB2-7",
+    "notes": "Mother of SHARMISTHA ROUT | Assigned Seat: UB2-7"
   },
   {
     "id": "att-guest-mariya-pt-181",
@@ -5971,8 +5963,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-1",
-    "notes": "Mother of SHIFANA T | Assigned Seat: UB3-1"
+    "seatId": "UB2-6",
+    "notes": "Mother of SHIFANA T | Assigned Seat: UB2-6"
   },
   {
     "id": "att-guest-abdul-vahid-t-182",
@@ -5983,8 +5975,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-7",
-    "notes": "Brother of SHIFANA T | Assigned Seat: UB4-7"
+    "seatId": "UB2-5",
+    "notes": "Brother of SHIFANA T | Assigned Seat: UB2-5"
   },
   {
     "id": "att-guest-rajesh-chauhan-183",
@@ -5995,8 +5987,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-6",
-    "notes": "Father of SHIVAM RAJESH CHAUHAN | Assigned Seat: UB4-6"
+    "seatId": "UB2-4",
+    "notes": "Father of SHIVAM RAJESH CHAUHAN | Assigned Seat: UB2-4"
   },
   {
     "id": "att-guest-sangam-chauhan-184",
@@ -6007,8 +5999,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-5",
-    "notes": "Mother of SHIVAM RAJESH CHAUHAN | Assigned Seat: UB4-5"
+    "seatId": "UB2-3",
+    "notes": "Mother of SHIVAM RAJESH CHAUHAN | Assigned Seat: UB2-3"
   },
   {
     "id": "att-guest-santosh-kumar-185",
@@ -6019,8 +6011,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-4",
-    "notes": "Father of SHIVANI KUMARI | Assigned Seat: UB4-4"
+    "seatId": "UB2-2",
+    "notes": "Father of SHIVANI KUMARI | Assigned Seat: UB2-2"
   },
   {
     "id": "att-guest-ruby-kumari-186",
@@ -6031,8 +6023,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-3",
-    "notes": "Mother of SHIVANI KUMARI | Assigned Seat: UB4-3"
+    "seatId": "UB2-1",
+    "notes": "Mother of SHIVANI KUMARI | Assigned Seat: UB2-1"
   },
   {
     "id": "att-guest-dillip-kumar-sahoo-187",
@@ -6043,8 +6035,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-2",
-    "notes": "Father of SHUBHRAJIT SAHOO | Assigned Seat: UB4-2"
+    "seatId": "UB3-27",
+    "notes": "Father of SHUBHRAJIT SAHOO | Assigned Seat: UB3-27"
   },
   {
     "id": "att-guest-sujata-sahoo-188",
@@ -6055,8 +6047,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-1",
-    "notes": "Mother of SHUBHRAJIT SAHOO | Assigned Seat: UB4-1"
+    "seatId": "UB3-26",
+    "notes": "Mother of SHUBHRAJIT SAHOO | Assigned Seat: UB3-26"
   },
   {
     "id": "att-guest-shraddha-saraswati-parida-189",
@@ -6067,8 +6059,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-7",
-    "notes": "Sister of SOUMYA PARIDA | Assigned Seat: UB5-7"
+    "seatId": "UB3-25",
+    "notes": "Sister of SOUMYA PARIDA | Assigned Seat: UB3-25"
   },
   {
     "id": "att-guest-pravat-kumar-parida-190",
@@ -6079,8 +6071,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-6",
-    "notes": "Father of SOUMYA PARIDA | Assigned Seat: UB5-6"
+    "seatId": "UB3-24",
+    "notes": "Father of SOUMYA PARIDA | Assigned Seat: UB3-24"
   },
   {
     "id": "att-guest-madhumita-chatterjee-191",
@@ -6091,8 +6083,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-5",
-    "notes": "Mother of TIYASHA CHATTERJEE | Assigned Seat: UB5-5"
+    "seatId": "UB3-23",
+    "notes": "Mother of TIYASHA CHATTERJEE | Assigned Seat: UB3-23"
   },
   {
     "id": "att-guest-rahul-chatterjee-192",
@@ -6103,8 +6095,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-4",
-    "notes": "Father of TIYASHA CHATTERJEE | Assigned Seat: UB5-4"
+    "seatId": "UB3-22",
+    "notes": "Father of TIYASHA CHATTERJEE | Assigned Seat: UB3-22"
   },
   {
     "id": "att-guest-varnna-vinod-a-193",
@@ -6115,8 +6107,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-3",
-    "notes": "Sister of VARUNA VINOD A | Assigned Seat: UB5-3"
+    "seatId": "UB3-21",
+    "notes": "Sister of VARUNA VINOD A | Assigned Seat: UB3-21"
   },
   {
     "id": "att-guest-dr-gowri-194",
@@ -6127,8 +6119,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-2",
-    "notes": "Sister of VARUNA VINOD A | Assigned Seat: UB5-2"
+    "seatId": "UB3-20",
+    "notes": "Sister of VARUNA VINOD A | Assigned Seat: UB3-20"
   },
   {
     "id": "att-guest-vinod-kumar-195",
@@ -6139,8 +6131,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-1",
-    "notes": "Father of VINEETA MEENA | Assigned Seat: UB5-1"
+    "seatId": "UB3-19",
+    "notes": "Father of VINEETA MEENA | Assigned Seat: UB3-19"
   },
   {
     "id": "att-guest-ashi-196",
@@ -6151,8 +6143,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-20",
-    "notes": "Sister of VINEETA MEENA | Assigned Seat: UB3-20"
+    "seatId": "UB3-18",
+    "notes": "Sister of VINEETA MEENA | Assigned Seat: UB3-18"
   },
   {
     "id": "att-guest-vulasala-sreenivasulu-197",
@@ -6163,8 +6155,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-19",
-    "notes": "Father of VULASALA VENKATA SAI CHARAN | Assigned Seat: UB3-19"
+    "seatId": "UB3-17",
+    "notes": "Father of VULASALA VENKATA SAI CHARAN | Assigned Seat: UB3-17"
   },
   {
     "id": "att-guest-chimmani-lakshmi-198",
@@ -6175,8 +6167,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-18",
-    "notes": "Mother of VULASALA VENKATA SAI CHARAN | Assigned Seat: UB3-18"
+    "seatId": "UB3-16",
+    "notes": "Mother of VULASALA VENKATA SAI CHARAN | Assigned Seat: UB3-16"
   },
   {
     "id": "att-guest-kiran-charan-199",
@@ -6187,8 +6179,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-17",
-    "notes": "Mother of DIVYANSH CHARAN | Assigned Seat: UB3-17"
+    "seatId": "UB3-15",
+    "notes": "Mother of DIVYANSH CHARAN | Assigned Seat: UB3-15"
   },
   {
     "id": "att-guest-mahesh-singh-200",
@@ -6199,8 +6191,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-16",
-    "notes": "Father of DIVYANSH CHARAN | Assigned Seat: UB3-16"
+    "seatId": "UB3-14",
+    "notes": "Father of DIVYANSH CHARAN | Assigned Seat: UB3-14"
   },
   {
     "id": "att-guest-rajesh-bansal-201",
@@ -6211,8 +6203,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-15",
-    "notes": "Father of LUCKY BANSAL | Assigned Seat: UB3-15"
+    "seatId": "UB3-13",
+    "notes": "Father of LUCKY BANSAL | Assigned Seat: UB3-13"
   },
   {
     "id": "att-guest-mamta-bansal-202",
@@ -6223,8 +6215,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-14",
-    "notes": "Mother of LUCKY BANSAL | Assigned Seat: UB3-14"
+    "seatId": "UB3-12",
+    "notes": "Mother of LUCKY BANSAL | Assigned Seat: UB3-12"
   },
   {
     "id": "att-guest-mool-singh-203",
@@ -6235,8 +6227,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-13",
-    "notes": "Father of MANISHA KANWAR | Assigned Seat: UB3-13"
+    "seatId": "UB3-11",
+    "notes": "Father of MANISHA KANWAR | Assigned Seat: UB3-11"
   },
   {
     "id": "att-guest-kiran-kanwar-204",
@@ -6247,8 +6239,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-12",
-    "notes": "Mother of MANISHA KANWAR | Assigned Seat: UB3-12"
+    "seatId": "UB3-10",
+    "notes": "Mother of MANISHA KANWAR | Assigned Seat: UB3-10"
   },
   {
     "id": "att-guest-ishvar-vaishnav-205",
@@ -6259,8 +6251,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-11",
-    "notes": "Friend of MURARI SHARMA | Assigned Seat: UB3-11"
+    "seatId": "UB3-9",
+    "notes": "Friend of MURARI SHARMA | Assigned Seat: UB3-9"
   },
   {
     "id": "att-guest-vimalesh-kumar-206",
@@ -6271,8 +6263,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-10",
-    "notes": "Father of AWANTIKA JHA | Assigned Seat: UB3-10"
+    "seatId": "UB3-8",
+    "notes": "Father of AWANTIKA JHA | Assigned Seat: UB3-8"
   },
   {
     "id": "att-guest-guriya-kumari-207",
@@ -6283,8 +6275,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-9",
-    "notes": "Mother of AWANTIKA JHA | Assigned Seat: UB3-9"
+    "seatId": "UB3-7",
+    "notes": "Mother of AWANTIKA JHA | Assigned Seat: UB3-7"
   },
   {
     "id": "att-guest-khokan-kumar-khalua-208",
@@ -6295,8 +6287,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB3-8",
-    "notes": "FATHER of KINSHUK KHALUA | Assigned Seat: UB3-8"
+    "seatId": "UB3-6",
+    "notes": "FATHER of KINSHUK KHALUA | Assigned Seat: UB3-6"
   },
   {
     "id": "att-guest-tista-hazra-khalua-209",
@@ -6307,8 +6299,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-20",
-    "notes": "MOTHER of KINSHUK KHALUA | Assigned Seat: UB4-20"
+    "seatId": "UB3-5",
+    "notes": "MOTHER of KINSHUK KHALUA | Assigned Seat: UB3-5"
   },
   {
     "id": "att-guest-mohan-kishore-sutradhar-210",
@@ -6319,8 +6311,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-19",
-    "notes": "Father of MIHIR SUTRADHAR | Assigned Seat: UB4-19"
+    "seatId": "UB3-4",
+    "notes": "Father of MIHIR SUTRADHAR | Assigned Seat: UB3-4"
   },
   {
     "id": "att-guest-sampa-sutradhar-211",
@@ -6331,8 +6323,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-18",
-    "notes": "Mother of MIHIR SUTRADHAR | Assigned Seat: UB4-18"
+    "seatId": "UB3-3",
+    "notes": "Mother of MIHIR SUTRADHAR | Assigned Seat: UB3-3"
   },
   {
     "id": "att-guest-yuseph-ep-212",
@@ -6343,8 +6335,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-17",
-    "notes": "Father of SHARAFUDHEEN EP | Assigned Seat: UB4-17"
+    "seatId": "UB3-2",
+    "notes": "Father of SHARAFUDHEEN EP | Assigned Seat: UB3-2"
   },
   {
     "id": "att-guest-shabana-m-213",
@@ -6355,8 +6347,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-16",
-    "notes": "Mother of SHARAFUDHEEN EP | Assigned Seat: UB4-16"
+    "seatId": "UB3-1",
+    "notes": "Mother of SHARAFUDHEEN EP | Assigned Seat: UB3-1"
   },
   {
     "id": "att-guest-sakti-pada-mandal-214",
@@ -6367,8 +6359,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-15",
-    "notes": "Father of ADITI MANDAL | Assigned Seat: UB4-15"
+    "seatId": "UB4-27",
+    "notes": "Father of ADITI MANDAL | Assigned Seat: UB4-27"
   },
   {
     "id": "att-guest-shyamali-mandal-215",
@@ -6379,8 +6371,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-14",
-    "notes": "Mother of ADITI MANDAL | Assigned Seat: UB4-14"
+    "seatId": "UB4-26",
+    "notes": "Mother of ADITI MANDAL | Assigned Seat: UB4-26"
   },
   {
     "id": "att-guest-anirban-mukherjee-216",
@@ -6391,8 +6383,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-13",
-    "notes": "Father of ADRITA MUKHERJEE | Assigned Seat: UB4-13"
+    "seatId": "UB4-25",
+    "notes": "Father of ADRITA MUKHERJEE | Assigned Seat: UB4-25"
   },
   {
     "id": "att-guest-mahua-mukherjee-217",
@@ -6403,8 +6395,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-12",
-    "notes": "Mother of ADRITA MUKHERJEE | Assigned Seat: UB4-12"
+    "seatId": "UB4-24",
+    "notes": "Mother of ADRITA MUKHERJEE | Assigned Seat: UB4-24"
   },
   {
     "id": "att-guest-1-shyamal-chandra-paul-218",
@@ -6415,8 +6407,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-11",
-    "notes": "Father of AGNIBHA PAUL | Assigned Seat: UB4-11"
+    "seatId": "UB4-23",
+    "notes": "Father of AGNIBHA PAUL | Assigned Seat: UB4-23"
   },
   {
     "id": "att-guest-jwelli-basu-paul-219",
@@ -6427,8 +6419,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-10",
-    "notes": "Mother of AGNIBHA PAUL | Assigned Seat: UB4-10"
+    "seatId": "UB4-22",
+    "notes": "Mother of AGNIBHA PAUL | Assigned Seat: UB4-22"
   },
   {
     "id": "att-guest-bhagwan-singh-220",
@@ -6439,8 +6431,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-9",
-    "notes": "Father of ANJALI KUMARI | Assigned Seat: UB4-9"
+    "seatId": "UB4-21",
+    "notes": "Father of ANJALI KUMARI | Assigned Seat: UB4-21"
   },
   {
     "id": "att-guest-pramila-devi-221",
@@ -6451,8 +6443,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB4-8",
-    "notes": "Mother of ANJALI KUMARI | Assigned Seat: UB4-8"
+    "seatId": "UB4-20",
+    "notes": "Mother of ANJALI KUMARI | Assigned Seat: UB4-20"
   },
   {
     "id": "att-guest-amit-ghosh-222",
@@ -6463,8 +6455,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-17",
-    "notes": "Father of ANKITA GHOSH | Assigned Seat: UB5-17"
+    "seatId": "UB4-19",
+    "notes": "Father of ANKITA GHOSH | Assigned Seat: UB4-19"
   },
   {
     "id": "att-guest-krishna-ghosh-223",
@@ -6475,8 +6467,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-16",
-    "notes": "Mother of ANKITA GHOSH | Assigned Seat: UB5-16"
+    "seatId": "UB4-18",
+    "notes": "Mother of ANKITA GHOSH | Assigned Seat: UB4-18"
   },
   {
     "id": "att-guest-kartik-halder-224",
@@ -6487,8 +6479,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-15",
-    "notes": "Father of AYANTIKA HALDER | Assigned Seat: UB5-15"
+    "seatId": "UB4-17",
+    "notes": "Father of AYANTIKA HALDER | Assigned Seat: UB4-17"
   },
   {
     "id": "att-guest-sangita-halder-225",
@@ -6499,8 +6491,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-14",
-    "notes": "Mother of AYANTIKA HALDER | Assigned Seat: UB5-14"
+    "seatId": "UB4-16",
+    "notes": "Mother of AYANTIKA HALDER | Assigned Seat: UB4-16"
   },
   {
     "id": "att-guest-sk-abul-basar-226",
@@ -6511,8 +6503,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-13",
-    "notes": "Father of BASIRA SULTANA | Assigned Seat: UB5-13"
+    "seatId": "UB4-15",
+    "notes": "Father of BASIRA SULTANA | Assigned Seat: UB4-15"
   },
   {
     "id": "att-guest-sabina-iyasmin-begam-227",
@@ -6523,8 +6515,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-12",
-    "notes": "Mother of BASIRA SULTANA | Assigned Seat: UB5-12"
+    "seatId": "UB4-14",
+    "notes": "Mother of BASIRA SULTANA | Assigned Seat: UB4-14"
   },
   {
     "id": "att-guest-botan-chunari-228",
@@ -6535,8 +6527,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-11",
-    "notes": "Father of BIDISHA CHUNARI | Assigned Seat: UB5-11"
+    "seatId": "UB4-13",
+    "notes": "Father of BIDISHA CHUNARI | Assigned Seat: UB4-13"
   },
   {
     "id": "att-guest-pintu-chunari-229",
@@ -6547,8 +6539,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-10",
-    "notes": "Mother of BIDISHA CHUNARI | Assigned Seat: UB5-10"
+    "seatId": "UB4-12",
+    "notes": "Mother of BIDISHA CHUNARI | Assigned Seat: UB4-12"
   },
   {
     "id": "att-guest-aparna-bhattacharyya-230",
@@ -6559,8 +6551,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-9",
-    "notes": "Mother of CHAYANIKA BHATTACHARYYA | Assigned Seat: UB5-9"
+    "seatId": "UB4-11",
+    "notes": "Mother of CHAYANIKA BHATTACHARYYA | Assigned Seat: UB4-11"
   },
   {
     "id": "att-guest-kosturi-singha-roy-231",
@@ -6571,8 +6563,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB5-8",
-    "notes": "Aunt of CHAYANIKA BHATTACHARYYA | Assigned Seat: UB5-8"
+    "seatId": "UB4-10",
+    "notes": "Aunt of CHAYANIKA BHATTACHARYYA | Assigned Seat: UB4-10"
   },
   {
     "id": "att-guest-dinabandhu-dey-232",
@@ -6583,8 +6575,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "UB1-8",
-    "notes": "Father of DIPANJANA DEY | Assigned Seat: UB1-8"
+    "seatId": "UB4-9",
+    "notes": "Father of DIPANJANA DEY | Assigned Seat: UB4-9"
   },
   {
     "id": "att-guest-arup-dutta-233",
@@ -6595,8 +6587,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S18",
-    "notes": "Maternal Uncle of DIPANJANA DEY | Assigned Seat: S18"
+    "seatId": "UB4-8",
+    "notes": "Maternal Uncle of DIPANJANA DEY | Assigned Seat: UB4-8"
   },
   {
     "id": "att-guest-abhinav-kumar-234",
@@ -6607,8 +6599,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S17",
-    "notes": "Brother of KHUSHBOO KUMARI | Assigned Seat: S17"
+    "seatId": "UB4-7",
+    "notes": "Brother of KHUSHBOO KUMARI | Assigned Seat: UB4-7"
   },
   {
     "id": "att-guest-salil-kumar-bindu-235",
@@ -6619,8 +6611,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S16",
-    "notes": "Father of KOYEL BINDU | Assigned Seat: S16"
+    "seatId": "UB4-6",
+    "notes": "Father of KOYEL BINDU | Assigned Seat: UB4-6"
   },
   {
     "id": "att-guest-kabita-bindu-236",
@@ -6631,8 +6623,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S15",
-    "notes": "Mother of KOYEL BINDU | Assigned Seat: S15"
+    "seatId": "UB4-5",
+    "notes": "Mother of KOYEL BINDU | Assigned Seat: UB4-5"
   },
   {
     "id": "att-guest-sujeeti-devi-237",
@@ -6643,8 +6635,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S14",
-    "notes": "Mother of KRITI RANI | Assigned Seat: S14"
+    "seatId": "UB4-4",
+    "notes": "Mother of KRITI RANI | Assigned Seat: UB4-4"
   },
   {
     "id": "att-guest-om-prakash-sinha-238",
@@ -6655,8 +6647,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S13",
-    "notes": "Father of KRITI RANI | Assigned Seat: S13"
+    "seatId": "UB4-3",
+    "notes": "Father of KRITI RANI | Assigned Seat: UB4-3"
   },
   {
     "id": "att-guest-kartick-pal-239",
@@ -6667,8 +6659,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S12",
-    "notes": "Father of MADHURIMA PAL | Assigned Seat: S12"
+    "seatId": "UB4-2",
+    "notes": "Father of MADHURIMA PAL | Assigned Seat: UB4-2"
   },
   {
     "id": "att-guest-rita-pal-240",
@@ -6679,8 +6671,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S11",
-    "notes": "Mother of MADHURIMA PAL | Assigned Seat: S11"
+    "seatId": "UB4-1",
+    "notes": "Mother of MADHURIMA PAL | Assigned Seat: UB4-1"
   },
   {
     "id": "att-guest-susama-ghorai-241",
@@ -6691,8 +6683,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S10",
-    "notes": "Sister of MEGHA MAITI | Assigned Seat: S10"
+    "seatId": "UB5-24",
+    "notes": "Sister of MEGHA MAITI | Assigned Seat: UB5-24"
   },
   {
     "id": "att-guest-sourya-maiti-242",
@@ -6703,8 +6695,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S9",
-    "notes": "Brother of MEGHA MAITI | Assigned Seat: S9"
+    "seatId": "UB5-23",
+    "notes": "Brother of MEGHA MAITI | Assigned Seat: UB5-23"
   },
   {
     "id": "att-guest-raman-kumar-shaw-243",
@@ -6715,8 +6707,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "S8",
-    "notes": "Father of MEGHA SHAW | Assigned Seat: S8"
+    "seatId": "UB5-22",
+    "notes": "Father of MEGHA SHAW | Assigned Seat: UB5-22"
   },
   {
     "id": "att-guest-jyoti-shaw-244",
@@ -6727,8 +6719,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T20",
-    "notes": "Mother of MEGHA SHAW | Assigned Seat: T20"
+    "seatId": "UB5-21",
+    "notes": "Mother of MEGHA SHAW | Assigned Seat: UB5-21"
   },
   {
     "id": "att-guest-sk-mahammad-ali-245",
@@ -6739,8 +6731,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T19",
-    "notes": "Father of MOBINA PARVEEN | Assigned Seat: T19"
+    "seatId": "UB5-20",
+    "notes": "Father of MOBINA PARVEEN | Assigned Seat: UB5-20"
   },
   {
     "id": "att-guest-mobina-parveen-246",
@@ -6751,8 +6743,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T18",
-    "notes": "Mother of MOBINA PARVEEN | Assigned Seat: T18"
+    "seatId": "UB5-19",
+    "notes": "Mother of MOBINA PARVEEN | Assigned Seat: UB5-19"
   },
   {
     "id": "att-guest-abeda-begam-247",
@@ -6763,8 +6755,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T17",
-    "notes": "Mother of MOHUA KHATUN | Assigned Seat: T17"
+    "seatId": "UB5-18",
+    "notes": "Mother of MOHUA KHATUN | Assigned Seat: UB5-18"
   },
   {
     "id": "att-guest-mabuda-begam-248",
@@ -6775,8 +6767,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T16",
-    "notes": "Aunty of MOHUA KHATUN | Assigned Seat: T16"
+    "seatId": "UB5-17",
+    "notes": "Aunty of MOHUA KHATUN | Assigned Seat: UB5-17"
   },
   {
     "id": "att-guest-nasim-akhter-249",
@@ -6787,8 +6779,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T15",
-    "notes": "Father of NARGIS BANU | Assigned Seat: T15"
+    "seatId": "UB5-16",
+    "notes": "Father of NARGIS BANU | Assigned Seat: UB5-16"
   },
   {
     "id": "att-guest-nasima-khatun-250",
@@ -6799,8 +6791,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T14",
-    "notes": "Sister of NARGIS BANU | Assigned Seat: T14"
+    "seatId": "UB5-15",
+    "notes": "Sister of NARGIS BANU | Assigned Seat: UB5-15"
   },
   {
     "id": "att-guest-prabir-kumar-ghoshal-251",
@@ -6811,8 +6803,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T13",
-    "notes": "Father of PAROMITA GHOSHAL | Assigned Seat: T13"
+    "seatId": "UB5-14",
+    "notes": "Father of PAROMITA GHOSHAL | Assigned Seat: UB5-14"
   },
   {
     "id": "att-guest-purnima-ghoshal-252",
@@ -6823,8 +6815,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T12",
-    "notes": "Mother of PAROMITA GHOSHAL | Assigned Seat: T12"
+    "seatId": "UB5-13",
+    "notes": "Mother of PAROMITA GHOSHAL | Assigned Seat: UB5-13"
   },
   {
     "id": "att-guest-ms-babita-253",
@@ -6835,8 +6827,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T11",
-    "notes": "Sister of Pinki Sharma | Assigned Seat: T11"
+    "seatId": "UB5-12",
+    "notes": "Sister of Pinki Sharma | Assigned Seat: UB5-12"
   },
   {
     "id": "att-guest-mr-birendra-sharma-254",
@@ -6847,8 +6839,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T10",
-    "notes": "Uncle of Pinki Sharma | Assigned Seat: T10"
+    "seatId": "UB5-11",
+    "notes": "Uncle of Pinki Sharma | Assigned Seat: UB5-11"
   },
   {
     "id": "att-guest-satya-charan-dutta-255",
@@ -6859,8 +6851,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T9",
-    "notes": "Father of PREETI DUTTA | Assigned Seat: T9"
+    "seatId": "UB5-10",
+    "notes": "Father of PREETI DUTTA | Assigned Seat: UB5-10"
   },
   {
     "id": "att-guest-archana-dutta-256",
@@ -6871,8 +6863,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "T8",
-    "notes": "Mother of PREETI DUTTA | Assigned Seat: T8"
+    "seatId": "UB5-9",
+    "notes": "Mother of PREETI DUTTA | Assigned Seat: UB5-9"
   },
   {
     "id": "att-guest-mr-dipak-kumar-roy-257",
@@ -6883,8 +6875,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U20",
-    "notes": "Father of PRITHA ROY | Assigned Seat: U20"
+    "seatId": "UB5-8",
+    "notes": "Father of PRITHA ROY | Assigned Seat: UB5-8"
   },
   {
     "id": "att-guest-mrs-soma-roy-258",
@@ -6895,8 +6887,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U19",
-    "notes": "Mother of PRITHA ROY | Assigned Seat: U19"
+    "seatId": "UB5-7",
+    "notes": "Mother of PRITHA ROY | Assigned Seat: UB5-7"
   },
   {
     "id": "att-guest-kakali-biswas-259",
@@ -6907,8 +6899,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U18",
-    "notes": "Mother of PUSPITA BISWAS | Assigned Seat: U18"
+    "seatId": "UB5-6",
+    "notes": "Mother of PUSPITA BISWAS | Assigned Seat: UB5-6"
   },
   {
     "id": "att-guest-pinaki-biswas-260",
@@ -6919,8 +6911,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U17",
-    "notes": "Father of PUSPITA BISWAS | Assigned Seat: U17"
+    "seatId": "UB5-5",
+    "notes": "Father of PUSPITA BISWAS | Assigned Seat: UB5-5"
   },
   {
     "id": "att-guest-md-islamuddin-261",
@@ -6931,8 +6923,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U16",
-    "notes": "Father of SAMINA YASMIN | Assigned Seat: U16"
+    "seatId": "UB5-4",
+    "notes": "Father of SAMINA YASMIN | Assigned Seat: UB5-4"
   },
   {
     "id": "att-guest-sushanta-das-262",
@@ -6943,8 +6935,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U15",
-    "notes": "Father of SANANDA DAS | Assigned Seat: U15"
+    "seatId": "UB5-3",
+    "notes": "Father of SANANDA DAS | Assigned Seat: UB5-3"
   },
   {
     "id": "att-guest-piyali-das-263",
@@ -6955,8 +6947,8 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U14",
-    "notes": "Mother of SANANDA DAS | Assigned Seat: U14"
+    "seatId": "UB5-2",
+    "notes": "Mother of SANANDA DAS | Assigned Seat: UB5-2"
   },
   {
     "id": "att-guest-bablu-mondal-264",
@@ -6967,8 +6959,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U13",
-    "notes": "Father of SARMIN SULTANA | Assigned Seat: U13"
+    "notes": "Father of SARMIN SULTANA | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sayra-khatun-265",
@@ -6979,8 +6970,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U12",
-    "notes": "Mother of SARMIN SULTANA | Assigned Seat: U12"
+    "notes": "Mother of SARMIN SULTANA | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-idrish-ali-266",
@@ -6991,8 +6981,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U11",
-    "notes": "Father of SHABNAM PARVIN | Assigned Seat: U11"
+    "notes": "Father of SHABNAM PARVIN | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-jesminnhar-begum-267",
@@ -7003,8 +6992,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U10",
-    "notes": "Mother of SHABNAM PARVIN | Assigned Seat: U10"
+    "notes": "Mother of SHABNAM PARVIN | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-ranjan-kumar-268",
@@ -7015,8 +7003,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U9",
-    "notes": "Father of SONAM KUMARI | Assigned Seat: U9"
+    "notes": "Father of SONAM KUMARI | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-rani-devi-269",
@@ -7027,8 +7014,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "U8",
-    "notes": "Mother of SONAM KUMARI | Assigned Seat: U8"
+    "notes": "Mother of SONAM KUMARI | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-ramesh-chandra-tikadar-270",
@@ -7039,8 +7025,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V20",
-    "notes": "Father of SUCHISMITA TIKADAR | Assigned Seat: V20"
+    "notes": "Father of SUCHISMITA TIKADAR | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sima-tikadar-271",
@@ -7051,8 +7036,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V19",
-    "notes": "Mother of SUCHISMITA TIKADAR | Assigned Seat: V19"
+    "notes": "Mother of SUCHISMITA TIKADAR | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-tapas-banerjee-272",
@@ -7063,8 +7047,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V18",
-    "notes": "Father of SUKANYA BANERJEE | Assigned Seat: V18"
+    "notes": "Father of SUKANYA BANERJEE | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sreerup-banerjee-273",
@@ -7075,8 +7058,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V17",
-    "notes": "Brother of SUKANYA BANERJEE | Assigned Seat: V17"
+    "notes": "Brother of SUKANYA BANERJEE | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-tapas-mondal-274",
@@ -7087,8 +7069,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V16",
-    "notes": "Father of SUSHMITA MONDAL | Assigned Seat: V16"
+    "notes": "Father of SUSHMITA MONDAL | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-namita-mondal-275",
@@ -7099,8 +7080,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V15",
-    "notes": "Mother of SUSHMITA MONDAL | Assigned Seat: V15"
+    "notes": "Mother of SUSHMITA MONDAL | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-supriya-biswas-276",
@@ -7111,8 +7091,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V14",
-    "notes": "Mother of TANISHA BISWAS | Assigned Seat: V14"
+    "notes": "Mother of TANISHA BISWAS | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-tapan-kumar-biswas-277",
@@ -7123,8 +7102,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V13",
-    "notes": "Father of TANISHA BISWAS | Assigned Seat: V13"
+    "notes": "Father of TANISHA BISWAS | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-nirapada-de-278",
@@ -7135,8 +7113,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V12",
-    "notes": "Father of NABANITA DE | Assigned Seat: V12"
+    "notes": "Father of NABANITA DE | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sulekha-de-279",
@@ -7147,8 +7124,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V11",
-    "notes": "Mother of NABANITA DE | Assigned Seat: V11"
+    "notes": "Mother of NABANITA DE | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-subrata-hati-280",
@@ -7159,8 +7135,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V10",
-    "notes": "Father of Shreyasi Hati | Assigned Seat: V10"
+    "notes": "Father of Shreyasi Hati | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-ivi-hati-281",
@@ -7171,8 +7146,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V9",
-    "notes": "Mother of Shreyasi Hati | Assigned Seat: V9"
+    "notes": "Mother of Shreyasi Hati | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-subodh-kumar-pal-282",
@@ -7183,8 +7157,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "V8",
-    "notes": "Father of Aprajita Pal | Assigned Seat: V8"
+    "notes": "Father of Aprajita Pal | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-pushpa-rajpali-283",
@@ -7195,8 +7168,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W20",
-    "notes": "Mother of Aprajita Pal | Assigned Seat: W20"
+    "notes": "Mother of Aprajita Pal | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-narsing-bag-284",
@@ -7207,8 +7179,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W19",
-    "notes": "Father of SASHI BAG | Assigned Seat: W19"
+    "notes": "Father of SASHI BAG | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-shakuntala-bag-285",
@@ -7219,8 +7190,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W18",
-    "notes": "Mother of SASHI BAG | Assigned Seat: W18"
+    "notes": "Mother of SASHI BAG | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-milan-maji-286",
@@ -7231,8 +7201,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W17",
-    "notes": "Father of MOUMITA MAJI | Assigned Seat: W17"
+    "notes": "Father of MOUMITA MAJI | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-dipali-maji-287",
@@ -7243,8 +7212,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W16",
-    "notes": "Mother of MOUMITA MAJI | Assigned Seat: W16"
+    "notes": "Mother of MOUMITA MAJI | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-tarun-kumar-chatterjee-288",
@@ -7255,8 +7223,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W15",
-    "notes": "FATHER of PRAMA CHATTERJEE | Assigned Seat: W15"
+    "notes": "FATHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sampa-chatterjee-289",
@@ -7267,8 +7234,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W14",
-    "notes": "MOTHER of PRAMA CHATTERJEE | Assigned Seat: W14"
+    "notes": "MOTHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-ranjit-kumar-mandal-290",
@@ -7279,8 +7245,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W13",
-    "notes": "Father of Roji Mandal | Assigned Seat: W13"
+    "notes": "Father of Roji Mandal | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sheli-mandal-291",
@@ -7291,8 +7256,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W12",
-    "notes": "Mother of Roji Mandal | Assigned Seat: W12"
+    "notes": "Mother of Roji Mandal | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-pramod-kumar-292",
@@ -7303,8 +7267,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W11",
-    "notes": "Father of Swati Sonam | Assigned Seat: W11"
+    "notes": "Father of Swati Sonam | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-kumari-raushan-293",
@@ -7315,8 +7278,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W10",
-    "notes": "Mother of Swati Sonam | Assigned Seat: W10"
+    "notes": "Mother of Swati Sonam | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-barkha-294",
@@ -7327,8 +7289,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W9",
-    "notes": "Sister of Nidhi | Assigned Seat: W9"
+    "notes": "Sister of Nidhi | Assigned Seat: none (section full)"
   },
   {
     "id": "att-guest-sneha-295",
@@ -7339,8 +7300,7 @@ export const GUEST_ATTENDEES: Attendee[] = [
     "email": "",
     "phone": "",
     "categoryId": "accompanying",
-    "seatId": "W8",
-    "notes": "Sister of Nidhi | Assigned Seat: W8"
+    "notes": "Sister of Nidhi | Assigned Seat: none (section full)"
   }
 ];
 

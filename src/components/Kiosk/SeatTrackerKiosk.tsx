@@ -68,6 +68,13 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     setLiveAttendees(propAttendees);
   }, [propSeats, propAttendees]);
 
+  // Held in a ref so a new callback from the parent doesn't restart the effect
+  // below. Depending on it directly made every applied plan re-render the
+  // parent, hand back a new callback, and trigger another fetch immediately —
+  // an endless download loop on every open kiosk.
+  const onApplyCloudPlanRef = useRef(onApplyCloudPlan);
+  onApplyCloudPlanRef.current = onApplyCloudPlan;
+
   // Automatic cloud fetch on initial mount (especially helpful on mobile phones with empty localStorage)
   const loadCloudData = useCallback(async () => {
     setIsCloudFetching(true);
@@ -80,7 +87,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
           if (result.plan.seats?.length) setLiveSeats(result.plan.seats);
           if (result.plan.attendees?.length) setLiveAttendees(result.plan.attendees);
           setCloudSyncedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-          if (onApplyCloudPlan) onApplyCloudPlan(result.plan);
+          onApplyCloudPlanRef.current?.(result.plan);
         }
       }
     } catch {
@@ -88,7 +95,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     } finally {
       setIsCloudFetching(false);
     }
-  }, [onApplyCloudPlan]);
+  }, []);
 
   useEffect(() => {
     // Always fetch latest cloud data on mount for all mobile devices
@@ -602,7 +609,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
               </div>
               <h3 className="text-base font-bold text-slate-900">No pre-assigned seat found for "{searchTerm}"</h3>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Please check the spelling or visit the <strong>Gate-1 / Gate-2 Reception Helpdesk</strong>. You may also proceed to <strong>General Audience Seating in the Balcony</strong>.
+                Please check the spelling or visit the <strong>Gate-1 / Gate-2 Reception Helpdesk</strong>.
               </p>
               <button
                 type="button"

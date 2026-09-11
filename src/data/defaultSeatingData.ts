@@ -1,4 +1,23 @@
-import { Seat, CategoryId } from '../types/seating';
+import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
+
+/**
+ * AIIMS Kalyani auditorium — 750 seats.
+ *
+ * Geometry is fixed: the balcony runs UB1 (front railing) to UB5 (back), 132
+ * seats; the ground floor runs row A (by the stage) to row X (back), 618 seats.
+ * Rows A and X have wing seats only, so the middle block runs from B to W.
+ * Seat numbers run continuously right-to-left along each row.
+ *
+ * Which section each seat belongs to is decided separately, by
+ * assignConvocationZones, so the built-in plan, the Auto-Arrange tool and the
+ * layout migration all share one set of rules.
+ */
+
+/**
+ * Bump whenever the zone rules change. Any saved plan (cloud, snapshot or
+ * browser cache) carrying an older version is moved onto the new layout once.
+ */
+export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-11';
 
 const LOWER_ROW_LIST = [
   'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
@@ -11,329 +30,207 @@ LOWER_ROW_LIST.forEach((r, i) => { LOWER_ROW_INDEX[r] = i; });
 const UPPER_ROW_INDEX: Record<string, number> = {};
 UPPER_ROW_ORDER.forEach((r, i) => { UPPER_ROW_INDEX[r] = i; });
 
-export function generateDefaultSeats(): Seat[] {
+/** Ground-floor rows from the stage backwards. */
+const FRONT_TO_BACK = [...LOWER_ROW_LIST].reverse();
+
+const BLOCK_NAMES: Record<BlockType, string> = {
+  UPPER_RIGHT: 'Upper Right Balcony',
+  UPPER_CENTER: 'Upper Center Balcony',
+  UPPER_LEFT: 'Upper Left Balcony',
+  LOWER_RIGHT: 'Right Wing (Ground Floor)',
+  LOWER_CENTER: 'Center Block (Ground Floor)',
+  LOWER_LEFT: 'Left Wing (Ground Floor)',
+};
+
+function makeSeat(
+  tier: TierType,
+  block: BlockType,
+  row: string,
+  col: number,
+  id: string,
+  gateRecommendation: Seat['gateRecommendation'],
+  x: number,
+  y: number
+): Seat {
+  return {
+    id,
+    tier,
+    block,
+    blockName: BLOCK_NAMES[block],
+    row,
+    col,
+    seatNumber: id,
+    categoryId: 'available',
+    isBlocked: false,
+    gateRecommendation,
+    x,
+    y,
+  };
+}
+
+/** Every seat with its position and entry gate, before any section is set. */
+function buildSeatGeometry(): Seat[] {
   const seats: Seat[] = [];
 
-  // ==========================================
-  // 1. UPPER TIER (Balcony / Top Level) = 132 seats
-  // Continuous Right-to-Left Seat Numbering (1 at rightmost to 27/24 at leftmost)
-  // ==========================================
+  // --- Balcony: UB5 has 24 seats (7 + 10 + 7), UB4–UB1 have 27 (7 + 13 + 7) ---
+  for (const row of UPPER_ROW_ORDER) {
+    const y = 90 + UPPER_ROW_INDEX[row] * 25;
+    const isBackRow = row === 'UB5';
+    const centreEnd = isBackRow ? 17 : 20;
+    const leftStart = centreEnd + 1;
 
-  // --- Row UB5 (24 seats): Right 7 (1-7), Center 10 (8-17), Left 7 (18-24) ---
-  const ub5Y = 90 + UPPER_ROW_INDEX['UB5'] * 25;
-  // Upper Right (cols 1-7: Accompanying)
-  for (let c = 1; c <= 7; c++) {
-    const id = `UB5-${c}`;
-    seats.push({
-      id,
-      tier: 'UPPER',
-      block: 'UPPER_RIGHT',
-      blockName: 'Upper Right Balcony',
-      row: 'UB5',
-      col: c,
-      seatNumber: id,
-      categoryId: 'accompanying',
-      isBlocked: false,
-      gateRecommendation: 'Balcony Gate',
-      x: 873 - (c - 1) * 28,
-      y: ub5Y,
-    });
-  }
-  // Upper Center (cols 8-17: Accompanying)
-  for (let c = 8; c <= 17; c++) {
-    const id = `UB5-${c}`;
-    seats.push({
-      id,
-      tier: 'UPPER',
-      block: 'UPPER_CENTER',
-      blockName: 'Upper Center Balcony',
-      row: 'UB5',
-      col: c,
-      seatNumber: id,
-      categoryId: 'accompanying',
-      isBlocked: false,
-      gateRecommendation: 'Balcony Gate',
-      x: 614 - (c - 8) * 26,
-      y: ub5Y,
-    });
-  }
-  // Upper Left (cols 18-24: Nursing)
-  for (let c = 18; c <= 24; c++) {
-    const id = `UB5-${c}`;
-    seats.push({
-      id,
-      tier: 'UPPER',
-      block: 'UPPER_LEFT',
-      blockName: 'Upper Left Balcony',
-      row: 'UB5',
-      col: c,
-      seatNumber: id,
-      categoryId: 'nursing',
-      isBlocked: false,
-      gateRecommendation: 'Balcony Gate',
-      x: 258 - (c - 18) * 28,
-      y: ub5Y,
-    });
-  }
-
-  // --- Rows UB4, UB3, UB2, UB1 (4 rows x 27 seats = 108 seats) ---
-  const standardBalconyRows = ['UB4', 'UB3', 'UB2', 'UB1'];
-  standardBalconyRows.forEach((rName) => {
-    const y = 90 + UPPER_ROW_INDEX[rName] * 25;
-
-    // Upper Right (cols 1-7: Accompanying)
     for (let c = 1; c <= 7; c++) {
-      const id = `${rName}-${c}`;
-      seats.push({
-        id,
-        tier: 'UPPER',
-        block: 'UPPER_RIGHT',
-        blockName: 'Upper Right Balcony',
-        row: rName,
-        col: c,
-        seatNumber: id,
-        categoryId: 'accompanying',
-        isBlocked: false,
-        gateRecommendation: 'Balcony Gate',
-        x: 873 - (c - 1) * 28,
-        y,
-      });
+      seats.push(makeSeat('UPPER', 'UPPER_RIGHT', row, c, `${row}-${c}`, 'Balcony Gate', 873 - (c - 1) * 28, y));
     }
-
-    // Upper Center (cols 8-20: 13 seats)
-    for (let c = 8; c <= 20; c++) {
-      const id = `${rName}-${c}`;
-      let cat: CategoryId = 'accompanying';
-      if (rName === 'UB2') {
-        cat = 'pg';
-      } else if (rName === 'UB1') {
-        if (c === 8) cat = 'accompanying';
-        else if (c === 9 || c === 10) cat = 'pg';
-        else cat = 'nursing';
-      }
-
-      seats.push({
-        id,
-        tier: 'UPPER',
-        block: 'UPPER_CENTER',
-        blockName: 'Upper Center Balcony',
-        row: rName,
-        col: c,
-        seatNumber: id,
-        categoryId: cat,
-        isBlocked: false,
-        gateRecommendation: 'Balcony Gate',
-        x: 626 - (c - 8) * 23,
-        y,
-      });
+    for (let c = 8; c <= centreEnd; c++) {
+      const x = isBackRow ? 614 - (c - 8) * 26 : 626 - (c - 8) * 23;
+      seats.push(makeSeat('UPPER', 'UPPER_CENTER', row, c, `${row}-${c}`, 'Balcony Gate', x, y));
     }
-
-    // Upper Left (cols 21-27: 7 seats: Nursing)
-    for (let c = 21; c <= 27; c++) {
-      const id = `${rName}-${c}`;
-      seats.push({
-        id,
-        tier: 'UPPER',
-        block: 'UPPER_LEFT',
-        blockName: 'Upper Left Balcony',
-        row: rName,
-        col: c,
-        seatNumber: id,
-        categoryId: 'nursing',
-        isBlocked: false,
-        gateRecommendation: 'Balcony Gate',
-        x: 258 - (c - 21) * 28,
-        y,
-      });
+    for (let c = leftStart; c <= leftStart + 6; c++) {
+      seats.push(makeSeat('UPPER', 'UPPER_LEFT', row, c, `${row}-${c}`, 'Balcony Gate', 258 - (c - leftStart) * 28, y));
     }
-  });
+  }
 
-  // ==========================================
-  // 2. LOWER TIER (Ground Floor) = 618 seats
-  // Continuous Right-to-Left Seat Numbering:
-  // - Row A: A1 (rightmost) to A10 (leftmost)
-  // - Rows B-W: B1, C1.. (rightmost) to B27, C27.. (leftmost)
-  // - Row X: X1 (rightmost) to X14 (leftmost)
-  // ==========================================
-
-  // --- Row A (10 seats): Right 5 (A1-A5 Blocked), Left 5 (A6-A10 Console) ---
+  // --- Row A: wings only, 5 + 5 ---
   const rowAY = 300 + LOWER_ROW_INDEX['A'] * 26.5;
   for (let c = 1; c <= 5; c++) {
-    const id = `A${c}`;
-    seats.push({
-      id,
-      tier: 'LOWER',
-      block: 'LOWER_RIGHT',
-      blockName: 'Right Wing (Ground Floor)',
-      row: 'A',
-      col: c,
-      seatNumber: id,
-      categoryId: 'blocked',
-      isBlocked: true,
-      gateRecommendation: 'Gate-1',
-      x: 817 - (c - 1) * 28,
-      y: rowAY,
-    });
+    seats.push(makeSeat('LOWER', 'LOWER_RIGHT', 'A', c, `A${c}`, 'Gate-1', 817 - (c - 1) * 28, rowAY));
   }
   for (let c = 6; c <= 10; c++) {
-    const id = `A${c}`;
-    seats.push({
-      id,
-      tier: 'LOWER',
-      block: 'LOWER_LEFT',
-      blockName: 'Left Wing (Ground Floor)',
-      row: 'A',
-      col: c,
-      seatNumber: id,
-      categoryId: 'console',
-      isBlocked: false,
-      gateRecommendation: 'Gate-2',
-      x: 253 - (c - 6) * 28,
-      y: rowAY,
-    });
+    seats.push(makeSeat('LOWER', 'LOWER_LEFT', 'A', c, `A${c}`, 'Gate-2', 253 - (c - 6) * 28, rowAY));
   }
 
-  // --- Rows B through W (22 rows x 27 seats = 594 seats) ---
-  const standardLowerRows = [
-    'B', 'C', 'D', 'E', 'F', 'G', 'H',
-    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-    'V', 'W'
-  ];
-
-  standardLowerRows.forEach((rName) => {
-    const y = 300 + LOWER_ROW_INDEX[rName] * 26.5;
-
-    // Right Wing (cols 1-7: Accompanying)
+  // --- Rows B–W: 7 right + 13 middle + 7 left ---
+  for (const row of FRONT_TO_BACK.slice(1, -1)) {
+    const y = 300 + LOWER_ROW_INDEX[row] * 26.5;
     for (let c = 1; c <= 7; c++) {
-      const id = `${rName}${c}`;
-      seats.push({
-        id,
-        tier: 'LOWER',
-        block: 'LOWER_RIGHT',
-        blockName: 'Right Wing (Ground Floor)',
-        row: rName,
-        col: c,
-        seatNumber: id,
-        categoryId: 'accompanying',
-        isBlocked: false,
-        gateRecommendation: 'Gate-1',
-        x: 873 - (c - 1) * 28,
-        y,
-      });
+      seats.push(makeSeat('LOWER', 'LOWER_RIGHT', row, c, `${row}${c}`, 'Gate-1', 873 - (c - 1) * 28, y));
     }
-
-    // Center Block (cols 8-20: 13 seats)
     for (let c = 8; c <= 20; c++) {
-      const id = `${rName}${c}`;
-      let cat: CategoryId = 'faculty';
-      if (rName === 'B') {
-        cat = 'vvip';
-      } else if (['C', 'D', 'E', 'F', 'G'].includes(rName)) {
-        cat = 'vip';
-      } else {
-        cat = 'faculty';
-      }
-
-      seats.push({
-        id,
-        tier: 'LOWER',
-        block: 'LOWER_CENTER',
-        blockName: 'Center Block (Ground Floor)',
-        row: rName,
-        col: c,
-        seatNumber: id,
-        categoryId: cat,
-        isBlocked: false,
-        gateRecommendation: c <= 14 ? 'Gate-1' : 'Gate-2',
-        x: 626 - (c - 8) * 23,
-        y,
-      });
+      const gate = c <= 14 ? 'Gate-1' : 'Gate-2';
+      seats.push(makeSeat('LOWER', 'LOWER_CENTER', row, c, `${row}${c}`, gate, 626 - (c - 8) * 23, y));
     }
-
-    // Left Wing (cols 21-27: 7 seats)
     for (let c = 21; c <= 27; c++) {
-      const id = `${rName}${c}`;
-      let cat: CategoryId = 'mbbs';
-      if (rName === 'B') {
-        cat = 'awardees';
-      } else if (rName === 'C' || rName === 'D') {
-        cat = 'it_staff';
-      } else if (rName === 'V' || rName === 'W') {
-        cat = 'nursing';
-      } else {
-        cat = 'mbbs';
-      }
-
-      seats.push({
-        id,
-        tier: 'LOWER',
-        block: 'LOWER_LEFT',
-        blockName: 'Left Wing (Ground Floor)',
-        row: rName,
-        col: c,
-        seatNumber: id,
-        categoryId: cat,
-        isBlocked: false,
-        gateRecommendation: 'Gate-2',
-        x: 253 - (c - 21) * 28,
-        y,
-      });
+      seats.push(makeSeat('LOWER', 'LOWER_LEFT', row, c, `${row}${c}`, 'Gate-2', 253 - (c - 21) * 28, y));
     }
-  });
+  }
 
-  // --- Row X (14 seats): Right 7 (X1-X7 Accompanying), Left 7 (X8-X14 Nursing) ---
+  // --- Row X: wings only, 7 + 7 ---
   const rowXY = 300 + LOWER_ROW_INDEX['X'] * 26.5;
   for (let c = 1; c <= 7; c++) {
-    const id = `X${c}`;
-    seats.push({
-      id,
-      tier: 'LOWER',
-      block: 'LOWER_RIGHT',
-      blockName: 'Right Wing (Ground Floor)',
-      row: 'X',
-      col: c,
-      seatNumber: id,
-      categoryId: 'accompanying',
-      isBlocked: false,
-      gateRecommendation: 'Gate-1',
-      x: 873 - (c - 1) * 28,
-      y: rowXY,
-    });
+    seats.push(makeSeat('LOWER', 'LOWER_RIGHT', 'X', c, `X${c}`, 'Gate-1', 873 - (c - 1) * 28, rowXY));
   }
   for (let c = 8; c <= 14; c++) {
-    const id = `X${c}`;
-    seats.push({
-      id,
-      tier: 'LOWER',
-      block: 'LOWER_LEFT',
-      blockName: 'Left Wing (Ground Floor)',
-      row: 'X',
-      col: c,
-      seatNumber: id,
-      categoryId: 'nursing',
-      isBlocked: false,
-      gateRecommendation: 'Gate-2',
-      x: 253 - (c - 8) * 28,
-      y: rowXY,
-    });
+    seats.push(makeSeat('LOWER', 'LOWER_LEFT', 'X', c, `X${c}`, 'Gate-2', 253 - (c - 8) * 28, rowXY));
   }
 
   return seats;
 }
 
+/**
+ * Head counts that decide where the variable boundaries fall. Everything else
+ * in the layout is a fixed number of rows.
+ */
+export interface ZoneCounts {
+  /** Faculty: the middle block gets enough rows, after the VIP/admin/reporter rows. */
+  faculty: number;
+  /** Nursing students: this many seats are taken from the back of the middle block. */
+  nursing: number;
+  /** MBBS students: rows on the left after the IT rows; other students sit behind. */
+  mbbs: number;
+}
+
+/** From the organising committee's summary sheet. */
+export const DEFAULT_ZONE_COUNTS: ZoneCounts = {
+  faculty: 163, // 153 faculty members + 10
+  nursing: 45,  // B.Sc (Hons) 37 + M.Sc 2023 2 + M.Sc 2024 6 attending
+  mbbs: 108,    // MBBS 2019 (1) + MBBS 2020 (107) attending
+};
+
+/**
+ * The convocation seating rules:
+ *
+ * - Balcony: all parents.
+ * - Right wing: first 3 rows reporters, next 2 rows admin, the rest parents.
+ * - Middle block: first 2 rows VIP, 1 row admin, 1 row reporters, then
+ *   faculty, then students (PDCC) behind them, with nursing students in the
+ *   last rows.
+ * - Left wing: first 2 rows IT dept staff, then MBBS, then the other students
+ *   (PG) behind them.
+ */
+export function assignConvocationZones(seats: Seat[], counts: ZoneCounts = DEFAULT_ZONE_COUNTS): Seat[] {
+  const zoneByRow = new Map<string, CategoryId>();
+
+  /** The rows present in a block, front to back, with how many seats each has. */
+  const rowsOf = (block: BlockType): [string, number][] => {
+    const sizes = new Map<string, number>();
+    seats.forEach((s) => {
+      if (s.block === block) sizes.set(s.row, (sizes.get(s.row) ?? 0) + 1);
+    });
+    return [...sizes.entries()].sort((a, b) => FRONT_TO_BACK.indexOf(a[0]) - FRONT_TO_BACK.indexOf(b[0]));
+  };
+
+  const assign = (block: BlockType, rows: [string, number][], categoryId: CategoryId) => {
+    rows.forEach(([row]) => zoneByRow.set(`${block}|${row}`, categoryId));
+  };
+
+  /** How many rows, taken in order, are needed to hold `needed` people. */
+  const rowsToHold = (rows: [string, number][], needed: number) => {
+    let held = 0;
+    let taken = 0;
+    while (taken < rows.length && held < needed) held += rows[taken++][1];
+    return taken;
+  };
+
+  const right = rowsOf('LOWER_RIGHT');
+  assign('LOWER_RIGHT', right.slice(0, 3), 'reporters');
+  assign('LOWER_RIGHT', right.slice(3, 5), 'admin_staff');
+  assign('LOWER_RIGHT', right.slice(5), 'accompanying');
+
+  const middle = rowsOf('LOWER_CENTER');
+  assign('LOWER_CENTER', middle.slice(0, 2), 'vip');
+  assign('LOWER_CENTER', middle.slice(2, 3), 'admin_staff');
+  assign('LOWER_CENTER', middle.slice(3, 4), 'reporters');
+  const middleRest = middle.slice(4);
+  // Nursing is reserved from the back first, so faculty can never crowd it out.
+  const nursingRows = rowsToHold([...middleRest].reverse(), counts.nursing);
+  const nursingStart = middleRest.length - nursingRows;
+  const facultyRows = rowsToHold(middleRest.slice(0, nursingStart), counts.faculty);
+  assign('LOWER_CENTER', middleRest.slice(0, facultyRows), 'faculty');
+  assign('LOWER_CENTER', middleRest.slice(facultyRows, nursingStart), 'pdcc');
+  assign('LOWER_CENTER', middleRest.slice(nursingStart), 'nursing');
+
+  const left = rowsOf('LOWER_LEFT');
+  assign('LOWER_LEFT', left.slice(0, 2), 'it_staff');
+  const leftRest = left.slice(2);
+  const mbbsRows = rowsToHold(leftRest, counts.mbbs);
+  assign('LOWER_LEFT', leftRest.slice(0, mbbsRows), 'mbbs');
+  assign('LOWER_LEFT', leftRest.slice(mbbsRows), 'pg');
+
+  return seats.map((s) => ({
+    ...s,
+    categoryId: s.tier === 'UPPER' ? 'accompanying' : zoneByRow.get(`${s.block}|${s.row}`) ?? 'available',
+    isBlocked: false,
+  }));
+}
+
+export function generateDefaultSeats(): Seat[] {
+  return assignConvocationZones(buildSeatGeometry());
+}
+
 export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   eventTitle: 'Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)',
   departmentName: 'Convocation Organizing Committee',
-  numVip: 79,             // 65 Center Rows C-G + 14 Right Rows D-E buffer
-  numSeniorFaculty: 13,   // 13 VVIP seats (Center Row B seats B8-B20)
-  numFaculty: 145,        // 145 Faculty from SORTED FACULTY LIST
-  numAwardees: 7,         // Left Row B (B21-B27)
-  numReporters: 14,       // Right Rows B-C buffer
-  numAccompanying: 296,   // 296 Accompanying Guests / Parents from Student Forms
-  numBandParty: 14,       // 14 IT Dept Staff (Left Rows C-D)
-  numConsole: 5,          // 5 Console (Left Row A seats A6-A10)
-  numBlocked: 5,          // 5 Blocked seats (Right Row A seats A1-A5)
-  numAudience: 169,       // 109 MBBS + 45 Nursing + 15 PG
+  numVip: 26,             // Middle rows B–C
+  numSeniorFaculty: 0,
+  numFaculty: 163,        // 153 faculty + 10 — decides how many middle rows go to faculty
+  numAwardees: 0,
+  numReporters: 32,       // Right rows A–C (19) + middle row E (13)
+  numAccompanying: 265,   // Whole balcony (132) + right rows F–X (133)
+  numBandParty: 0,
+  numConsole: 0,
+  numBlocked: 0,
+  numAudience: 264,       // Everyone else: admin, IT staff and all students
   totalSeats: 750,
-  notes: 'Official AIIMS Kalyani Convocation Master Blueprint with Authoritative Roster',
+  notes: 'AIIMS Kalyani Convocation layout: parents in the balcony and right wing, VIP/admin/reporters up front, faculty then students in the middle, IT staff then students on the left.',
 };

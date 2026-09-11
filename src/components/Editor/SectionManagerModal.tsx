@@ -164,7 +164,7 @@ export const SectionManagerModal: React.FC<SectionManagerModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {catList.map((cat) => {
               const count = seatCounts[cat.id] || 0;
-              const isDefaultProtected = cat.id === 'blocked' || cat.id === 'audience';
+              const isDefaultProtected = cat.id === 'available';
 
               return (
                 <div

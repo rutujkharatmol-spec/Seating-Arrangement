@@ -59,6 +59,77 @@ export function compareSeatDesirability(a: Seat, b: Seat): number {
   return a.id.localeCompare(b.id);
 }
 
+/**
+ * The order the pre-assigned roster has always been seated in: ground floor
+ * before the balcony, front row to back row, and within a row the highest seat
+ * number first.
+ */
+export function compareSeatFillOrder(a: Seat, b: Seat): number {
+  if (a.tier !== b.tier) return a.tier === 'LOWER' ? -1 : 1;
+  const row = rowRank(a) - rowRank(b);
+  if (row !== 0) return row;
+  return b.col - a.col || a.id.localeCompare(b.id);
+}
+
+/** Parents of the same student ("Guest of …") sit together, or not at all. */
+const HOUSEHOLD_CATEGORY: CategoryId = 'accompanying';
+
+/**
+ * Seats the whole roster from scratch, zone by zone, keeping roster order —
+ * used when the zone layout itself changes. Everyone sits in their own zone;
+ * anyone whose zone is already full is left without a seat. When the parents'
+ * section runs out, a family that no longer fits is left out as a whole rather
+ * than split, and the spare seat goes to the next family that fits.
+ */
+export function seatRosterByZone(
+  seats: Seat[],
+  attendees: Attendee[]
+): { attendees: Attendee[]; unseated: Attendee[] } {
+  const pools = new Map<CategoryId, { seats: Seat[]; next: number }>();
+  seats
+    .filter((s) => !s.isBlocked)
+    .sort(compareSeatFillOrder)
+    .forEach((s) => {
+      const pool = pools.get(s.categoryId);
+      if (pool) pool.seats.push(s);
+      else pools.set(s.categoryId, { seats: [s], next: 0 });
+    });
+
+  const unseated: Attendee[] = [];
+  const updated: Attendee[] = new Array(attendees.length);
+
+  for (let i = 0; i < attendees.length; ) {
+    const first = attendees[i];
+
+    // A household is the run of consecutive parents listed for one student.
+    let end = i + 1;
+    if (first.categoryId === HOUSEHOLD_CATEGORY && first.department) {
+      while (
+        end < attendees.length &&
+        attendees[end].categoryId === first.categoryId &&
+        attendees[end].department === first.department
+      ) {
+        end++;
+      }
+    }
+
+    const pool = pools.get(first.categoryId);
+    const fits = pool !== undefined && pool.seats.length - pool.next >= end - i;
+
+    for (let j = i; j < end; j++) {
+      if (fits) {
+        updated[j] = { ...attendees[j], seatId: pool.seats[pool.next++].id };
+      } else {
+        unseated.push(attendees[j]);
+        updated[j] = { ...attendees[j], seatId: undefined };
+      }
+    }
+    i = end;
+  }
+
+  return { attendees: updated, unseated };
+}
+
 export interface AutoSeatResult {
   attendees: Attendee[];
   /** How many people were given a seat. */

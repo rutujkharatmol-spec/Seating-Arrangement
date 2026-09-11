@@ -1,4 +1,4 @@
-import { PlanState, normalisePlan } from '../state/plan';
+import { PlanState, migratePlanLayout, normalisePlan } from '../state/plan';
 import { neon } from '@neondatabase/serverless';
 
 /**
@@ -108,7 +108,7 @@ export async function fetchLiveCloudPlan(): Promise<{
     if (rows && rows.length > 0 && rows[0].data) {
       const rawData = typeof rows[0].data === 'string' ? JSON.parse(rows[0].data) : rows[0].data;
       if (isValidSeatedPlan(rawData)) {
-        const normalised = normalisePlan(rawData);
+        const normalised = migratePlanLayout(normalisePlan(rawData));
         // Update local browser cache so subsequent loads are instant
         if (typeof window !== 'undefined' && window.localStorage) {
           try {
@@ -139,7 +139,7 @@ export async function fetchLiveCloudPlan(): Promise<{
     if (res.ok) {
       const data = await res.json();
       if (isValidSeatedPlan(data)) {
-        return { plan: normalisePlan(data), source: 'local_api' };
+        return { plan: migratePlanLayout(normalisePlan(data)), source: 'local_api' };
       }
     }
   } catch {
@@ -155,7 +155,7 @@ export async function fetchLiveCloudPlan(): Promise<{
     if (staticRes.ok) {
       const data = await staticRes.json();
       if (isValidSeatedPlan(data)) {
-        return { plan: normalisePlan(data), source: 'static' };
+        return { plan: migratePlanLayout(normalisePlan(data)), source: 'static' };
       }
     }
   } catch {
@@ -171,7 +171,7 @@ export async function fetchLiveCloudPlan(): Promise<{
       if (cached) {
         const parsed = JSON.parse(cached);
         if (isValidSeatedPlan(parsed)) {
-          return { plan: normalisePlan(parsed), source: 'cache' };
+          return { plan: migratePlanLayout(normalisePlan(parsed)), source: 'cache' };
         }
       }
     } catch {}

@@ -10,15 +10,11 @@ export type BuiltinCategoryId =
   | 'nursing'
   | 'pg'
   | 'pdcc'
-  | 'awardees'
   | 'accompanying'
-  | 'audience'
   | 'band_party'
   | 'console'
   | 'admin_staff'
   | 'it_staff'
-  | 'vvip'
-  | 'blocked'
   | 'available';
 
 export type CategoryId = string;

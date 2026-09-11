@@ -9,7 +9,7 @@ import {
   SeatingPreset,
   CategoryInfo,
 } from './types/seating';
-import { generateDefaultSeats } from './data/defaultSeatingData';
+import { CONVOCATION_LAYOUT_VERSION, generateDefaultSeats } from './data/defaultSeatingData';
 import { CATEGORIES } from './data/categories';
 import { reallocateSeatsFromAnswers } from './utils/seatAlgorithms';
 import { autoSeatAttendees, findPlanIssues } from './utils/autoSeat';
@@ -240,10 +240,18 @@ export function App() {
     return () => window.removeEventListener('focus', handleFocus);
   }, [plan]);
 
-  // Persist plan changes: saves to localStorage AND publishes to Neon cloud database
+  // Guest phones on the seat tracker only ever read the shared plan. Letting
+  // them publish uploaded the whole plan from every phone on every poll, and a
+  // phone holding an older copy could overwrite the organisers' latest edits.
+  const isKioskModeRef = useRef(isKioskMode);
+  isKioskModeRef.current = isKioskMode;
+
+  // Persist plan changes: saves to localStorage AND (organizer page only)
+  // publishes to the Neon cloud database
   useEffect(() => {
     const id = window.setTimeout(() => {
       savePlan(plan.present);
+      if (isKioskModeRef.current) return;
       // Auto-publish to cloud so all other devices and accounts receive updates
       publishPlanToCloud(plan.present).catch((err) => {
         console.warn('Background cloud sync error:', err);
@@ -257,7 +265,7 @@ export function App() {
   useEffect(() => {
     const flush = () => {
       savePlan(latestPlanRef.current);
-      publishPlanToCloud(latestPlanRef.current).catch(() => {});
+      if (!isKioskModeRef.current) publishPlanToCloud(latestPlanRef.current).catch(() => {});
     };
     const onVisibility = () => {
       if (document.visibilityState === 'hidden') flush();
@@ -308,7 +316,7 @@ export function App() {
       (p) => {
         const next = { ...(p.categories || CATEGORIES) };
         delete next[catId];
-        const seats = p.seats.map((s) => (s.categoryId === catId ? { ...s, categoryId: 'audience' } : s));
+        const seats = p.seats.map((s) => (s.categoryId === catId ? { ...s, categoryId: 'available' } : s));
         const attendees = p.attendees.map((a) => (a.categoryId === catId ? { ...a, categoryId: 'faculty' } : a));
         return {
           ...p,
@@ -730,7 +738,11 @@ export function App() {
     importConfigurationJson(
       file,
       (imported) => {
-        plan.commit(() => normalisePlan(imported), `Import ${file.name}`);
+        // A restored backup is kept exactly as saved, so don't re-arrange it.
+        plan.commit(
+          () => ({ ...normalisePlan(imported), layoutVersion: CONVOCATION_LAYOUT_VERSION }),
+          `Import ${file.name}`
+        );
         showToast('Restored backup seating configuration');
       },
       (err) => showToast(`Import failed: ${err.message}`, 'error')

@@ -1,7 +1,12 @@
 import { Attendee, CategoryInfo, QuestionnaireAnswers, Seat, Volunteer } from '../types/seating';
-import { generateDefaultSeats, INITIAL_QUESTIONNAIRE_ANSWERS } from '../data/defaultSeatingData';
+import {
+  CONVOCATION_LAYOUT_VERSION,
+  generateDefaultSeats,
+  INITIAL_QUESTIONNAIRE_ANSWERS,
+} from '../data/defaultSeatingData';
 import { INITIAL_ATTENDEES } from '../data/initialAttendees';
 import { CATEGORIES, DEFAULT_VOLUNTEERS } from '../data/categories';
+import { seatRosterByZone } from '../utils/autoSeat';
 
 /**
  * The complete seating plan — everything that gets saved, undone, exported and
@@ -14,6 +19,8 @@ export interface PlanState {
   attendees: Attendee[];
   volunteers: Volunteer[];
   categories: Record<string, CategoryInfo>;
+  /** Which zone layout the seats follow; see migratePlanLayout. */
+  layoutVersion?: string;
 }
 
 const STORAGE_KEY = 'aiims_seating_plan_v14';
@@ -27,6 +34,7 @@ export function createDefaultPlan(): PlanState {
     attendees,
     volunteers: DEFAULT_VOLUNTEERS,
     categories: { ...CATEGORIES },
+    layoutVersion: CONVOCATION_LAYOUT_VERSION,
   };
 }
 
@@ -45,7 +53,7 @@ export function normalisePlan(plan: Partial<PlanState>): PlanState {
 
   const seats = rawSeats.map((s) => {
     const { attendee: _attendee, attendeeId: _attendeeId, ...rest } = s;
-    const catId = categories[s.categoryId] ? s.categoryId : 'audience';
+    const catId = categories[s.categoryId] ? s.categoryId : 'available';
     return {
       ...rest,
       categoryId: catId,
@@ -71,6 +79,44 @@ export function normalisePlan(plan: Partial<PlanState>): PlanState {
     attendees,
     volunteers: plan.volunteers || DEFAULT_VOLUNTEERS,
     categories,
+    layoutVersion: plan.layoutVersion,
+  };
+}
+
+/** Sections retired when the convocation layout was redrawn. */
+const RETIRED_CATEGORY_IDS = new Set(['awardees', 'audience', 'blocked', 'vvip']);
+
+/**
+ * Moves a plan saved under an older zone layout onto the current one: fresh
+ * zones, built-in sections from the current defaults (custom sections kept),
+ * and every guest on the roster re-seated in roster order. Guests added after
+ * the built-in list are kept too. Runs once per plan — the version stamp
+ * makes it a no-op afterwards, so later manual edits are never undone.
+ */
+export function migratePlanLayout(plan: PlanState): PlanState {
+  if (plan.layoutVersion === CONVOCATION_LAYOUT_VERSION) return plan;
+
+  const categories: Record<string, CategoryInfo> = { ...CATEGORIES };
+  Object.values(plan.categories || {}).forEach((c) => {
+    if (c.isCustom && !RETIRED_CATEGORY_IDS.has(c.id)) categories[c.id] = c;
+  });
+
+  const seats = generateDefaultSeats();
+  const roster = plan.attendees.map((a) => {
+    const categoryId = a.categoryId === 'vvip' ? 'vip' : categories[a.categoryId] ? a.categoryId : 'faculty';
+    return { ...a, categoryId, seatId: undefined };
+  });
+  const { attendees } = seatRosterByZone(seats, roster);
+
+  const { eventTitle, departmentName, notes } = plan.answers || INITIAL_QUESTIONNAIRE_ANSWERS;
+
+  return {
+    ...plan,
+    answers: { ...INITIAL_QUESTIONNAIRE_ANSWERS, eventTitle, departmentName, notes },
+    seats,
+    attendees,
+    categories,
+    layoutVersion: CONVOCATION_LAYOUT_VERSION,
   };
 }
 
@@ -102,7 +148,7 @@ export function loadPlan(): PlanState {
       const seatedCount = parsed?.attendees?.filter((a) => Boolean(a.seatId))?.length || 0;
       // Only keep cached plan if it has seats and at least 500 seated attendees
       if (parsed?.seats?.length && seatedCount >= 500) {
-        return normalisePlan(parsed);
+        return migratePlanLayout(normalisePlan(parsed));
       }
     }
   } catch {
