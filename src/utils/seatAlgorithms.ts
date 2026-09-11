@@ -123,7 +123,7 @@ export function reallocateSeatsFromAnswers(
 }
 
 /**
- * Validates questionnaire answer totals against auditorium capacity (763 / totalSeats)
+ * Validates questionnaire answer totals against auditorium capacity (750 / totalSeats)
  */
 export function validateQuestionnaire(answers: QuestionnaireAnswers, capacity?: number): {
   isValid: boolean;
@@ -131,7 +131,7 @@ export function validateQuestionnaire(answers: QuestionnaireAnswers, capacity?: 
   difference: number;
   message: string;
 } {
-  const targetCapacity = capacity || answers.totalSeats || 763;
+  const targetCapacity = capacity || answers.totalSeats || 750;
   const totalAllocated = 
     answers.numVip +
     answers.numSeniorFaculty +

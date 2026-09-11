@@ -16,7 +16,7 @@ export interface PlanState {
   categories: Record<string, CategoryInfo>;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v12';
+const STORAGE_KEY = 'aiims_seating_plan_v14';
 
 export function createDefaultPlan(): PlanState {
   const attendees = [...INITIAL_ATTENDEES];
@@ -116,7 +116,11 @@ export function loadPlan(): PlanState {
     localStorage.removeItem('aiims_seating_plan_v9');
     localStorage.removeItem('aiims_seating_plan_v10');
     localStorage.removeItem('aiims_seating_plan_v11');
+    localStorage.removeItem('aiims_seating_plan_v12');
+    localStorage.removeItem('aiims_seating_plan_v13');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan');
+    localStorage.removeItem('aiims_kalyani_mobile_cached_plan_v12');
+    localStorage.removeItem('aiims_kalyani_mobile_cached_plan_v13');
   } catch {
     // Ignore storage errors
   }

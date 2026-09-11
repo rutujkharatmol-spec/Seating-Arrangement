@@ -72,8 +72,8 @@ export async function publishPlanToCloud(plan: PlanState): Promise<{ success: bo
   // 3. Cache locally in current browser
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
-      localStorage.setItem('aiims_seating_plan_v12', jsonStr);
-      localStorage.setItem('aiims_kalyani_mobile_cached_plan_v12', jsonStr);
+      localStorage.setItem('aiims_seating_plan_v14', jsonStr);
+      localStorage.setItem('aiims_kalyani_mobile_cached_plan_v14', jsonStr);
       localStorage.setItem('aiims_last_cloud_publish', new Date().toISOString());
     } catch (e) {
       console.warn('[CloudSync] Local cache write error:', e);
@@ -113,8 +113,8 @@ export async function fetchLiveCloudPlan(): Promise<{
         if (typeof window !== 'undefined' && window.localStorage) {
           try {
             const cacheStr = JSON.stringify(normalised);
-            localStorage.setItem('aiims_seating_plan_v12', cacheStr);
-            localStorage.setItem('aiims_kalyani_mobile_cached_plan_v12', cacheStr);
+            localStorage.setItem('aiims_seating_plan_v14', cacheStr);
+            localStorage.setItem('aiims_kalyani_mobile_cached_plan_v14', cacheStr);
             localStorage.setItem('aiims_last_cloud_fetch', new Date().toISOString());
           } catch {}
         }
@@ -166,8 +166,8 @@ export async function fetchLiveCloudPlan(): Promise<{
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const cached =
-        localStorage.getItem('aiims_seating_plan_v12') ||
-        localStorage.getItem('aiims_kalyani_mobile_cached_plan_v12');
+        localStorage.getItem('aiims_seating_plan_v14') ||
+        localStorage.getItem('aiims_kalyani_mobile_cached_plan_v14');
       if (cached) {
         const parsed = JSON.parse(cached);
         if (isValidSeatedPlan(parsed)) {

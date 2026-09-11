@@ -123,7 +123,7 @@ export function sortSeatsFrontToBack(
 
     // 3. Within the same row: column order
     if (pattern === 'center_out') {
-      const centerCol = (a.block === 'LOWER_CENTER' || a.block === 'UPPER_CENTER') ? 7 : 4;
+      const centerCol = (a.block === 'LOWER_CENTER' || a.block === 'UPPER_CENTER') ? 14 : (a.block.includes('RIGHT') ? 4 : 24);
       const distA = Math.abs(a.col - centerCol);
       const distB = Math.abs(b.col - centerCol);
       if (distA !== distB) return distA - distB;

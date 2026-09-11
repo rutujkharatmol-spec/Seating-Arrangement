@@ -106,7 +106,7 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
       numConsole: 35,
       numBlocked: 54,
       numAudience: 174,
-      totalSeats: 763,
+      totalSeats: 750,
       notes: '',
     };
   });
@@ -147,7 +147,7 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
     return [...sameZone, ...others].slice(0, 200);
   }, [singleSeat, unassignedAttendees]);
 
-  const validation = validateQuestionnaire(countForm, countForm.totalSeats || 763);
+  const validation = validateQuestionnaire(countForm, countForm.totalSeats || 750);
 
   const handleCountChange = (key: keyof QuestionnaireAnswers, val: number) => {
     setCountForm((prev) => ({
@@ -168,7 +168,7 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
       countForm.numConsole +
       countForm.numBlocked;
 
-    const remainingForAudience = Math.max(0, (countForm.totalSeats || 763) - currentWithoutAudience);
+    const remainingForAudience = Math.max(0, (countForm.totalSeats || 750) - currentWithoutAudience);
 
     setCountForm((prev) => ({
       ...prev,
@@ -584,7 +584,7 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
               ? 'bg-amber-50 border-amber-300 text-amber-950 font-bold'
               : 'bg-rose-50 border-rose-300 text-rose-950 font-bold'
           }`}>
-            <span>Total: {validation.totalRequested} / {countForm.totalSeats || 763}</span>
+            <span>Total: {validation.totalRequested} / {countForm.totalSeats || 750}</span>
             {validation.difference !== 0 && (
               <button
                 type="button"

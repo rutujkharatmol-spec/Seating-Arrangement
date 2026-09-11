@@ -29,20 +29,25 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
       const rIdx = ubRowOrder.indexOf(seat.row);
       const y = 90 + rIdx * 24;
 
-      if (seat.block === 'UPPER_LEFT') {
-        const x = 90 + (seat.col - 1) * 26;
-        return { x, y, size: seatSize };
-      }
       if (seat.block === 'UPPER_RIGHT') {
-        const x = 705 + (seat.col - 1) * 26;
+        const x = 861 - (seat.col - 1) * 26;
         return { x, y, size: seatSize };
       }
       if (seat.block === 'UPPER_CENTER') {
         if (seat.row === 'UB5') {
-          const x = 380 + (seat.col - 1) * 24;
+          const x = 596 - (seat.col - 8) * 24;
           return { x, y, size: seatSize };
         } else {
-          const x = 350 + (seat.col - 1) * 22;
+          const x = 614 - (seat.col - 8) * 22;
+          return { x, y, size: seatSize };
+        }
+      }
+      if (seat.block === 'UPPER_LEFT') {
+        if (seat.row === 'UB5') {
+          const x = 246 - (seat.col - 18) * 26;
+          return { x, y, size: seatSize };
+        } else {
+          const x = 246 - (seat.col - 21) * 26;
           return { x, y, size: seatSize };
         }
       }
@@ -51,16 +56,28 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
     const rIdx = lowerRowList.indexOf(seat.row);
     const y = 295 + rIdx * 25.5;
 
-    if (seat.block === 'LOWER_LEFT') {
-      const x = 85 + (seat.col - 1) * 26;
+    if (seat.block === 'LOWER_RIGHT') {
+      if (seat.row === 'A') {
+        const x = 809 - (seat.col - 1) * 26;
+        return { x, y, size: seatSize };
+      }
+      const x = 861 - (seat.col - 1) * 26;
       return { x, y, size: seatSize };
     }
     if (seat.block === 'LOWER_CENTER') {
-      const x = 350 + (seat.col - 1) * 22;
+      const x = 614 - (seat.col - 8) * 22;
       return { x, y, size: seatSize };
     }
-    if (seat.block === 'LOWER_RIGHT') {
-      const x = 705 + (seat.col - 1) * 26;
+    if (seat.block === 'LOWER_LEFT') {
+      if (seat.row === 'A') {
+        const x = 241 - (seat.col - 6) * 26;
+        return { x, y, size: seatSize };
+      }
+      if (seat.row === 'X') {
+        const x = 241 - (seat.col - 8) * 26;
+        return { x, y, size: seatSize };
+      }
+      const x = 241 - (seat.col - 21) * 26;
       return { x, y, size: seatSize };
     }
 
@@ -122,7 +139,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
           <rect x="340" y="285" width="320" height="55" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
           <rect x="340" y="345" width="320" height="365" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
           <rect x="340" y="715" width="320" height="80" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-          <rect x="340" y="785" width="320" height="145" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+          <rect x="340" y="785" width="320" height="100" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
           <rect x="695" y="285" width="230" height="235" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
           <rect x="695" y="525" width="230" height="185" rx="6" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />

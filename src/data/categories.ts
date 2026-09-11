@@ -190,8 +190,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#fca5a5',       // Coral Red / Soft Crimson
     textColor: '#881337',
     borderColor: '#e11d48',
-    description: 'Chief Guest, Union Ministers, Governing Body & Apex Dignitaries (Center Rows A-B, 26 seats)',
-    defaultCount: 26,
+    description: 'Chief Guest, Union Ministers, Governing Body & Apex Dignitaries (Center Row B, 13 seats)',
+    defaultCount: 13,
     priority: 15,
     recommendedGate: 'Gate-1 or Gate-2',
     isCustom: false,

@@ -74,19 +74,44 @@ UPPER_ROW_ORDER.forEach((r, i) => { UPPER_ROW_INDEX[r] = i; });
 const SEAT_SIZE = 20;
 
 export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
+  if (seat.x !== undefined && seat.y !== undefined) {
+    return { x: seat.x, y: seat.y };
+  }
+
   if (seat.tier === 'UPPER') {
     const y = 90 + (UPPER_ROW_INDEX[seat.row] ?? 0) * 25;
-    if (seat.block === 'UPPER_LEFT') return { x: 90 + (seat.col - 1) * 28, y };
-    if (seat.block === 'UPPER_RIGHT') return { x: 705 + (seat.col - 1) * 28, y };
-    return seat.row === 'UB5'
-      ? { x: 380 + (seat.col - 1) * 26, y }
-      : { x: 350 + (seat.col - 1) * 23, y };
+    if (seat.block === 'UPPER_RIGHT') {
+      return { x: 873 - (seat.col - 1) * 28, y };
+    }
+    if (seat.block === 'UPPER_CENTER') {
+      if (seat.row === 'UB5') {
+        return { x: 614 - (seat.col - 8) * 26, y };
+      }
+      return { x: 626 - (seat.col - 8) * 23, y };
+    }
+    if (seat.row === 'UB5') {
+      return { x: 258 - (seat.col - 18) * 28, y };
+    }
+    return { x: 258 - (seat.col - 21) * 28, y };
   }
 
   const y = 300 + (LOWER_ROW_INDEX[seat.row] ?? 0) * 26.5;
-  if (seat.block === 'LOWER_LEFT') return { x: 85 + (seat.col - 1) * 28, y };
-  if (seat.block === 'LOWER_RIGHT') return { x: 705 + (seat.col - 1) * 28, y };
-  return { x: 350 + (seat.col - 1) * 23, y };
+  if (seat.block === 'LOWER_RIGHT') {
+    if (seat.row === 'A') {
+      return { x: 817 - (seat.col - 1) * 28, y };
+    }
+    return { x: 873 - (seat.col - 1) * 28, y };
+  }
+  if (seat.block === 'LOWER_CENTER') {
+    return { x: 626 - (seat.col - 8) * 23, y };
+  }
+  if (seat.row === 'A') {
+    return { x: 253 - (seat.col - 6) * 28, y };
+  }
+  if (seat.row === 'X') {
+    return { x: 253 - (seat.col - 8) * 28, y };
+  }
+  return { x: 253 - (seat.col - 21) * 28, y };
 }
 
 export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
@@ -596,7 +621,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             <rect x="340" y="290" width="320" height="60" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
             <rect x="340" y="355" width="320" height="375" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
             <rect x="340" y="735" width="320" height="85" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="340" y="805" width="320" height="140" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="340" y="805" width="320" height="110" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
             <rect x="695" y="290" width="230" height="245" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
             <rect x="695" y="540" width="230" height="185" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />

@@ -33,16 +33,19 @@ function colRank(seat: Seat): number {
   switch (seat.block) {
     case 'LOWER_CENTER':
     case 'UPPER_CENTER': {
-      const centre = 7; // 13-wide blocks
+      const centre = seat.row === 'UB5' ? 12.5 : 14;
       return Math.abs(seat.col - centre);
     }
     case 'LOWER_LEFT':
-    case 'UPPER_LEFT':
-      // Column 7 is the inner aisle side, so count down from it.
-      return 7 - seat.col;
-    default:
-      // Right wing: column 1 is the inner aisle side.
-      return seat.col - 1;
+    case 'UPPER_LEFT': {
+      const aisle = seat.row === 'A' ? 6 : seat.row === 'X' ? 8 : seat.row === 'UB5' ? 18 : 21;
+      return seat.col - aisle;
+    }
+    default: {
+      // Right wing: inner aisle is seat 5 for Row A, 7 for other rows
+      const aisle = seat.row === 'A' ? 5 : 7;
+      return Math.abs(seat.col - aisle);
+    }
   }
 }
 

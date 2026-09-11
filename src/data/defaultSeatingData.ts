@@ -1,38 +1,47 @@
-import { Seat, BlockType, TierType, CategoryId } from '../types/seating';
+import { Seat, CategoryId } from '../types/seating';
+
+const LOWER_ROW_LIST = [
+  'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
+  'L', 'K', 'J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A',
+];
+const UPPER_ROW_ORDER = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
+
+const LOWER_ROW_INDEX: Record<string, number> = {};
+LOWER_ROW_LIST.forEach((r, i) => { LOWER_ROW_INDEX[r] = i; });
+const UPPER_ROW_INDEX: Record<string, number> = {};
+UPPER_ROW_ORDER.forEach((r, i) => { UPPER_ROW_INDEX[r] = i; });
 
 export function generateDefaultSeats(): Seat[] {
   const seats: Seat[] = [];
 
   // ==========================================
-  // 1. UPPER TIER (Balcony / Top Level)
-  // Total Seats = 132
+  // 1. UPPER TIER (Balcony / Top Level) = 132 seats
+  // Continuous Right-to-Left Seat Numbering (1 at rightmost to 27/24 at leftmost)
   // ==========================================
 
-  // --- Upper Left Block (5 rows x 7 cols = 35 seats) ---
-  // Rows UB1-UB5: All 35 seats -> Nursing Graduates
-  const upperLeftRows = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
-  upperLeftRows.forEach((rName) => {
-    for (let c = 1; c <= 7; c++) {
-      const id = `UL-${rName}-${c}`;
-      seats.push({
-        id,
-        tier: 'UPPER',
-        block: 'UPPER_LEFT',
-        blockName: 'Upper Left Balcony',
-        row: rName,
-        col: c,
-        seatNumber: `${rName}-${c}`,
-        categoryId: 'nursing',
-        isBlocked: false,
-        gateRecommendation: 'Balcony Gate',
-      });
-    }
-  });
-
-  // --- Upper Center Block (62 seats) ---
-  // - Row UB5 (10 seats): Accompanying Guests / Parents
-  for (let c = 1; c <= 10; c++) {
-    const id = `UC-UB5-${c}`;
+  // --- Row UB5 (24 seats): Right 7 (1-7), Center 10 (8-17), Left 7 (18-24) ---
+  const ub5Y = 90 + UPPER_ROW_INDEX['UB5'] * 25;
+  // Upper Right (cols 1-7: Accompanying)
+  for (let c = 1; c <= 7; c++) {
+    const id = `UB5-${c}`;
+    seats.push({
+      id,
+      tier: 'UPPER',
+      block: 'UPPER_RIGHT',
+      blockName: 'Upper Right Balcony',
+      row: 'UB5',
+      col: c,
+      seatNumber: id,
+      categoryId: 'accompanying',
+      isBlocked: false,
+      gateRecommendation: 'Balcony Gate',
+      x: 873 - (c - 1) * 28,
+      y: ub5Y,
+    });
+  }
+  // Upper Center (cols 8-17: Accompanying)
+  for (let c = 8; c <= 17; c++) {
+    const id = `UB5-${c}`;
     seats.push({
       id,
       tier: 'UPPER',
@@ -40,87 +49,41 @@ export function generateDefaultSeats(): Seat[] {
       blockName: 'Upper Center Balcony',
       row: 'UB5',
       col: c,
-      seatNumber: `UB5-${c}`,
+      seatNumber: id,
       categoryId: 'accompanying',
       isBlocked: false,
       gateRecommendation: 'Balcony Gate',
+      x: 614 - (c - 8) * 26,
+      y: ub5Y,
     });
   }
-
-  // - Row UB4 (13 seats): Accompanying Guests / Parents
-  for (let c = 1; c <= 13; c++) {
-    const id = `UC-UB4-${c}`;
+  // Upper Left (cols 18-24: Nursing)
+  for (let c = 18; c <= 24; c++) {
+    const id = `UB5-${c}`;
     seats.push({
       id,
       tier: 'UPPER',
-      block: 'UPPER_CENTER',
-      blockName: 'Upper Center Balcony',
-      row: 'UB4',
+      block: 'UPPER_LEFT',
+      blockName: 'Upper Left Balcony',
+      row: 'UB5',
       col: c,
-      seatNumber: `UB4-${c}`,
-      categoryId: 'accompanying',
+      seatNumber: id,
+      categoryId: 'nursing',
       isBlocked: false,
       gateRecommendation: 'Balcony Gate',
+      x: 258 - (c - 18) * 28,
+      y: ub5Y,
     });
   }
 
-  // - Row UB3 (13 seats): Accompanying Guests / Parents
-  for (let c = 1; c <= 13; c++) {
-    const id = `UC-UB3-${c}`;
-    seats.push({
-      id,
-      tier: 'UPPER',
-      block: 'UPPER_CENTER',
-      blockName: 'Upper Center Balcony',
-      row: 'UB3',
-      col: c,
-      seatNumber: `UB3-${c}`,
-      categoryId: 'accompanying',
-      isBlocked: false,
-      gateRecommendation: 'Balcony Gate',
-    });
-  }
+  // --- Rows UB4, UB3, UB2, UB1 (4 rows x 27 seats = 108 seats) ---
+  const standardBalconyRows = ['UB4', 'UB3', 'UB2', 'UB1'];
+  standardBalconyRows.forEach((rName) => {
+    const y = 90 + UPPER_ROW_INDEX[rName] * 25;
 
-  // - Row UB2 (13 seats): PG Residents
-  for (let c = 1; c <= 13; c++) {
-    const id = `UC-UB2-${c}`;
-    seats.push({
-      id,
-      tier: 'UPPER',
-      block: 'UPPER_CENTER',
-      blockName: 'Upper Center Balcony',
-      row: 'UB2',
-      col: c,
-      seatNumber: `UB2-${c}`,
-      categoryId: 'pg',
-      isBlocked: false,
-      gateRecommendation: 'Balcony Gate',
-    });
-  }
-
-  // - Row UB1 (13 seats): cols 1-10 Nursing (10 seats), cols 11-12 PG Residents (2 seats), col 13 Guest (1 seat)
-  for (let c = 1; c <= 13; c++) {
-    const id = `UC-UB1-${c}`;
-    const cat: CategoryId = c <= 10 ? 'nursing' : c <= 12 ? 'pg' : 'accompanying';
-    seats.push({
-      id,
-      tier: 'UPPER',
-      block: 'UPPER_CENTER',
-      blockName: 'Upper Center Balcony',
-      row: 'UB1',
-      col: c,
-      seatNumber: `UB1-${c}`,
-      categoryId: cat,
-      isBlocked: false,
-      gateRecommendation: 'Balcony Gate',
-    });
-  }
-
-  // --- Upper Right Block (5 rows x 7 cols = 35 seats: Parents & Family Guests) ---
-  const upperRightRows = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
-  upperRightRows.forEach((rName) => {
+    // Upper Right (cols 1-7: Accompanying)
     for (let c = 1; c <= 7; c++) {
-      const id = `UR-${rName}-${c}`;
+      const id = `${rName}-${c}`;
       seats.push({
         id,
         tier: 'UPPER',
@@ -128,130 +91,232 @@ export function generateDefaultSeats(): Seat[] {
         blockName: 'Upper Right Balcony',
         row: rName,
         col: c,
-        seatNumber: `${rName}-${c}`,
+        seatNumber: id,
         categoryId: 'accompanying',
         isBlocked: false,
         gateRecommendation: 'Balcony Gate',
+        x: 873 - (c - 1) * 28,
+        y,
       });
     }
-  });
 
-  // ==========================================
-  // 2. LOWER TIER (Main Floor)
-  // Rows A (Front) to X (Back)
-  // Total Seats = 631
-  // ==========================================
-
-  const lowerRows = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-    'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-    'V', 'W', 'X'
-  ];
-
-  // --- LOWER LEFT WING (166 seats) ---
-  // - Row A cols 3-7 (5 seats) -> AV & Technical Console
-  // - Row B cols 1-7 (7 seats) -> Awardees & Medalists
-  // - Rows C & D cols 1-7 (14 seats) -> IT Dept Staff
-  // - Rows E through U (17 rows x 7 cols = 119 seats) -> MBBS Graduates
-  // - Rows V, W, X (3 rows x 7 cols = 21 seats) -> Nursing Graduates
-  lowerRows.forEach((rowLetter) => {
-    const startCol = rowLetter === 'A' ? 3 : 1;
-    for (let c = startCol; c <= 7; c++) {
-      let cat: CategoryId = 'mbbs';
-      if (rowLetter === 'A') {
-        cat = 'console';
-      } else if (rowLetter === 'B') {
-        cat = 'awardees';
-      } else if (rowLetter === 'C' || rowLetter === 'D') {
-        cat = 'it_staff';
-      } else if (['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U'].includes(rowLetter)) {
-        cat = 'mbbs';
-      } else {
-        cat = 'nursing';
-      }
-
-      const id = `L-${rowLetter}${c}`;
-      seats.push({
-        id,
-        tier: 'LOWER',
-        block: 'LOWER_LEFT',
-        blockName: 'Left Wing (Ground Floor)',
-        row: rowLetter,
-        col: c,
-        seatNumber: `${rowLetter}${c}`,
-        categoryId: cat,
-        isBlocked: false,
-        gateRecommendation: 'Gate-2',
-      });
-    }
-  });
-
-  // --- LOWER CENTER BLOCK (299 seats) ---
-  // - Rows A-B (2 rows x 13 cols = 26 seats) -> VVIP Dignitaries
-  // - Rows C-G (5 rows x 13 cols = 65 seats) -> VIP & Dignitaries
-  // - Rows H-W (16 rows x 13 cols = 208 seats) -> Faculty Members & Academic Staff
-  const centerRows = [
-    'A', 'B',
-    'C', 'D', 'E', 'F', 'G',
-    'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'
-  ];
-
-  centerRows.forEach((rowLetter) => {
-    let cat: CategoryId = 'faculty';
-    if (rowLetter === 'A' || rowLetter === 'B') {
-      cat = 'vvip';
-    } else if (['C', 'D', 'E', 'F', 'G'].includes(rowLetter)) {
-      cat = 'vip';
-    } else {
-      cat = 'faculty';
-    }
-
-    for (let c = 1; c <= 13; c++) {
-      const id = `C-${rowLetter}${c}`;
-      seats.push({
-        id,
-        tier: 'LOWER',
-        block: 'LOWER_CENTER',
-        blockName: 'Center Block (Ground Floor)',
-        row: rowLetter,
-        col: c,
-        seatNumber: `${rowLetter}${c}`,
-        categoryId: cat,
-        isBlocked: false,
-        gateRecommendation: c <= 6 ? 'Gate-2' : 'Gate-1',
-      });
-    }
-  });
-
-  // --- LOWER RIGHT WING (166 seats) ---
-  // - Row A cols 1-5 (5 seats) -> Blocked Seats (camera/stage buffer)
-  // - Rows B through X (161 seats) -> Accompanying Guests / Parents
-  lowerRows.forEach((rowLetter) => {
-    const endCol = rowLetter === 'A' ? 5 : 7;
-    for (let c = 1; c <= endCol; c++) {
+    // Upper Center (cols 8-20: 13 seats)
+    for (let c = 8; c <= 20; c++) {
+      const id = `${rName}-${c}`;
       let cat: CategoryId = 'accompanying';
-      if (rowLetter === 'A') {
-        cat = 'blocked';
-      } else {
-        cat = 'accompanying';
+      if (rName === 'UB2') {
+        cat = 'pg';
+      } else if (rName === 'UB1') {
+        if (c === 8) cat = 'accompanying';
+        else if (c === 9 || c === 10) cat = 'pg';
+        else cat = 'nursing';
       }
 
-      const id = `R-${rowLetter}${c}`;
+      seats.push({
+        id,
+        tier: 'UPPER',
+        block: 'UPPER_CENTER',
+        blockName: 'Upper Center Balcony',
+        row: rName,
+        col: c,
+        seatNumber: id,
+        categoryId: cat,
+        isBlocked: false,
+        gateRecommendation: 'Balcony Gate',
+        x: 626 - (c - 8) * 23,
+        y,
+      });
+    }
+
+    // Upper Left (cols 21-27: 7 seats: Nursing)
+    for (let c = 21; c <= 27; c++) {
+      const id = `${rName}-${c}`;
+      seats.push({
+        id,
+        tier: 'UPPER',
+        block: 'UPPER_LEFT',
+        blockName: 'Upper Left Balcony',
+        row: rName,
+        col: c,
+        seatNumber: id,
+        categoryId: 'nursing',
+        isBlocked: false,
+        gateRecommendation: 'Balcony Gate',
+        x: 258 - (c - 21) * 28,
+        y,
+      });
+    }
+  });
+
+  // ==========================================
+  // 2. LOWER TIER (Ground Floor) = 618 seats
+  // Continuous Right-to-Left Seat Numbering:
+  // - Row A: A1 (rightmost) to A10 (leftmost)
+  // - Rows B-W: B1, C1.. (rightmost) to B27, C27.. (leftmost)
+  // - Row X: X1 (rightmost) to X14 (leftmost)
+  // ==========================================
+
+  // --- Row A (10 seats): Right 5 (A1-A5 Blocked), Left 5 (A6-A10 Console) ---
+  const rowAY = 300 + LOWER_ROW_INDEX['A'] * 26.5;
+  for (let c = 1; c <= 5; c++) {
+    const id = `A${c}`;
+    seats.push({
+      id,
+      tier: 'LOWER',
+      block: 'LOWER_RIGHT',
+      blockName: 'Right Wing (Ground Floor)',
+      row: 'A',
+      col: c,
+      seatNumber: id,
+      categoryId: 'blocked',
+      isBlocked: true,
+      gateRecommendation: 'Gate-1',
+      x: 817 - (c - 1) * 28,
+      y: rowAY,
+    });
+  }
+  for (let c = 6; c <= 10; c++) {
+    const id = `A${c}`;
+    seats.push({
+      id,
+      tier: 'LOWER',
+      block: 'LOWER_LEFT',
+      blockName: 'Left Wing (Ground Floor)',
+      row: 'A',
+      col: c,
+      seatNumber: id,
+      categoryId: 'console',
+      isBlocked: false,
+      gateRecommendation: 'Gate-2',
+      x: 253 - (c - 6) * 28,
+      y: rowAY,
+    });
+  }
+
+  // --- Rows B through W (22 rows x 27 seats = 594 seats) ---
+  const standardLowerRows = [
+    'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+    'V', 'W'
+  ];
+
+  standardLowerRows.forEach((rName) => {
+    const y = 300 + LOWER_ROW_INDEX[rName] * 26.5;
+
+    // Right Wing (cols 1-7: Accompanying)
+    for (let c = 1; c <= 7; c++) {
+      const id = `${rName}${c}`;
       seats.push({
         id,
         tier: 'LOWER',
         block: 'LOWER_RIGHT',
         blockName: 'Right Wing (Ground Floor)',
-        row: rowLetter,
+        row: rName,
         col: c,
-        seatNumber: `${rowLetter}${c}`,
-        categoryId: cat,
-        isBlocked: cat === 'blocked',
+        seatNumber: id,
+        categoryId: 'accompanying',
+        isBlocked: false,
         gateRecommendation: 'Gate-1',
+        x: 873 - (c - 1) * 28,
+        y,
+      });
+    }
+
+    // Center Block (cols 8-20: 13 seats)
+    for (let c = 8; c <= 20; c++) {
+      const id = `${rName}${c}`;
+      let cat: CategoryId = 'faculty';
+      if (rName === 'B') {
+        cat = 'vvip';
+      } else if (['C', 'D', 'E', 'F', 'G'].includes(rName)) {
+        cat = 'vip';
+      } else {
+        cat = 'faculty';
+      }
+
+      seats.push({
+        id,
+        tier: 'LOWER',
+        block: 'LOWER_CENTER',
+        blockName: 'Center Block (Ground Floor)',
+        row: rName,
+        col: c,
+        seatNumber: id,
+        categoryId: cat,
+        isBlocked: false,
+        gateRecommendation: c <= 14 ? 'Gate-1' : 'Gate-2',
+        x: 626 - (c - 8) * 23,
+        y,
+      });
+    }
+
+    // Left Wing (cols 21-27: 7 seats)
+    for (let c = 21; c <= 27; c++) {
+      const id = `${rName}${c}`;
+      let cat: CategoryId = 'mbbs';
+      if (rName === 'B') {
+        cat = 'awardees';
+      } else if (rName === 'C' || rName === 'D') {
+        cat = 'it_staff';
+      } else if (rName === 'V' || rName === 'W') {
+        cat = 'nursing';
+      } else {
+        cat = 'mbbs';
+      }
+
+      seats.push({
+        id,
+        tier: 'LOWER',
+        block: 'LOWER_LEFT',
+        blockName: 'Left Wing (Ground Floor)',
+        row: rName,
+        col: c,
+        seatNumber: id,
+        categoryId: cat,
+        isBlocked: false,
+        gateRecommendation: 'Gate-2',
+        x: 253 - (c - 21) * 28,
+        y,
       });
     }
   });
+
+  // --- Row X (14 seats): Right 7 (X1-X7 Accompanying), Left 7 (X8-X14 Nursing) ---
+  const rowXY = 300 + LOWER_ROW_INDEX['X'] * 26.5;
+  for (let c = 1; c <= 7; c++) {
+    const id = `X${c}`;
+    seats.push({
+      id,
+      tier: 'LOWER',
+      block: 'LOWER_RIGHT',
+      blockName: 'Right Wing (Ground Floor)',
+      row: 'X',
+      col: c,
+      seatNumber: id,
+      categoryId: 'accompanying',
+      isBlocked: false,
+      gateRecommendation: 'Gate-1',
+      x: 873 - (c - 1) * 28,
+      y: rowXY,
+    });
+  }
+  for (let c = 8; c <= 14; c++) {
+    const id = `X${c}`;
+    seats.push({
+      id,
+      tier: 'LOWER',
+      block: 'LOWER_LEFT',
+      blockName: 'Left Wing (Ground Floor)',
+      row: 'X',
+      col: c,
+      seatNumber: id,
+      categoryId: 'nursing',
+      isBlocked: false,
+      gateRecommendation: 'Gate-2',
+      x: 253 - (c - 8) * 28,
+      y: rowXY,
+    });
+  }
 
   return seats;
 }
@@ -260,15 +325,15 @@ export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   eventTitle: 'Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)',
   departmentName: 'Convocation Organizing Committee',
   numVip: 79,             // 65 Center Rows C-G + 14 Right Rows D-E buffer
-  numSeniorFaculty: 26,   // 26 VVIP seats (Center Rows A-B)
+  numSeniorFaculty: 13,   // 13 VVIP seats (Center Row B seats B8-B20)
   numFaculty: 145,        // 145 Faculty from SORTED FACULTY LIST
-  numAwardees: 7,         // Left Row B
+  numAwardees: 7,         // Left Row B (B21-B27)
   numReporters: 14,       // Right Rows B-C buffer
   numAccompanying: 296,   // 296 Accompanying Guests / Parents from Student Forms
   numBandParty: 14,       // 14 IT Dept Staff (Left Rows C-D)
-  numConsole: 5,          // 5 Console (Left Row A)
-  numBlocked: 5,          // 5 Blocked seats (Right Row A cols 1-5)
+  numConsole: 5,          // 5 Console (Left Row A seats A6-A10)
+  numBlocked: 5,          // 5 Blocked seats (Right Row A seats A1-A5)
   numAudience: 169,       // 109 MBBS + 45 Nursing + 15 PG
-  totalSeats: 763,
+  totalSeats: 750,
   notes: 'Official AIIMS Kalyani Convocation Master Blueprint with Authoritative Roster',
 };

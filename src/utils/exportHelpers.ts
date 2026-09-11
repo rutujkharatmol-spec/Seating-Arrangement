@@ -182,7 +182,7 @@ export async function importConfigurationJson(
         numConsole: 35,
         numBlocked: 54,
         numAudience: 174,
-        totalSeats: 763,
+        totalSeats: 750,
       },
       seats: data.seats,
       attendees: data.attendees,

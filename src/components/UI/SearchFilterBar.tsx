@@ -31,9 +31,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   showAisles,
   setShowAisles,
   highlightedCount,
-  lowerCount = 631,
+  lowerCount = 618,
   upperCount = 132,
-  totalCount = 763,
+  totalCount = 750,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && onJumpToFirstMatch && highlightedCount > 0) {
@@ -58,7 +58,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="🔎 Search by Guest Name, Role, Department or Seat Code (e.g. C-A7, Dean, Director)..."
+            placeholder="🔎 Search by Guest Name, Role, Department or Seat Code (e.g. C-B7, Dean, Director)..."
             className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-24 py-2 text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition shadow-2xs"
           />
 

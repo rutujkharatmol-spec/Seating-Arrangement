@@ -79,7 +79,7 @@ export const CsvImportExport: React.FC<CsvImportExportProps> = ({
   };
 
   const sampleCsv = `Name,Designation,Department,Institution,Category,SeatId
-"Prof. Dr. Rajesh Verma","Dean Student Affairs","Dean Office","AIIMS Kalyani","vip","C-A1"
+"Prof. Dr. Rajesh Verma","Dean Student Affairs","Dean Office","AIIMS Kalyani","vip","C-B1"
 "Dr. Priyanka Das","Associate Professor","Physiology","AIIMS Kalyani","faculty","C-H1"
 "Dr. Subham Roy","Gold Medalist 2026","Anatomy","AIIMS Kalyani","awardees","R-I1"
 "Amit Mukherjee","Senior Correspondent","Media Bureau","PTI News","reporters","C-E1"`;
