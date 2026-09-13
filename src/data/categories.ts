@@ -34,8 +34,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#f87171',       // Coral Red
     textColor: '#7f1d1d',
     borderColor: '#dc2626',
-    description: 'Journalists, press photographers and videographers (Right Wing Rows B–D, 21 seats)',
-    defaultCount: 21,
+    description: 'Journalists, press photographers and videographers (Right Wing Rows A–D, 26 seats)',
+    defaultCount: 26,
     priority: 3,
     recommendedGate: 'Gate-1',
     isCustom: false,

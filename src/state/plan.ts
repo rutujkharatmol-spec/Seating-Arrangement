@@ -23,7 +23,7 @@ export interface PlanState {
   layoutVersion?: string;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v16';
+const STORAGE_KEY = 'aiims_seating_plan_v17';
 
 export function createDefaultPlan(): PlanState {
   const baseSeats = generateDefaultSeats();
@@ -107,7 +107,8 @@ export function migratePlanLayout(plan: PlanState): PlanState {
   const seats = generateDefaultSeats();
   const roster = plan.attendees.map((a) => {
     const categoryId = a.categoryId === 'vvip' ? 'vip' : a.categoryId === 'pdcc' ? 'pg' : a.categoryId === 'console' ? 'it_staff' : categories[a.categoryId] ? a.categoryId : 'faculty';
-    return { ...a, categoryId, seatId: undefined };
+    // Committee-reserved seats survive a migration; everyone else is re-seated.
+    return { ...a, categoryId, seatId: a.seatLock ? a.seatId : undefined };
   });
   const { attendees } = seatRosterByZone(seats, roster);
 
@@ -168,6 +169,8 @@ export function loadPlan(): PlanState {
     localStorage.removeItem('aiims_seating_plan_v12');
     localStorage.removeItem('aiims_seating_plan_v13');
     localStorage.removeItem('aiims_seating_plan_v14');
+    localStorage.removeItem('aiims_seating_plan_v15');
+    localStorage.removeItem('aiims_seating_plan_v16');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan_v12');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan_v13');

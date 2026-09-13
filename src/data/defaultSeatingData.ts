@@ -17,7 +17,7 @@ import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
  * Bump whenever the zone rules change. Any saved plan (cloud, snapshot or
  * browser cache) carrying an older version is moved onto the new layout once.
  */
-export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-wheelchair-left-corner';
+export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-reporters-right-row-a';
 
 const LOWER_ROW_LIST = [
   'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
@@ -185,8 +185,8 @@ interface ZoneSegment {
  * Auditorium capacity = 165 + 286 + 167 + 132 = 750 seats (+ 100 in Exam Section Hall = 850 total).
  */
 const LEFT_WING_PLAN: ZoneSegment[] = [
-  { categoryId: 'accessible', seats: 2 }, // Row A corner — A12, A11 wheelchair spaces
-  { categoryId: 'guide', seats: 5 },      // Rest of row A (A10–A6)
+  { categoryId: 'guide', seats: 5 },      // Row A, aisle side (A6–A10)
+  { categoryId: 'accessible', seats: 2 }, // Row A outer corner — A11, A12 wheelchair spaces
   { categoryId: 'awardees', seats: 7 },   // Row B — rank holders, front row of the left wing
   { categoryId: 'mbbs', seats: 49 },      // Rows C–I
   { categoryId: 'it_staff', seats: 21 },  // Rows J–L
@@ -203,8 +203,7 @@ const MIDDLE_BLOCK_PLAN: ZoneSegment[] = [
 ];
 
 const RIGHT_WING_PLAN: ZoneSegment[] = [
-  { categoryId: 'accompanying', seats: 5 },    // Row A
-  { categoryId: 'reporters', seats: 21 },      // Rows B–D
+  { categoryId: 'reporters', seats: 26 },      // Rows A–D
   { categoryId: 'admin_staff', seats: 30 },    // Rows E–H, then 2 seats of row I
   { categoryId: 'accompanying', seats: 109 },  // Rest of row I, then rows J–X (Row P has 6 seats without P1)
 ];
@@ -215,10 +214,10 @@ const RIGHT_WING_PLAN: ZoneSegment[] = [
  * The convocation seating rules, as seat counts rather than whole rows:
  *
  * - Balcony: parents (132).
- * - Right wing: parents 5, reporters 21, admin 30, parents 109.
+ * - Right wing: reporters 26, admin 30, parents 109.
  * - Middle block: VIP 39, faculty 159, blank 60, PG 15, nursing 13
  *   (PG sits immediately in front of nursing, with no gap between them).
- * - Left wing: wheelchair 2, guide 5, awardees 7, MBBS 49, IT staff 21, MBBS 55,
+ * - Left wing: guide 5, wheelchair 2, awardees 7, MBBS 49, IT staff 21, MBBS 55,
  *   nursing 28.
  */
 export function assignConvocationZones(seats: Seat[], _counts: ZoneCounts = DEFAULT_ZONE_COUNTS): Seat[] {
@@ -306,13 +305,13 @@ export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   numSeniorFaculty: 0,
   numFaculty: 159,        // Center rows E–P (156) + 3 of row Q
   numAwardees: 7,       // Left wing Row B — rank holders & best outgoing students
-  numReporters: 21,       // Right rows B–D
-  numAccompanying: 346,   // Balcony (132) + Right rows A and I–X (114) + Exam Section Hall (100)
+  numReporters: 26,       // Right rows A–D
+  numAccompanying: 341,   // Balcony (132) + Right rows I–X (109) + Exam Section Hall (100)
   numBandParty: 0,
   numConsole: 0,
   numBlocked: 0,
   numAudience: 280,       // Admin(30), IT staff(21), MBBS(104), nursing(41), PG(15), guide(5), awardees(7), blank(73)
   totalSeats: 850,        // Main Auditorium (750) + Exam Section Hall (100)
-  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (750 seats, Balcony: 132 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP and visiting dignitaries in center rows B–D, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows U–V, guides in left row A, rank holders in left row B.',
+  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (750 seats, Balcony: 132 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP and visiting dignitaries in center rows B–D, faculty in center middle, reporters in right rows A–D, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows U–V, guides in left row A, rank holders in left row B.',
 };
 

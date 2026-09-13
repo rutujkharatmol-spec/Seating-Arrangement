@@ -6,13 +6,13 @@
     "numSeniorFaculty": 0,
     "numFaculty": 159,
     "numAwardees": 7,
-    "numReporters": 21,
+    "numReporters": 26,
     "numAccompanying": 341,
     "numBandParty": 0,
     "numConsole": 0,
     "numBlocked": 0,
     "numAudience": 280,
-    "totalSeats": 832,
+    "totalSeats": 850,
     "notes": "AIIMS Kalyani Convocation layout (matching PDF): parents in balcony + right back, VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B."
   },
   "seats": [
@@ -1872,7 +1872,7 @@
       "row": "A",
       "col": 1,
       "seatNumber": "A1",
-      "categoryId": "accessible",
+      "categoryId": "reporters",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 817,
@@ -1886,7 +1886,7 @@
       "row": "A",
       "col": 2,
       "seatNumber": "A2",
-      "categoryId": "accessible",
+      "categoryId": "reporters",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 789,
@@ -1900,7 +1900,7 @@
       "row": "A",
       "col": 3,
       "seatNumber": "A3",
-      "categoryId": "accessible",
+      "categoryId": "reporters",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 761,
@@ -1914,7 +1914,7 @@
       "row": "A",
       "col": 4,
       "seatNumber": "A4",
-      "categoryId": "accessible",
+      "categoryId": "reporters",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 733,
@@ -1928,7 +1928,7 @@
       "row": "A",
       "col": 5,
       "seatNumber": "A5",
-      "categoryId": "accessible",
+      "categoryId": "reporters",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 705,
@@ -2002,6 +2002,34 @@
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 141,
+      "y": 909.5
+    },
+    {
+      "id": "A11",
+      "tier": "LOWER",
+      "block": "LOWER_LEFT",
+      "blockName": "Left Wing (Ground Floor)",
+      "row": "A",
+      "col": 11,
+      "seatNumber": "A11",
+      "categoryId": "accessible",
+      "isBlocked": false,
+      "gateRecommendation": "Gate-2",
+      "x": 113,
+      "y": 909.5
+    },
+    {
+      "id": "A12",
+      "tier": "LOWER",
+      "block": "LOWER_LEFT",
+      "blockName": "Left Wing (Ground Floor)",
+      "row": "A",
+      "col": 12,
+      "seatNumber": "A12",
+      "categoryId": "accessible",
+      "isBlocked": false,
+      "gateRecommendation": "Gate-2",
+      "x": 85,
       "y": 909.5
     },
     {
@@ -19367,8 +19395,8 @@
       "color": "#f87171",
       "textColor": "#7f1d1d",
       "borderColor": "#dc2626",
-      "description": "Journalists, press photographers and videographers (Right Wing Rows B–D, 21 seats)",
-      "defaultCount": 21,
+      "description": "Journalists, press photographers and videographers (Right Wing Rows A–D, 26 seats)",
+      "defaultCount": 26,
       "priority": 3,
       "recommendedGate": "Gate-1",
       "isCustom": false
@@ -19484,8 +19512,8 @@
       "color": "#22d3ee",
       "textColor": "#164e63",
       "borderColor": "#0891b2",
-      "description": "Wheelchair users and assisted guests (Right Wing Row A corner, 5 seats)",
-      "defaultCount": 5,
+      "description": "Wheelchair users and assisted guests (Left Wing Row A corner, 2 seats)",
+      "defaultCount": 2,
       "priority": 12,
       "recommendedGate": "Gate-1",
       "isCustom": false
@@ -19504,6 +19532,6 @@
       "isCustom": false
     }
   },
-  "layoutVersion": "convocation-2026-09-13-committee-chart",
-  "_publishedAt": "2026-09-13T09:31:28.738Z"
+  "layoutVersion": "convocation-2026-09-13-reporters-right-row-a",
+  "_publishedAt": "2026-09-13T09:52:17.792Z"
 }
