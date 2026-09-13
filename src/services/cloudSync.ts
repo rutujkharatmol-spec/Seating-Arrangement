@@ -180,11 +180,29 @@ export async function fetchLiveCloudPlan(): Promise<{
   return null;
 }
 
+export const PRODUCTION_APP_URL = 'https://seating-arrangement-o1dn.vercel.app';
+export const PRODUCTION_KIOSK_URL = 'https://seating-arrangement-o1dn.vercel.app/seattracker';
+
 /**
  * Returns the shareable mobile link for attendees to find their seat.
+ * Directs to the canonical production URL (https://seating-arrangement-o1dn.vercel.app/seattracker)
+ * so that printed and scanned QR codes on mobile devices never hit Vercel preview authentication / sign-up walls.
  */
-export function getMobileKioskUrl(): string {
-  if (typeof window === 'undefined') return '/#seattracker';
-  const base = window.location.origin + window.location.pathname.replace(/\/$/, '');
-  return `${base}/#seattracker`;
+export function getMobileKioskUrl(seatId?: string): string {
+  let base = PRODUCTION_KIOSK_URL;
+
+  if (typeof window !== 'undefined') {
+    try {
+      const override = localStorage.getItem('aiims_kiosk_override_url');
+      if (override && override.startsWith('http')) {
+        base = override.replace(/\/$/, '');
+      }
+    } catch {}
+  }
+
+  if (seatId) {
+    const separator = base.includes('?') ? '&' : '?';
+    return `${base}${separator}seat=${encodeURIComponent(seatId)}`;
+  }
+  return base;
 }

@@ -10,6 +10,7 @@ export type BlockType =
 
 export type BuiltinCategoryId = 
   | 'vip'
+  | 'awardees'
   | 'reporters'
   | 'faculty'
   | 'senior_faculty'

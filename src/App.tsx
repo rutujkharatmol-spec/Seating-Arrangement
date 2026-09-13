@@ -25,10 +25,8 @@ import {
 import { useHistory } from './hooks/useHistory';
 
 import { Header } from './components/Header';
-import { StatsBar } from './components/UI/StatsBar';
 import { SearchFilterBar } from './components/UI/SearchFilterBar';
 import { PlanHealthBar } from './components/UI/PlanHealthBar';
-import { HowToUseBanner } from './components/UI/HowToUseBanner';
 import { Toast, ToastKind } from './components/UI/Toast';
 import { AuditoriumMap } from './components/AuditoriumMap/AuditoriumMap';
 import { EditorTab } from './components/Editor/EditorTab';
@@ -441,6 +439,23 @@ export function App() {
       isBlocked ? `Block ${seatIds.length} seats` : `Unblock ${seatIds.length} seats`
     );
     showToast(`${isBlocked ? 'Blocked' : 'Unblocked'} ${seatIds.length} seat(s)`);
+  };
+
+  const handleDeleteSeats = (seatIds: string[]) => {
+    if (seatIds.length === 0) return;
+    const targetSet = new Set(seatIds);
+    plan.commit(
+      (p) => ({
+        ...p,
+        seats: p.seats.filter((s) => !targetSet.has(s.id)),
+        attendees: p.attendees.map((a) =>
+          a.seatId && targetSet.has(a.seatId) ? { ...a, seatId: undefined } : a
+        ),
+      }),
+      `Delete ${seatIds.length} seat(s)`
+    );
+    handleClearSelection();
+    showToast(`Deleted ${seatIds.length} seat(s)`);
   };
 
   const handleSaveAttendee = (seatId: string, attendeeData: Partial<Attendee>) => {
@@ -866,7 +881,7 @@ export function App() {
           showToast('Organizer portal unlocked successfully', 'success');
         }}
         onOpenGuestKiosk={() => {
-          window.location.hash = '#seattracker';
+          window.history.pushState({}, '', '/seattracker');
           setIsKioskMode(true);
         }}
       />
@@ -918,20 +933,6 @@ export function App() {
         }}
       />
 
-      <div className="no-print print:hidden">
-        <HowToUseBanner
-          onOpenWizard={() => setIsQuestionnaireModalOpen(true)}
-        />
-      </div>
-
-      <StatsBar
-        seats={seatsWithPeople}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categories={categories}
-        onOpenSectionManager={() => setIsSectionManagerOpen(true)}
-      />
-
       {activeTab === 'map' && (
         <>
           <SearchFilterBar
@@ -980,6 +981,7 @@ export function App() {
             onAssignExistingAttendee={handleAssignExistingAttendee}
             onClearSeat={handleClearSeat}
             onToggleBlockedSeats={handleToggleBlockedSeats}
+            onDeleteSeats={handleDeleteSeats}
             searchQuery={searchQuery}
             matchingSeatIds={matchingSeatIds}
             selectedTier={selectedTier}
@@ -1021,6 +1023,7 @@ export function App() {
             onAssignExistingAttendee={handleAssignExistingAttendee}
             onClearSeat={handleClearSeat}
             onToggleBlockedSeats={handleToggleBlockedSeats}
+            onDeleteSeats={handleDeleteSeats}
             onClearSelection={handleClearSelection}
             onSelectRow={handleSelectRow}
             onSelectZone={handleSelectZone}

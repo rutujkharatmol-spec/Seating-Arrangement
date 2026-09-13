@@ -19,7 +19,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { exportSeatingToCsv } from '../../utils/exportHelpers';
-import { exportRosterToExcel } from '../../utils/excelHelpers';
+import { exportRosterToExcel, exportStudentsAndParentsExcel } from '../../utils/excelHelpers';
 import { PlanIssue } from '../../utils/autoSeat';
 
 interface AttendeeListProps {
@@ -141,6 +141,10 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
     exportRosterToExcel(seats, attendees, eventTitle);
   };
 
+  const handleExportStudentsParents = () => {
+    exportStudentsAndParentsExcel(seats, attendees, eventTitle);
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
       
@@ -186,6 +190,15 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
             <span>Upload Excel / CSV</span>
+          </button>
+
+          <button
+            onClick={handleExportStudentsParents}
+            title="Export students and parents with their seat numbers, sorted by name and by seat (.xlsx)"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-300 shadow-xs transition cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5 text-indigo-700" />
+            <span>Students &amp; Parents Excel</span>
           </button>
 
           <button

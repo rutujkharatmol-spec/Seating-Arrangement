@@ -7,7 +7,6 @@ interface PrintableChartProps {
   volunteers: Volunteer[];
   eventTitle: string;
   departmentName: string;
-  totalSeats: number;
   categories?: Record<string, CategoryInfo>;
 }
 
@@ -16,16 +15,15 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
   volunteers,
   eventTitle,
   departmentName,
-  totalSeats,
   categories = CATEGORIES,
 }) => {
   const lowerRowList = ['X','W','V','U','T','S','R','Q','P','O','N','M','L','K','J','I','H','G','F','E','D','C','B','A'];
 
-  const getSeatCoordinates = (seat: Seat) => {
+  const getSeatCoordinates = (seat: Seat): { x: number; y: number; size: number } | null => {
     const seatSize = 18;
 
     if (seat.tier === 'UPPER') {
-      const ubRowOrder = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
+      const ubRowOrder = ['UB6', 'UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
       const rIdx = ubRowOrder.indexOf(seat.row);
       const y = 90 + rIdx * 24;
 
@@ -34,7 +32,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
         return { x, y, size: seatSize };
       }
       if (seat.block === 'UPPER_CENTER') {
-        if (seat.row === 'UB5') {
+        if (seat.row === 'UB5' || seat.row === 'UB6') {
           const x = 596 - (seat.col - 8) * 24;
           return { x, y, size: seatSize };
         } else {
@@ -81,18 +79,27 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
       return { x, y, size: seatSize };
     }
 
-    return { x: 0, y: 0, size: seatSize };
+    // Anything outside the auditorium (e.g. Exam Section Hall) has no place on
+    // this chart — skip it rather than stacking it in the top-left corner.
+    return null;
   };
 
   const activeCategories = Object.values(categories).filter((c) => c.id !== 'available');
 
+  // This chart draws the auditorium only, so its totals must leave the Exam
+  // Section Hall out.
+  const auditoriumSeats = React.useMemo(
+    () => seats.filter((s) => s.tier !== 'EXAM_HALL'),
+    [seats]
+  );
+
   const categoryCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
-    for (const seat of seats) {
+    for (const seat of auditoriumSeats) {
       counts[seat.categoryId] = (counts[seat.categoryId] || 0) + 1;
     }
     return counts;
-  }, [seats]);
+  }, [auditoriumSeats]);
 
   return (
     <div className="printable-chart bg-white text-slate-900 p-6 max-w-4xl mx-auto rounded-xl shadow-lg border border-slate-300 print:border-0 print:shadow-none print:p-0 print:m-0 print:max-w-none print:w-full">
@@ -106,7 +113,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
           {departmentName}
         </h2>
         <div className="inline-block mt-1 px-3 py-0.5 bg-slate-100 border border-slate-400 rounded-full text-xs font-bold text-slate-800 font-mono print:text-[10px] print:py-0">
-          Total Seats – {totalSeats}
+          Total Seats – {auditoriumSeats.length}
         </div>
       </div>
 
@@ -165,7 +172,9 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
 
           {/* Render Seats */}
           {seats.map((seat) => {
-            const { x, y, size } = getSeatCoordinates(seat);
+            const coords = getSeatCoordinates(seat);
+            if (!coords) return null;
+            const { x, y, size } = coords;
             const cat = categories[seat.categoryId] || { color: '#e2e8f0', borderColor: '#64748b' };
             const isBlocked = seat.isBlocked || seat.categoryId === 'blocked';
 

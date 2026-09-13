@@ -17,7 +17,7 @@ const LOWER_ROWS = [
 ];
 
 // Front to back for the balcony (UB1 overlooks the stage).
-const UPPER_ROWS = ['UB1', 'UB2', 'UB3', 'UB4', 'UB5'];
+const UPPER_ROWS = ['UB1', 'UB2', 'UB3', 'UB4', 'UB5', 'UB6'];
 
 // Exam hall rows A through J
 const EXAM_ROWS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -50,7 +50,7 @@ function colRank(seat: Seat): number {
     }
     case 'LOWER_CENTER':
     case 'UPPER_CENTER': {
-      const centre = seat.row === 'UB5' ? 12.5 : 14;
+      const centre = seat.row === 'UB5' || seat.row === 'UB6' ? 12.5 : 14;
       return Math.abs(seat.col - centre);
     }
     case 'LOWER_LEFT':

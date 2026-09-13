@@ -32,10 +32,10 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   showAisles,
   setShowAisles,
   highlightedCount,
-  lowerCount = 618,
+  lowerCount = 600,
   upperCount = 132,
   examHallCount = 100,
-  totalCount = 850,
+  totalCount = 832,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && onJumpToFirstMatch && highlightedCount > 0) {

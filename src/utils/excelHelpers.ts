@@ -1,6 +1,8 @@
 import * as XLSX from 'xlsx';
 import { Attendee, CategoryId, Seat } from '../types/seating';
 import { CATEGORIES } from '../data/categories';
+import { compareSeatFillOrder } from './autoSeat';
+import { getMobileKioskUrl } from '../services/cloudSync';
 
 export interface SheetParseResult {
   sheetName: string;
@@ -326,6 +328,7 @@ export function exportRosterToExcel(seats: Seat[], attendees: Attendee[], eventT
       'Phone': att?.phone || '',
       'Notes': att?.notes || '',
       'Recommended Gate': s.gateRecommendation,
+      'Live Seat Link': getMobileKioskUrl(s.id),
     };
   });
   const wsSeating = XLSX.utils.json_to_sheet(seatingRows);
@@ -342,6 +345,7 @@ export function exportRosterToExcel(seats: Seat[], attendees: Attendee[], eventT
       'Institution': a.institution || 'AIIMS Kalyani',
       'Category': cat.name,
       'Assigned Seat': a.seatId || 'Unassigned',
+      'Live Seat Link': a.seatId ? getMobileKioskUrl(a.seatId) : '',
       'Email': a.email || '',
       'Phone': a.phone || '',
       'Notes / Enrollment': a.notes || '',
@@ -404,4 +408,139 @@ export function downloadExcelSampleTemplate() {
   XLSX.utils.book_append_sheet(wb, wsNursing, 'B.Sc(Nursing)');
 
   XLSX.writeFile(wb, 'convocation_attendee_template.xlsx');
+}
+
+/** Graduating students: the three award-receiving cohorts. */
+const STUDENT_CATEGORY_IDS: CategoryId[] = ['mbbs', 'nursing', 'pg'];
+
+/** Parents are listed as "Guest of <student name>" in their department field. */
+function guestOfName(a: Attendee): string {
+  const dept = a.department || '';
+  const m = dept.match(/^\s*guest of\s+(.*)$/i);
+  return m ? m[1].trim() : '';
+}
+
+/** A key that ignores case, titles and punctuation, so "DR. Ramya KP" matches "Ramya K P". */
+function nameKey(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/^(dr|mr|mrs|ms|prof)\.?\s+/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+/**
+ * Export a workbook of graduating students and their parents with seat numbers,
+ * each list given twice: alphabetically (to look a person up) and in seat order
+ * (for ushers walking the rows).
+ */
+export function exportStudentsAndParentsExcel(seats: Seat[], attendees: Attendee[], eventTitle: string) {
+  const seatById = new Map(seats.map((s) => [s.id, s]));
+  const seatOrder = new Map<string, number>();
+  [...seats].sort(compareSeatFillOrder).forEach((s, i) => seatOrder.set(s.id, i));
+
+  const students = attendees.filter((a) => STUDENT_CATEGORY_IDS.includes(a.categoryId));
+  const parents = attendees.filter((a) => a.categoryId === 'accompanying');
+
+  const studentByName = new Map<string, Attendee>();
+  students.forEach((s) => {
+    const key = nameKey(s.name);
+    if (key && !studentByName.has(key)) studentByName.set(key, s);
+  });
+
+  const seatLabel = (seatId?: string) => (seatId ? seatById.get(seatId)?.seatNumber || seatId : 'Not seated');
+  const seatBlock = (seatId?: string) => (seatId ? seatById.get(seatId)?.blockName || '' : '');
+  const seatRow = (seatId?: string) => (seatId ? seatById.get(seatId)?.row || '' : '');
+  const seatGate = (seatId?: string) => (seatId ? seatById.get(seatId)?.gateRecommendation || '' : '');
+  const orderOf = (seatId?: string) => (seatId && seatOrder.has(seatId) ? seatOrder.get(seatId)! : Number.MAX_SAFE_INTEGER);
+
+  const studentRow = (a: Attendee, idx: number) => ({
+    'Sl. No.': idx + 1,
+    'Student Name': a.name,
+    'Course / Cohort': (CATEGORIES[a.categoryId] || { name: a.categoryId }).name,
+    'Department / Discipline': a.department || '',
+    'Enrollment / Notes': a.notes || '',
+    'Seat Number': seatLabel(a.seatId),
+    'Row': seatRow(a.seatId),
+    'Block': seatBlock(a.seatId),
+    'Entry Gate': seatGate(a.seatId),
+    'Live Map Link': a.seatId ? getMobileKioskUrl(a.seatId) : '',
+    'Email': a.email || '',
+    'Phone': a.phone || '',
+  });
+
+  const parentRow = (a: Attendee, idx: number) => {
+    const of = guestOfName(a);
+    const student = of ? studentByName.get(nameKey(of)) : undefined;
+    return {
+      'Sl. No.': idx + 1,
+      'Parent / Guardian Name': a.name,
+      'Guest Of (Student)': of || a.department || '',
+      "Student's Seat": student ? seatLabel(student.seatId) : '',
+      'Seat Number': seatLabel(a.seatId),
+      'Row': seatRow(a.seatId),
+      'Block': seatBlock(a.seatId),
+      'Entry Gate': seatGate(a.seatId),
+      'Live Map Link': a.seatId ? getMobileKioskUrl(a.seatId) : '',
+      'Email': a.email || '',
+      'Phone': a.phone || '',
+    };
+  };
+
+  const byName = (a: Attendee, b: Attendee) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+  const bySeat = (a: Attendee, b: Attendee) => orderOf(a.seatId) - orderOf(b.seatId) || byName(a, b);
+
+  const wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet([...students].sort(byName).map(studentRow)),
+    'Students A-Z'
+  );
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet([...students].sort(bySeat).map(studentRow)),
+    'Students by Seat'
+  );
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet([...parents].sort(byName).map(parentRow)),
+    'Parents A-Z'
+  );
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet([...parents].sort(bySeat).map(parentRow)),
+    'Parents by Seat'
+  );
+
+  // --- Families: one line per student, with the parents seated alongside ---
+  const parentsByStudent = new Map<string, Attendee[]>();
+  parents.forEach((p) => {
+    const key = nameKey(guestOfName(p));
+    if (!key) return;
+    const list = parentsByStudent.get(key);
+    if (list) list.push(p);
+    else parentsByStudent.set(key, [p]);
+  });
+
+  const familyRows = [...students].sort(byName).map((s, idx) => {
+    const kin = (parentsByStudent.get(nameKey(s.name)) || []).sort(bySeat);
+    return {
+      'Sl. No.': idx + 1,
+      'Student Name': s.name,
+      'Course / Cohort': (CATEGORIES[s.categoryId] || { name: s.categoryId }).name,
+      'Student Seat': seatLabel(s.seatId),
+      'Student Block': seatBlock(s.seatId),
+      'No. of Guests': kin.length,
+      'Guest 1': kin[0]?.name || '',
+      'Guest 1 Seat': kin[0] ? seatLabel(kin[0].seatId) : '',
+      'Guest 2': kin[1]?.name || '',
+      'Guest 2 Seat': kin[1] ? seatLabel(kin[1].seatId) : '',
+      'Guest Block': kin[0] ? seatBlock(kin[0].seatId) : '',
+      'Guest Gate': kin[0] ? seatGate(kin[0].seatId) : '',
+    };
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(familyRows), 'Families');
+
+  const safeFilename = `${eventTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_students_parents_seats.xlsx`;
+  XLSX.writeFile(wb, safeFilename);
 }

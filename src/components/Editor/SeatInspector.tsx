@@ -36,6 +36,7 @@ export interface SeatInspectorProps {
   onAssignExistingAttendee: (seatId: string, attendeeId: string) => void;
   onClearSeat: (seatId: string) => void;
   onToggleBlockedSeats: (seatIds: string[], isBlocked: boolean) => void;
+  onDeleteSeats?: (seatIds: string[]) => void;
   onClearSelection: () => void;
   onSelectRow?: (seat: Seat) => void;
   onSelectZone?: (seat: Seat) => void;
@@ -67,6 +68,7 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
   onAssignExistingAttendee,
   onClearSeat,
   onToggleBlockedSeats,
+  onDeleteSeats,
   onClearSelection,
   onSelectRow,
   onSelectZone,
@@ -450,6 +452,25 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
             >
               Unblock
             </button>
+            {onDeleteSeats && (
+              <button
+                type="button"
+                onClick={() => {
+                  const label =
+                    selectedSeats.length === 1
+                      ? `Delete seat ${selectedSeats[0].seatNumber}?`
+                      : `Delete ${selectedSeats.length} seats?`;
+                  if (window.confirm(`${label} This removes them from the layout and unassigns anyone seated there.`)) {
+                    onDeleteSeats(seatIds);
+                  }
+                }}
+                className="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-rose-600 text-white border border-rose-700 hover:bg-rose-700 transition cursor-pointer flex items-center gap-1"
+                title="Permanently remove the selected seat(s) from the layout"
+              >
+                <Trash2 className="w-3 h-3" />
+                Delete ({selectedSeats.length})
+              </button>
+            )}
           </div>
         </div>
 

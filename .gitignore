@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary root inspection images & text
+/*.png
+/*.jpeg
+/pdf_text.txt

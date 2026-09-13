@@ -23,7 +23,7 @@ export interface PlanState {
   layoutVersion?: string;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v15';
+const STORAGE_KEY = 'aiims_seating_plan_v16';
 
 export function createDefaultPlan(): PlanState {
   const baseSeats = generateDefaultSeats();

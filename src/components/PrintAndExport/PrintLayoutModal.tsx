@@ -174,7 +174,6 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
             volunteers={volunteers}
             eventTitle={eventTitle}
             departmentName={departmentName}
-            totalSeats={totalSeats}
             categories={categories}
           />
         )}

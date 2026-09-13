@@ -1,6 +1,7 @@
 import React from 'react';
 import { Attendee, Seat, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
+import { getMobileKioskUrl } from '../../services/cloudSync';
 import { Building2, QrCode, Armchair, MapPin } from 'lucide-react';
 
 interface SeatPassBadgeProps {
@@ -122,8 +123,12 @@ export const SeatPassBadge: React.FC<SeatPassBadgeProps> = ({
 
       {/* Footer */}
       <div className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between text-[9px] text-slate-400">
-        <span>Auditorium Pass</span>
-        <QrCode className="w-5 h-5 text-slate-700" />
+        <span>Scan Pass to Open Map</span>
+        <img
+          src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(getMobileKioskUrl(seat?.id))}`}
+          alt="Seat QR"
+          className="w-5 h-5 rounded shrink-0 border border-slate-200"
+        />
       </div>
     </div>
   );

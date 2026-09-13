@@ -6,10 +6,12 @@ import { Attendee } from '../types/seating';
  * Pre-assigned auditorium seats from the authoritative Excel sources, seated
  * under the convocation layout (see assignConvocationZones):
  *   1. SORTED FACULTY LIST.xlsx — 145 faculty, Middle Block Rows F–R
- *   2. Form Responses of Students:
- *      - 108 MBBS Graduates — Left Wing Rows C–R
- *      - 45 Nursing Graduates — Middle Block Rows T–W (last rows)
- *      - 15 PG Residents — Left Wing Rows S–X
+ *   2. Top Three Ranker sheet — 7 rank holders / best outgoing students,
+ *      Left Wing Row B (the front row of the left wing)
+ *   3. Form Responses of Students:
+ *      - 105 MBBS Graduates — Left Wing Rows C–I and M–T
+ *      - 41 Nursing Graduates — Left Wing Rows U–X + Middle Block Row W
+ *      - 15 PG Residents — Middle Block Rows U–V
  *      - 296 Parents / Guardians — whole Balcony + Right Wing Rows F–X
  *
  * Total: 609 attendees. The parents' section holds 265, so 16 families
@@ -2148,18 +2150,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "notes": "Enrollment No: 101/202001151 | Hometown: Asansol | Assigned Seat: F24"
   },
   {
-    "id": "att-stu-sudip-chatterjee",
-    "name": "SUDIP CHATTERJEE",
-    "designation": "MBBS Graduate",
-    "department": "MBBS 2020",
-    "institution": "AIIMS Kalyani",
-    "email": "sudipchatterjee429@gmail.com",
-    "phone": "8116171221",
-    "categoryId": "mbbs",
-    "seatId": "F23",
-    "notes": "Enrollment No: 102/202001152 | Hometown: Tarakeswar | Assigned Seat: F23"
-  },
-  {
     "id": "att-stu-sumit-kumar-mondal",
     "name": "SUMIT KUMAR MONDAL",
     "designation": "MBBS Graduate",
@@ -2398,18 +2388,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "categoryId": "mbbs",
     "seatId": "L24",
     "notes": "Enrollment No: 20200163 | Hometown: Chhapra | Assigned Seat: L24"
-  },
-  {
-    "id": "att-stu-ananya-aryankita",
-    "name": "ANANYA ARYANKITA",
-    "designation": "MBBS Graduate",
-    "department": "MBBS 2020",
-    "institution": "AIIMS Kalyani",
-    "email": "aryankita5@gmail.com",
-    "phone": "9078841355",
-    "categoryId": "mbbs",
-    "seatId": "L23",
-    "notes": "Enrollment No: 20200164 | Hometown: Bhubaneswar | Assigned Seat: L23"
   },
   {
     "id": "att-stu-ananya-pandey",
@@ -2856,18 +2834,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "notes": "Enrollment No: 202001135 | Hometown: Munger | Assigned Seat: Q21"
   },
   {
-    "id": "att-stu-sharmistha-rout",
-    "name": "SHARMISTHA ROUT",
-    "designation": "MBBS Graduate",
-    "department": "MBBS 2020",
-    "institution": "AIIMS Kalyani",
-    "email": "sharmistha.mbbs-2020@aiimskalyani.edu.in",
-    "phone": "8905157891",
-    "categoryId": "mbbs",
-    "seatId": "R27",
-    "notes": "Enrollment No: 202001139 | Hometown: Bhubaneswar | Assigned Seat: R27"
-  },
-  {
     "id": "att-stu-shifana-t",
     "name": "SHIFANA T",
     "designation": "MBBS Graduate",
@@ -3288,18 +3254,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "notes": "Enrollment No: 20210230 | Hometown: Uttar Dinajpur | Assigned Seat: W27"
   },
   {
-    "id": "att-stu-neha-bharti",
-    "name": "Neha Bharti",
-    "designation": "B.Sc Nursing Graduate",
-    "department": "B.Sc (Hons) Nursing 2021",
-    "institution": "AIIMS Kalyani",
-    "email": "nehabharti8257@gmail.com",
-    "phone": "9534028858",
-    "categoryId": "nursing",
-    "seatId": "W26",
-    "notes": "Enrollment No: 20210231 | Hometown: Bihar | Assigned Seat: W26"
-  },
-  {
     "id": "att-stu-paromita-ghoshal",
     "name": "PAROMITA GHOSHAL",
     "designation": "B.Sc Nursing Graduate",
@@ -3324,18 +3278,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "notes": "Enrollment No: 20210235 | Hometown: Delhi | Assigned Seat: W24"
   },
   {
-    "id": "att-stu-preeti-dutta",
-    "name": "PREETI DUTTA",
-    "designation": "B.Sc Nursing Graduate",
-    "department": "B.Sc (Hons) Nursing 2021",
-    "institution": "AIIMS Kalyani",
-    "email": "preetidutta2021@gmail.com",
-    "phone": "7074977255",
-    "categoryId": "nursing",
-    "seatId": "W23",
-    "notes": "Enrollment No: 20210237 | Hometown: Bankura | Assigned Seat: W23"
-  },
-  {
     "id": "att-stu-pritha-roy",
     "name": "PRITHA ROY",
     "designation": "B.Sc Nursing Graduate",
@@ -3346,18 +3288,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "categoryId": "nursing",
     "seatId": "W22",
     "notes": "Enrollment No: 20210238 | Hometown: Kolkata | Assigned Seat: W22"
-  },
-  {
-    "id": "att-stu-puspita-biswas",
-    "name": "PUSPITA BISWAS",
-    "designation": "B.Sc Nursing Graduate",
-    "department": "B.Sc (Hons) Nursing 2021",
-    "institution": "AIIMS Kalyani",
-    "email": "puspitatitli@gmail.com",
-    "phone": "7001892495",
-    "categoryId": "nursing",
-    "seatId": "W21",
-    "notes": "Enrollment No: 20210242 | Hometown: Adra, Purulia, West Bengal | Assigned Seat: W21"
   },
   {
     "id": "att-stu-samina-yasmin",
@@ -3394,18 +3324,6 @@ export const STUDENT_ATTENDEES: Attendee[] = [
     "categoryId": "nursing",
     "seatId": "W18",
     "notes": "Enrollment No: 20210247 | Hometown: Barasat | Assigned Seat: W18"
-  },
-  {
-    "id": "att-stu-shabnam-parvin",
-    "name": "SHABNAM PARVIN",
-    "designation": "B.Sc Nursing Graduate",
-    "department": "B.Sc (Hons) Nursing 2021",
-    "institution": "AIIMS Kalyani",
-    "email": "parvinshabnam2002@gmail.com",
-    "phone": "6297820802",
-    "categoryId": "nursing",
-    "seatId": "W17",
-    "notes": "Enrollment No: 20210248 | Hometown: Bharatpur | Assigned Seat: W17"
   },
   {
     "id": "att-stu-sonam-kumari",
@@ -7287,10 +7205,103 @@ export const GUEST_ATTENDEES: Attendee[] = [
   }
 ];
 
+/**
+ * Rank holders and best outgoing students (Top Three Ranker sheet from the
+ * Convocation Organising Committee). They sit together in Left Wing Row B,
+ * the front row of the left wing, in rank order from B27 outwards.
+ */
+export const AWARDEE_ATTENDEES: Attendee[] = [
+  {
+    "id": "att-stu-sharmistha-rout",
+    "name": "SHARMISTHA ROUT",
+    "designation": "MBBS Graduate",
+    "department": "MBBS 2020",
+    "institution": "AIIMS Kalyani",
+    "email": "sharmistha.mbbs-2020@aiimskalyani.edu.in",
+    "phone": "8905157891",
+    "categoryId": "awardees",
+    "seatId": "B27",
+    "notes": "Enrollment No: 202001139 | Rank 1, MBBS Batch 2020 (aggregate) & Best Outgoing Student, MBBS | Hometown: Bhubaneswar | Assigned Seat: B27"
+  },
+  {
+    "id": "att-stu-ananya-aryankita",
+    "name": "ANANYA ARYANKITA",
+    "designation": "MBBS Graduate",
+    "department": "MBBS 2020",
+    "institution": "AIIMS Kalyani",
+    "email": "aryankita5@gmail.com",
+    "phone": "9078841355",
+    "categoryId": "awardees",
+    "seatId": "B26",
+    "notes": "Enrollment No: 20200164 | Rank 2, MBBS Batch 2020 (aggregate) | Hometown: Bhubaneswar | Assigned Seat: B26"
+  },
+  {
+    "id": "att-stu-sudip-chatterjee",
+    "name": "SUDIP CHATTERJEE",
+    "designation": "MBBS Graduate",
+    "department": "MBBS 2020",
+    "institution": "AIIMS Kalyani",
+    "email": "sudipchatterjee429@gmail.com",
+    "phone": "8116171221",
+    "categoryId": "awardees",
+    "seatId": "B25",
+    "notes": "Enrollment No: 102/202001152 | Rank 3, MBBS Batch 2020 (aggregate) | Hometown: Tarakeswar | Assigned Seat: B25"
+  },
+  {
+    "id": "att-stu-puspita-biswas",
+    "name": "PUSPITA BISWAS",
+    "designation": "B.Sc Nursing Graduate",
+    "department": "B.Sc (Hons) Nursing 2021",
+    "institution": "AIIMS Kalyani",
+    "email": "puspitatitli@gmail.com",
+    "phone": "7001892495",
+    "categoryId": "awardees",
+    "seatId": "B24",
+    "notes": "Enrollment No: 20210242 | Rank 1, B.Sc Nursing Batch 2021 (aggregate) | Hometown: Adra, Purulia, West Bengal | Assigned Seat: B24"
+  },
+  {
+    "id": "att-stu-preeti-dutta",
+    "name": "PREETI DUTTA",
+    "designation": "B.Sc Nursing Graduate",
+    "department": "B.Sc (Hons) Nursing 2021",
+    "institution": "AIIMS Kalyani",
+    "email": "preetidutta2021@gmail.com",
+    "phone": "7074977255",
+    "categoryId": "awardees",
+    "seatId": "B23",
+    "notes": "Enrollment No: 20210237 | Rank 2, B.Sc Nursing Batch 2021 (aggregate) | Hometown: Bankura | Assigned Seat: B23"
+  },
+  {
+    "id": "att-stu-shabnam-parvin",
+    "name": "SHABNAM PARVIN",
+    "designation": "B.Sc Nursing Graduate",
+    "department": "B.Sc (Hons) Nursing 2021",
+    "institution": "AIIMS Kalyani",
+    "email": "parvinshabnam2002@gmail.com",
+    "phone": "6297820802",
+    "categoryId": "awardees",
+    "seatId": "B22",
+    "notes": "Enrollment No: 20210248 | Rank 3, B.Sc Nursing Batch 2021 (aggregate) | Hometown: Bharatpur | Assigned Seat: B22"
+  },
+  {
+    "id": "att-stu-neha-bharti",
+    "name": "Neha Bharti",
+    "designation": "B.Sc Nursing Graduate",
+    "department": "B.Sc (Hons) Nursing 2021",
+    "institution": "AIIMS Kalyani",
+    "email": "nehabharti8257@gmail.com",
+    "phone": "9534028858",
+    "categoryId": "awardees",
+    "seatId": "B21",
+    "notes": "Enrollment No: 20210231 | Best Outgoing Student, B.Sc Nursing | Hometown: Bihar | Assigned Seat: B21"
+  }
+];
+
 export const INITIAL_ATTENDEES: Attendee[] = [
+  ...AWARDEE_ATTENDEES,
   ...FACULTY_ATTENDEES,
   ...STUDENT_ATTENDEES,
-  ...GUEST_ATTENDEES,
+  ...GUEST_ATTENDEES
 ];
 
 export const SAMPLE_CONVOCATION_ATTENDEES: Attendee[] = INITIAL_ATTENDEES;

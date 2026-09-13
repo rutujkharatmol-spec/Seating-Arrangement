@@ -26,6 +26,7 @@ export interface AuditoriumMapProps {
   onAssignExistingAttendee: (seatId: string, attendeeId: string) => void;
   onClearSeat: (seatId: string) => void;
   onToggleBlockedSeats: (seatIds: string[], isBlocked: boolean) => void;
+  onDeleteSeats?: (seatIds: string[]) => void;
   searchQuery: string;
   matchingSeatIds: string[];
   selectedTier: TierType | 'ALL';
@@ -62,7 +63,7 @@ const LOWER_ROW_LIST = [
   'L', 'K', 'J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A',
 ];
 
-const UPPER_ROW_ORDER = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
+const UPPER_ROW_ORDER = ['UB6', 'UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
 
 // Row -> index lookup built once, so getSeatCoordinates is O(1) per seat
 // instead of an Array.indexOf scan. It runs 763 times per map render and once
@@ -92,7 +93,7 @@ export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
       return { x: 873 - (seat.col - 1) * 28, y };
     }
     if (seat.block === 'UPPER_CENTER') {
-      if (seat.row === 'UB5') {
+      if (seat.row === 'UB5' || seat.row === 'UB6') {
         return { x: 614 - (seat.col - 8) * 26, y };
       }
       return { x: 626 - (seat.col - 8) * 23, y };
@@ -139,6 +140,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   onAssignExistingAttendee,
   onClearSeat,
   onToggleBlockedSeats,
+  onDeleteSeats,
   searchQuery,
   matchingSeatIds,
   selectedTier,
@@ -546,7 +548,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             <Building2 className="w-3.5 h-3.5" />
             <span>Main Auditorium</span>
             <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${activeVenue === 'AUDITORIUM' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'}`}>
-              750
+              732
             </span>
           </button>
           <button
@@ -667,7 +669,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
                   {departmentName}
                 </text>
                 <text x="500" y="68" textAnchor="middle" fill="#0284c7" fontSize="14" fontWeight="bold" fontFamily="system-ui">
-                  Main Auditorium — 750 Seats
+                  Main Auditorium — 732 Seats (Balcony: 132 Seats)
                 </text>
 
                 <g transform="translate(60, 45)">
@@ -685,6 +687,11 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
                 <rect x="80" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
                 <rect x="340" y="85" width="320" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
                 <rect x="695" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+
+                {/* Balcony Label & Capacity Indicator */}
+                <text x="82" y="75" fill="#6366f1" fontSize="11" fontWeight="bold" fontFamily="system-ui">
+                  BALCONY TIER (TOTAL: 132 SEATS — 6 ROWS)
+                </text>
 
                 {/* Lower Floor Dashed Section Dividers */}
                 <rect x="75" y="290" width="230" height="295" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
@@ -950,6 +957,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             onAssignExistingAttendee={onAssignExistingAttendee}
             onClearSeat={onClearSeat}
             onToggleBlockedSeats={onToggleBlockedSeats}
+            onDeleteSeats={onDeleteSeats}
             onClearSelection={onClearSelection}
             onSelectRow={onSelectRow}
             onSelectZone={onSelectZone}

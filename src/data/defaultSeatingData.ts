@@ -3,8 +3,8 @@ import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
 /**
  * AIIMS Kalyani auditorium — 750 seats.
  *
- * Geometry is fixed: the balcony runs UB1 (front railing) to UB5 (back), 132
- * seats; the ground floor runs row A (by the stage) to row X (back), 618 seats.
+ * Geometry is fixed: the balcony runs UB1 (front railing) to UB6 (back), 132
+ * seats; the ground floor runs row A (by the stage) to row X (back), 600 seats.
  * Rows A and X have wing seats only, so the middle block runs from B to W.
  * Seat numbers run continuously right-to-left along each row.
  *
@@ -17,13 +17,13 @@ import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
  * Bump whenever the zone rules change. Any saved plan (cloud, snapshot or
  * browser cache) carrying an older version is moved onto the new layout once.
  */
-export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-exam-hall-100';
+export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-awardees-left-row-b';
 
 const LOWER_ROW_LIST = [
   'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
   'L', 'K', 'J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A',
 ];
-const UPPER_ROW_ORDER = ['UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
+const UPPER_ROW_ORDER = ['UB6', 'UB5', 'UB4', 'UB3', 'UB2', 'UB1'];
 
 const LOWER_ROW_INDEX: Record<string, number> = {};
 LOWER_ROW_LIST.forEach((r, i) => { LOWER_ROW_INDEX[r] = i; });
@@ -73,17 +73,30 @@ function makeSeat(
 function buildSeatGeometry(): Seat[] {
   const seats: Seat[] = [];
 
-  // --- Balcony: UB5 has 24 seats (7 + 10 + 7), UB4–UB1 have 27 (7 + 13 + 7) ---
+  // --- Balcony (132 seats):
+  //   UB6 (back wall)  4 seats  =      4      (centre only, c11–14)
+  //   UB5             20 seats  = 7 +  6 + 7  (short centre row, c10–15)
+  //   UB4–UB1         27 seats  = 7 + 13 + 7
   for (const row of UPPER_ROW_ORDER) {
     const y = 90 + UPPER_ROW_INDEX[row] * 25;
-    const isBackRow = row === 'UB5';
-    const centreEnd = isBackRow ? 17 : 20;
-    const leftStart = centreEnd + 1;
+    const isBackRow = row === 'UB5' || row === 'UB6';
+
+    // The back centre row stands on its own, with no wing seats beside it.
+    if (row === 'UB6') {
+      for (let c = 11; c <= 14; c++) {
+        seats.push(makeSeat('UPPER', 'UPPER_CENTER', row, c, `${row}-${c}`, 'Balcony Gate', 614 - (c - 8) * 26, y));
+      }
+      continue;
+    }
+
+    const centreStart = row === 'UB5' ? 10 : 8;
+    const centreEnd = row === 'UB5' ? 15 : 20;
+    const leftStart = row === 'UB5' ? 18 : 21;
 
     for (let c = 1; c <= 7; c++) {
       seats.push(makeSeat('UPPER', 'UPPER_RIGHT', row, c, `${row}-${c}`, 'Balcony Gate', 873 - (c - 1) * 28, y));
     }
-    for (let c = 8; c <= centreEnd; c++) {
+    for (let c = centreStart; c <= centreEnd; c++) {
       const x = isBackRow ? 614 - (c - 8) * 26 : 626 - (c - 8) * 23;
       seats.push(makeSeat('UPPER', 'UPPER_CENTER', row, c, `${row}-${c}`, 'Balcony Gate', x, y));
     }
@@ -92,7 +105,7 @@ function buildSeatGeometry(): Seat[] {
     }
   }
 
-  // --- Row A: wings only, 5 + 5 ---
+  // --- Row A: wings only, 5 + 5 = 10 seats ---
   const rowAY = 300 + LOWER_ROW_INDEX['A'] * 26.5;
   for (let c = 1; c <= 5; c++) {
     seats.push(makeSeat('LOWER', 'LOWER_RIGHT', 'A', c, `A${c}`, 'Gate-1', 817 - (c - 1) * 28, rowAY));
@@ -101,22 +114,30 @@ function buildSeatGeometry(): Seat[] {
     seats.push(makeSeat('LOWER', 'LOWER_LEFT', 'A', c, `A${c}`, 'Gate-2', 253 - (c - 6) * 28, rowAY));
   }
 
-  // --- Rows B–W: 7 right + 13 middle + 7 left ---
+  // --- Rows B–W ---
   for (const row of FRONT_TO_BACK.slice(1, -1)) {
     const y = 300 + LOWER_ROW_INDEX[row] * 26.5;
-    for (let c = 1; c <= 7; c++) {
+
+    // Right wing: 7 seats (c=1..7), except Row P where P1 is completely deleted (c=2..7)
+    const rightColStart = row === 'P' ? 2 : 1;
+    for (let c = rightColStart; c <= 7; c++) {
       seats.push(makeSeat('LOWER', 'LOWER_RIGHT', row, c, `${row}${c}`, 'Gate-1', 873 - (c - 1) * 28, y));
     }
+
+    // Center block: 13 seats (c=8..20) on every row.
     for (let c = 8; c <= 20; c++) {
       const gate = c <= 14 ? 'Gate-1' : 'Gate-2';
       seats.push(makeSeat('LOWER', 'LOWER_CENTER', row, c, `${row}${c}`, gate, 626 - (c - 8) * 23, y));
     }
-    for (let c = 21; c <= 27; c++) {
+
+    // Left wing: 7 seats (c=21..27), except Row P where P27 is completely deleted (c=21..26)
+    const leftColEnd = row === 'P' ? 26 : 27;
+    for (let c = 21; c <= leftColEnd; c++) {
       seats.push(makeSeat('LOWER', 'LOWER_LEFT', row, c, `${row}${c}`, 'Gate-2', 253 - (c - 21) * 28, y));
     }
   }
 
-  // --- Row X: wings only, 7 + 7 ---
+  // --- Row X: wings only, 7 + 7 = 14 seats ---
   const rowXY = 300 + LOWER_ROW_INDEX['X'] * 26.5;
   for (let c = 1; c <= 7; c++) {
     seats.push(makeSeat('LOWER', 'LOWER_RIGHT', 'X', c, `X${c}`, 'Gate-1', 873 - (c - 1) * 28, rowXY));
@@ -143,9 +164,9 @@ export interface ZoneCounts {
 
 /** From the organising committee's summary sheet (PDF). */
 export const DEFAULT_ZONE_COUNTS: ZoneCounts = {
-  faculty: 175,  // Center rows E–Q (13 rows × 13 = 169 capacity, but 175 is the count)
-  nursing: 45,   // Left T–X (35) + Center V–W (26) = 61 capacity, 45 placed
-  mbbs: 108,     // Left C–L (70) + Left P–S (28) = 98 capacity, 108 is the count
+  faculty: 159,  // Center rows E–Q (13×13 = 169 capacity), 159 placed
+  nursing: 41,   // Left U–X (28) + Center W (13) = 41 capacity, 4 rank holders moved to awardees
+  mbbs: 105,     // Left rows C–I and M–T (104 capacity), 3 rank holders moved to awardees
 };
 
 /** One run of seats inside a block, filled front row to back row. */
@@ -155,26 +176,27 @@ interface ZoneSegment {
 }
 
 /**
- * Exact seat counts taken from the committee's chart. Segments are filled in
- * order — front row to back row, and right to left within a row — so a group
- * can finish part-way through a row when its count doesn't divide evenly by
- * the row width. Each plan must add up to its block's capacity.
- *
- * Left 166 · Middle 286 · Right 166 · Balcony 132 = 750 seats.
+ * Exact seat counts taken from the committee's chart adjusted for:
+ * - P1 deleted from Right Wing (capacity 165)
+ * - P27 deleted from Left Wing (capacity 165)
+ * - Middle block full 13-seat rows B–W (capacity 286)
+ * - Balcony rows UB5 (6 centre seats) and UB6 (4 centre seats) (capacity 132)
+ * Auditorium capacity = 165 + 286 + 165 + 132 = 748 seats (+ 100 in Exam Section Hall = 848 total).
  */
 const LEFT_WING_PLAN: ZoneSegment[] = [
   { categoryId: 'guide', seats: 5 },      // Row A
-  { categoryId: 'mbbs', seats: 49 },      // Rows B–H
-  { categoryId: 'it_staff', seats: 21 },  // Rows I–K
-  { categoryId: 'mbbs', seats: 59 },      // Rows L–S, then 3 seats of row T
-  { categoryId: 'nursing', seats: 32 },   // Rest of row T, then rows U–X
+  { categoryId: 'awardees', seats: 7 },   // Row B — rank holders, front row of the left wing
+  { categoryId: 'mbbs', seats: 49 },      // Rows C–I
+  { categoryId: 'it_staff', seats: 21 },  // Rows J–L
+  { categoryId: 'mbbs', seats: 55 },      // Rows M–T (P has 6 instead of 7)
+  { categoryId: 'nursing', seats: 28 },   // Rows U–X
 ];
 
 const MIDDLE_BLOCK_PLAN: ZoneSegment[] = [
   { categoryId: 'available', seats: 13 }, // Row B
   { categoryId: 'vip', seats: 26 },       // Rows C–D
-  { categoryId: 'faculty', seats: 175 },  // Rows E–Q, then 6 seats of row R
-  { categoryId: 'available', seats: 44 }, // Rest of row R, rows S–T, 11 of row U
+  { categoryId: 'faculty', seats: 159 },  // Rows E–P, then 3 seats of row Q
+  { categoryId: 'available', seats: 60 }, // Rest of row Q, rows R–T, 11 of row U
   { categoryId: 'pg', seats: 15 },        // Last 2 of row U + row V — right in front of nursing
   { categoryId: 'nursing', seats: 13 },   // Row W
 ];
@@ -183,19 +205,19 @@ const RIGHT_WING_PLAN: ZoneSegment[] = [
   { categoryId: 'accompanying', seats: 5 },    // Row A
   { categoryId: 'reporters', seats: 21 },      // Rows B–D
   { categoryId: 'admin_staff', seats: 30 },    // Rows E–H, then 2 seats of row I
-  { categoryId: 'accompanying', seats: 110 },  // Rest of row I, then rows J–X
+  { categoryId: 'accompanying', seats: 109 },  // Rest of row I, then rows J–X (Row P has 6 seats without P1)
 ];
 
-/** The whole balcony is parents, so it needs no segment plan. */
+/** The whole balcony is parents, so it needs no segment plan (132 seats). */
 
 /**
  * The convocation seating rules, as seat counts rather than whole rows:
  *
  * - Balcony: parents (132).
- * - Right wing: parents 5, reporters 21, admin 30, parents 110.
- * - Middle block: blank 13, VIP 26, faculty 175, blank 44, PG 15, nursing 13
+ * - Right wing: parents 5, reporters 21, admin 30, parents 109.
+ * - Middle block: blank 13, VIP 26, faculty 159, blank 60, PG 15, nursing 13
  *   (PG sits immediately in front of nursing, with no gap between them).
- * - Left wing: guide 5, MBBS 49, IT staff 21, MBBS 59, nursing 32.
+ * - Left wing: guide 5, awardees 7, MBBS 49, IT staff 21, MBBS 55, nursing 28.
  */
 export function assignConvocationZones(seats: Seat[], _counts: ZoneCounts = DEFAULT_ZONE_COUNTS): Seat[] {
   const zoneBySeat = new Map<string, CategoryId>();
@@ -280,15 +302,15 @@ export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   departmentName: 'Convocation Organizing Committee',
   numVip: 26,             // Center rows C–D
   numSeniorFaculty: 0,
-  numFaculty: 175,        // Center rows E–Q
-  numAwardees: 0,
+  numFaculty: 159,        // Center rows E–P (156) + 3 of row Q
+  numAwardees: 7,       // Left wing Row B — rank holders & best outgoing students
   numReporters: 21,       // Right rows B–D
-  numAccompanying: 347,   // Balcony (132) + Right rows J–X (115) + Exam Section Hall (100)
+  numAccompanying: 346,   // Balcony (132) + Right rows J–X (114) + Exam Section Hall (100)
   numBandParty: 0,
   numConsole: 0,
   numBlocked: 0,
-  numAudience: 281,       // Everyone else: admin(30), IT staff(21), MBBS(108), nursing(45), PG(15), guide(5), blank(57)
-  totalSeats: 850,
-  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (750 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B.',
+  numAudience: 280,       // Admin(30), IT staff(21), MBBS(104), nursing(41), PG(15), guide(5), awardees(7), blank(73)
+  totalSeats: 832,        // Main Auditorium (732) + Exam Section Hall (100)
+  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (732 seats, Balcony: 132 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows U–V, guides in left row A, rank holders in left row B.',
 };
 

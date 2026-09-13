@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import QRCode from 'qrcode';
 import { Seat, CategoryInfo, BlockType } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
+import { getMobileKioskUrl } from '../../services/cloudSync';
 import {
   Ticket,
   Scissors,
@@ -57,7 +58,7 @@ const AREA_ORDER = ['Middle Block', 'Left Wing', 'Right Wing', 'Balcony', 'Exam 
 const ROW_ORDER = [
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-  'UB1', 'UB2', 'UB3', 'UB4', 'UB5',
+  'UB1', 'UB2', 'UB3', 'UB4', 'UB5', 'UB6',
 ];
 
 /** Each group gets its own emblem so the printed piles are easy to tell apart. */
@@ -484,9 +485,7 @@ const SeatTicket: React.FC<{
   const Icon = SECTION_ICON[seat.categoryId] ?? Armchair;
 
   const trackerUrl = useMemo(() => {
-    if (typeof window === 'undefined') return '/#seattracker';
-    const base = window.location.origin + window.location.pathname.replace(/\/$/, '');
-    return `${base}/#seattracker?seat=${encodeURIComponent(seat.id)}`;
+    return getMobileKioskUrl(seat.id);
   }, [seat.id]);
 
   const nameParts = useMemo(() => {

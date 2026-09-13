@@ -17,6 +17,7 @@ interface EditorTabProps {
   onAssignExistingAttendee: (seatId: string, attendeeId: string) => void;
   onClearSeat: (seatId: string) => void;
   onToggleBlockedSeats: (seatIds: string[], isBlocked: boolean) => void;
+  onDeleteSeats?: (seatIds: string[]) => void;
   onClearSelection: () => void;
   onSelectRow: (seat: Seat) => void;
   onSelectZone: (seat: Seat) => void;
@@ -50,6 +51,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
   onAssignExistingAttendee,
   onClearSeat,
   onToggleBlockedSeats,
+  onDeleteSeats,
   onClearSelection,
   onSelectRow,
   onSelectZone,
@@ -140,6 +142,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
               onAssignExistingAttendee={onAssignExistingAttendee}
               onClearSeat={onClearSeat}
               onToggleBlockedSeats={onToggleBlockedSeats}
+              onDeleteSeats={onDeleteSeats}
               onClearSelection={onClearSelection}
               onSelectRow={onSelectRow}
               onSelectZone={onSelectZone}

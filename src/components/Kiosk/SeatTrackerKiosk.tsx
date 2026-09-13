@@ -29,7 +29,7 @@ import {
   Send,
   Navigation
 } from 'lucide-react';
-import { fetchLiveCloudPlan } from '../../services/cloudSync';
+import { fetchLiveCloudPlan, getMobileKioskUrl } from '../../services/cloudSync';
 
 interface SeatTrackerKioskProps {
   seats: Seat[];
@@ -242,7 +242,8 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
 
   const handleCopyPass = () => {
     if (!selectedSeat) return;
-    const text = `AIIMS Kalyani Seating Pass:\nGuest: ${selectedAttendee?.name || 'Guest'}\nSeat: ${selectedSeat.blockName} Row ${selectedSeat.row}, Seat ${selectedSeat.col} (${selectedSeat.id})\nEntry Gate: ${selectedSeat.gateRecommendation}\nEvent: ${eventTitle}`;
+    const mapUrl = getMobileKioskUrl(selectedSeat.id);
+    const text = `AIIMS Kalyani Seating Pass:\nGuest: ${selectedAttendee?.name || 'Guest'}\nSeat: ${selectedSeat.blockName} Row ${selectedSeat.row}, Seat ${selectedSeat.col} (${selectedSeat.id})\nEntry Gate: ${selectedSeat.gateRecommendation}\nEvent: ${eventTitle}\nSeat Map Link: ${mapUrl}`;
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
@@ -251,7 +252,8 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
 
   const handleShareWhatsApp = () => {
     if (!selectedSeat) return;
-    const text = `*AIIMS Kalyani Seating Pass*\n👤 *Guest:* ${selectedAttendee?.name || 'Guest'}\n🪑 *Seat:* ${selectedSeat.id} (${selectedSeat.blockName}, Row ${selectedSeat.row}, Seat ${selectedSeat.col})\n🚪 *Entry Gate:* ${selectedSeat.gateRecommendation}\n🏛️ *Event:* ${eventTitle}`;
+    const mapUrl = getMobileKioskUrl(selectedSeat.id);
+    const text = `*AIIMS Kalyani Seating Pass*\n👤 *Guest:* ${selectedAttendee?.name || 'Guest'}\n🪑 *Seat:* ${selectedSeat.id} (${selectedSeat.blockName}, Row ${selectedSeat.row}, Seat ${selectedSeat.col})\n🚪 *Entry Gate:* ${selectedSeat.gateRecommendation}\n🏛️ *Event:* ${eventTitle}\n📍 *Find Seat on Map:* ${mapUrl}`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   };
 
