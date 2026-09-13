@@ -393,6 +393,42 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
   );
 };
 
+import QRCode from 'qrcode';
+
+const TicketQrCode: React.FC<{ value: string; sizeMm?: number }> = ({ value, sizeMm = 15.5 }) => {
+  const qr = useMemo(() => {
+    try {
+      const q = QRCode.create(value, { errorCorrectionLevel: 'M' });
+      const count = q.modules.size;
+      let d = '';
+      for (let row = 0; row < count; row++) {
+        for (let col = 0; col < count; col++) {
+          if (q.modules.get(row, col)) {
+            d += `M${col},${row}h1v1h-1z `;
+          }
+        }
+      }
+      return { count, d };
+    } catch {
+      return null;
+    }
+  }, [value]);
+
+  if (!qr) return null;
+
+  return (
+    <svg
+      viewBox={`-2 -2 ${qr.count + 4} ${qr.count + 4}`}
+      style={{ width: `${sizeMm}mm`, height: `${sizeMm}mm` }}
+      shapeRendering="crispEdges"
+      className="shrink-0 block"
+    >
+      <rect x="-2" y="-2" width={qr.count + 4} height={qr.count + 4} fill="#ffffff" />
+      <path d={qr.d} fill="#0f172a" />
+    </svg>
+  );
+};
+
 const SeatTicket: React.FC<{
   seat: Seat;
   eventTitle: string;
@@ -405,6 +441,12 @@ const SeatTicket: React.FC<{
   const tint = cat?.color || '#e2e8f0';
   const onAccent = readableOn(accent);
   const Icon = SECTION_ICON[seat.categoryId] ?? Armchair;
+
+  const trackerUrl = useMemo(() => {
+    if (typeof window === 'undefined') return '/#seattracker';
+    const base = window.location.origin + window.location.pathname.replace(/\/$/, '');
+    return `${base}/#seattracker?seat=${encodeURIComponent(seat.id)}`;
+  }, [seat.id]);
 
   return (
     <div className="seat-ticket relative w-full h-[65mm] flex border border-dashed border-slate-400 overflow-hidden bg-white">
@@ -435,54 +477,71 @@ const SeatTicket: React.FC<{
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="h-[2mm] shrink-0" style={{ backgroundColor: tint }} />
 
-        <div className="flex-1 min-w-0 px-[4mm] py-[2.5mm] flex flex-col justify-between">
-          <div className="min-w-0">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-[6.5pt] font-black tracking-[0.16em] text-blue-950 uppercase">
-                AIIMS Kalyani
-              </span>
-              <span className="text-[5.5pt] text-slate-400 uppercase tracking-wider shrink-0">
-                Admit one
-              </span>
+        <div className="flex-1 min-w-0 px-[3.5mm] py-[2.5mm] flex items-stretch gap-[2.5mm]">
+          {/* Left info column */}
+          <div className="flex-1 min-w-0 flex flex-col justify-between">
+            <div className="min-w-0">
+              <div className="flex items-baseline justify-between gap-1.5">
+                <span className="text-[6.5pt] font-black tracking-[0.16em] text-blue-950 uppercase truncate">
+                  AIIMS Kalyani
+                </span>
+                <span className="text-[5.5pt] text-slate-400 uppercase tracking-wider shrink-0">
+                  Admit one
+                </span>
+              </div>
+              <div className="font-ticket-name text-[7.5pt] italic text-slate-600 truncate leading-tight mt-[0.3mm]">
+                {eventTitle}
+              </div>
             </div>
-            <div className="font-ticket-name text-[8pt] italic text-slate-600 truncate leading-tight">
-              {eventTitle}
-            </div>
-          </div>
 
-          {/* Who the ticket belongs to */}
-          <div className="min-w-0 flex-1 flex flex-col justify-center">
-            {guest ? (
-              <>
-                <div className="font-ticket-name text-[13pt] font-bold text-slate-900 leading-tight truncate">
-                  {guest.name}
-                </div>
-                {(guest.designation || guest.department) && (
-                  <div className="text-[6.5pt] text-slate-500 truncate leading-tight mt-[0.3mm]">
-                    {[guest.designation, guest.department].filter(Boolean).join(' · ')}
+            {/* Who the ticket belongs to */}
+            <div className="min-w-0 my-auto py-[1mm]">
+              {guest ? (
+                <>
+                  <div className="font-ticket-name text-[12pt] font-bold text-slate-900 leading-tight truncate">
+                    {guest.name}
                   </div>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="text-[6pt] uppercase tracking-wider text-slate-400">Name</div>
-                <div className="border-b border-dotted border-slate-400 h-[4.5mm]" />
-              </>
-            )}
+                  {(guest.designation || guest.department) && (
+                    <div className="text-[6.5pt] text-slate-500 truncate leading-tight mt-[0.3mm]">
+                      {[guest.designation, guest.department].filter(Boolean).join(' · ')}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="text-[6pt] uppercase tracking-wider text-slate-400">Name</div>
+                  <div className="border-b border-dotted border-slate-400 h-[4.5mm]" />
+                </>
+              )}
+            </div>
+
+            {/* Group badge and block area */}
+            <div className="flex items-end justify-between gap-1.5 min-w-0">
+              <span
+                className="inline-flex items-center gap-[1.5mm] max-w-[32mm] whitespace-nowrap text-[7.5pt] font-black uppercase tracking-wide px-[2.5mm] py-[1mm] rounded-full border shrink-0"
+                style={{ backgroundColor: tint, color: cat?.textColor ?? '#0f172a', borderColor: accent }}
+              >
+                <Icon className="w-[3mm] h-[3mm] shrink-0" />
+                <span className="truncate">{cat?.shortName ?? cat?.name ?? seat.categoryId}</span>
+              </span>
+              <span className="text-[5.5pt] text-slate-400 text-right leading-tight truncate">
+                {AREA_LABEL[seat.block]}
+              </span>
+            </div>
           </div>
 
-          {/* Group badge — printed large so ushers can sort at a glance */}
-          <div className="flex items-end justify-between gap-2">
-            <span
-              className="inline-flex items-center gap-[1.5mm] max-w-[42mm] whitespace-nowrap text-[8pt] font-black uppercase tracking-wide px-[3mm] py-[1.2mm] rounded-full border"
-              style={{ backgroundColor: tint, color: cat?.textColor ?? '#0f172a', borderColor: accent }}
-            >
-              <Icon className="w-[3.2mm] h-[3.2mm] shrink-0" />
-              <span className="truncate">{cat?.shortName ?? cat?.name ?? seat.categoryId}</span>
+          {/* Right QR Code column: Seat Tracker */}
+          <div className="w-[20mm] shrink-0 border-l border-dashed border-slate-200 pl-[2mm] flex flex-col items-center justify-between py-[0.5mm] text-center">
+            <span className="text-[4.5pt] font-extrabold uppercase tracking-wider text-slate-500 leading-none">
+              Seat Tracker
             </span>
-            <span className="text-[5.5pt] text-slate-400 text-right leading-tight shrink-0">
-              {AREA_LABEL[seat.block]}
-            </span>
+            <div className="p-[0.5mm] bg-white rounded border border-slate-300 shadow-2xs">
+              <TicketQrCode value={trackerUrl} sizeMm={15.5} />
+            </div>
+            <div className="flex flex-col items-center leading-none">
+              <span className="text-[4pt] font-black text-slate-800 tracking-tight">SCAN FOR SEAT</span>
+              <span className="text-[3.5pt] text-slate-400 mt-[0.3mm]">Live Floor Map</span>
+            </div>
           </div>
         </div>
       </div>

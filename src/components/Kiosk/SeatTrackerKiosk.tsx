@@ -193,6 +193,35 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     centerOnSeat(seat);
   };
 
+  // Auto-focus seat if specified in URL (e.g. scanned from Ticket QR code: /#seattracker?seat=B23)
+  useEffect(() => {
+    try {
+      const fullUrl = window.location.href;
+      const queryIdx = fullUrl.indexOf('?');
+      if (queryIdx !== -1) {
+        const queryStr = fullUrl.substring(queryIdx + 1);
+        const params = new URLSearchParams(queryStr);
+        const seatParam = params.get('seat') || params.get('q');
+        if (seatParam) {
+          const match = liveSeats.find(
+            (s) => s.id.toLowerCase() === seatParam.trim().toLowerCase()
+          );
+          if (match) {
+            setSelectedSeat(match);
+            const att = liveAttendees.find((a) => a.seatId === match.id);
+            setSelectedAttendee(att || null);
+            centerOnSeat(match);
+            setActiveMobileTab('pass');
+          } else {
+            setSearchTerm(seatParam.trim());
+          }
+        }
+      }
+    } catch {
+      // Ignore URL parsing errors
+    }
+  }, [liveSeats, centerOnSeat]);
+
   const handleResetZoom = () => {
     setView({ zoom: 1, x: 0, y: 0 });
   };

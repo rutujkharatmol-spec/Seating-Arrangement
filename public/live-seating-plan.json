@@ -18060,24 +18060,11 @@
       "borderColor": "#94a3b8",
       "description": "Seats kept blank (Middle Rows B, R–S and U–V, 57 seats)",
       "defaultCount": 57,
-      "priority": 12,
-      "recommendedGate": "Gate-1 or Gate-2",
-      "isCustom": false
-    },
-    "console": {
-      "id": "console",
-      "name": "AV & Technical Console",
-      "shortName": "Console",
-      "color": "#22d3ee",
-      "textColor": "#164e63",
-      "borderColor": "#0891b2",
-      "description": "Audio-visual console operators (no seats in the current layout)",
-      "defaultCount": 0,
       "priority": 11,
-      "recommendedGate": "Gate-2",
+      "recommendedGate": "Gate-1 or Gate-2",
       "isCustom": false
     }
   },
-  "layoutVersion": "convocation-2026-09-13-pg-front-nursing",
-  "_publishedAt": "2026-09-13T04:02:44.424Z"
+  "layoutVersion": "convocation-2026-09-13-no-console",
+  "_publishedAt": "2026-09-13T04:11:44.040Z"
 }
