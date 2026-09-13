@@ -47,6 +47,8 @@ export function normalisePlan(plan: Partial<PlanState>): PlanState {
     ...CATEGORIES,
     ...(plan.categories || {}),
   };
+  delete categories.pdcc;
+  delete categories.console;
 
   const rawSeats = plan.seats && plan.seats.length > 0 ? plan.seats : generateDefaultSeats();
   const seatIds = new Set(rawSeats.map((s) => s.id));
@@ -84,7 +86,7 @@ export function normalisePlan(plan: Partial<PlanState>): PlanState {
 }
 
 /** Sections retired when the convocation layout was redrawn. */
-const RETIRED_CATEGORY_IDS = new Set(['awardees', 'audience', 'blocked', 'vvip']);
+const RETIRED_CATEGORY_IDS = new Set(['awardees', 'audience', 'blocked', 'vvip', 'pdcc', 'console']);
 
 /**
  * Moves a plan saved under an older zone layout onto the current one: fresh
@@ -103,7 +105,7 @@ export function migratePlanLayout(plan: PlanState): PlanState {
 
   const seats = generateDefaultSeats();
   const roster = plan.attendees.map((a) => {
-    const categoryId = a.categoryId === 'vvip' ? 'vip' : categories[a.categoryId] ? a.categoryId : 'faculty';
+    const categoryId = a.categoryId === 'vvip' ? 'vip' : a.categoryId === 'pdcc' ? 'pg' : a.categoryId === 'console' ? 'it_staff' : categories[a.categoryId] ? a.categoryId : 'faculty';
     return { ...a, categoryId, seatId: undefined };
   });
   const { attendees } = seatRosterByZone(seats, roster);

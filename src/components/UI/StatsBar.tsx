@@ -31,9 +31,14 @@ export const StatsBar: React.FC<StatsBarProps> = ({
     reporters: '🎤',
     accompanying: '👨‍👩‍👧',
     band_party: '🎵',
-    console: '💻',
     audience: '👥',
     blocked: '🚫',
+    guide: '🧭',
+    mbbs: '🩺',
+    nursing: '💉',
+    pg: '📋',
+    it_staff: '🖥️',
+    admin_staff: '📂',
   };
 
   const catList = Object.values(categories).filter((c) => c.id !== 'available');

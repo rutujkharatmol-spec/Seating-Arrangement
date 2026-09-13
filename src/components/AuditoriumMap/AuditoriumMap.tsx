@@ -42,6 +42,7 @@ export interface AuditoriumMapProps {
   onUpdateVolunteer?: (vol: Volunteer) => void;
   onDeleteVolunteer?: (id: string) => void;
   onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
+  onRemoveAllColors?: () => void;
   focusSeatId: string | null;
   onFocusHandled: () => void;
   onInitiateSwap?: (seatId: string) => void;
@@ -147,6 +148,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
   onUpdateVolunteer,
   onDeleteVolunteer,
   onSwapSeats,
+  onRemoveAllColors,
   focusSeatId,
   onFocusHandled,
   onInitiateSwap,
@@ -788,6 +790,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
             onApplyAnswers={onApplyAnswers}
             paintCategory={paintCategory}
             onSetPaintCategory={setPaintCategory}
+            onRemoveAllColors={onRemoveAllColors}
             volunteers={volunteers}
             onAddVolunteer={onAddVolunteer}
             onUpdateVolunteer={onUpdateVolunteer}

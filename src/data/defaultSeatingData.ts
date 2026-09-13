@@ -17,7 +17,7 @@ import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
  * Bump whenever the zone rules change. Any saved plan (cloud, snapshot or
  * browser cache) carrying an older version is moved onto the new layout once.
  */
-export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-11';
+export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-no-console';
 
 const LOWER_ROW_LIST = [
   'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
@@ -132,84 +132,97 @@ function buildSeatGeometry(): Seat[] {
  * in the layout is a fixed number of rows.
  */
 export interface ZoneCounts {
-  /** Faculty: the middle block gets enough rows, after the VIP/admin/reporter rows. */
+  /** Faculty: the middle block gets enough rows, after the VIP rows. */
   faculty: number;
-  /** Nursing students: this many seats are taken from the back of the middle block. */
+  /** Nursing students: this many seats from Left Wing back + Center back. */
   nursing: number;
-  /** MBBS students: rows on the left after the IT rows; other students sit behind. */
+  /** MBBS students: left wing rows (split around the IT staff rows). */
   mbbs: number;
 }
 
-/** From the organising committee's summary sheet. */
+/** From the organising committee's summary sheet (PDF). */
 export const DEFAULT_ZONE_COUNTS: ZoneCounts = {
-  faculty: 163, // 153 faculty members + 10
-  nursing: 45,  // B.Sc (Hons) 37 + M.Sc 2023 2 + M.Sc 2024 6 attending
-  mbbs: 108,    // MBBS 2019 (1) + MBBS 2020 (107) attending
+  faculty: 175,  // Center rows E–Q (13 rows × 13 = 169 capacity, but 175 is the count)
+  nursing: 45,   // Left T–X (35) + Center V–W (26) = 61 capacity, 45 placed
+  mbbs: 108,     // Left C–L (70) + Left P–S (28) = 98 capacity, 108 is the count
 };
 
+/** One run of seats inside a block, filled front row to back row. */
+interface ZoneSegment {
+  categoryId: CategoryId;
+  seats: number;
+}
+
 /**
- * The convocation seating rules:
+ * Exact seat counts taken from the committee's chart. Segments are filled in
+ * order — front row to back row, and right to left within a row — so a group
+ * can finish part-way through a row when its count doesn't divide evenly by
+ * the row width. Each plan must add up to its block's capacity.
  *
- * - Balcony: all parents.
- * - Right wing: first 3 rows reporters, next 2 rows admin, the rest parents.
- * - Middle block: first 2 rows VIP, 1 row admin, 1 row reporters, then
- *   faculty, then students (PDCC) behind them, with nursing students in the
- *   last rows.
- * - Left wing: first 2 rows IT dept staff, then MBBS, then the other students
- *   (PG) behind them.
+ * Left 166 · Middle 286 · Right 166 · Balcony 132 = 750 seats.
  */
-export function assignConvocationZones(seats: Seat[], counts: ZoneCounts = DEFAULT_ZONE_COUNTS): Seat[] {
-  const zoneByRow = new Map<string, CategoryId>();
+const LEFT_WING_PLAN: ZoneSegment[] = [
+  { categoryId: 'guide', seats: 5 },      // Row A
+  { categoryId: 'mbbs', seats: 49 },      // Rows B–H
+  { categoryId: 'it_staff', seats: 21 },  // Rows I–K
+  { categoryId: 'mbbs', seats: 59 },      // Rows L–S, then 3 seats of row T
+  { categoryId: 'nursing', seats: 32 },   // Rest of row T, then rows U–X
+];
 
-  /** The rows present in a block, front to back, with how many seats each has. */
-  const rowsOf = (block: BlockType): [string, number][] => {
-    const sizes = new Map<string, number>();
-    seats.forEach((s) => {
-      if (s.block === block) sizes.set(s.row, (sizes.get(s.row) ?? 0) + 1);
-    });
-    return [...sizes.entries()].sort((a, b) => FRONT_TO_BACK.indexOf(a[0]) - FRONT_TO_BACK.indexOf(b[0]));
+const MIDDLE_BLOCK_PLAN: ZoneSegment[] = [
+  { categoryId: 'available', seats: 13 }, // Row B
+  { categoryId: 'vip', seats: 26 },       // Rows C–D
+  { categoryId: 'faculty', seats: 175 },  // Rows E–Q, then 6 seats of row R
+  { categoryId: 'available', seats: 44 }, // Rest of row R, rows S–T, 11 of row U
+  { categoryId: 'pg', seats: 15 },        // Last 2 of row U + row V — right in front of nursing
+  { categoryId: 'nursing', seats: 13 },   // Row W
+];
+
+const RIGHT_WING_PLAN: ZoneSegment[] = [
+  { categoryId: 'accompanying', seats: 5 },    // Row A
+  { categoryId: 'reporters', seats: 21 },      // Rows B–D
+  { categoryId: 'admin_staff', seats: 30 },    // Rows E–H, then 2 seats of row I
+  { categoryId: 'accompanying', seats: 110 },  // Rest of row I, then rows J–X
+];
+
+/** The whole balcony is parents, so it needs no segment plan. */
+
+/**
+ * The convocation seating rules, as seat counts rather than whole rows:
+ *
+ * - Balcony: parents (132).
+ * - Right wing: parents 5, reporters 21, admin 30, parents 110.
+ * - Middle block: blank 13, VIP 26, faculty 175, blank 44, PG 15, nursing 13
+ *   (PG sits immediately in front of nursing, with no gap between them).
+ * - Left wing: guide 5, MBBS 49, IT staff 21, MBBS 59, nursing 32.
+ */
+export function assignConvocationZones(seats: Seat[], _counts: ZoneCounts = DEFAULT_ZONE_COUNTS): Seat[] {
+  const zoneBySeat = new Map<string, CategoryId>();
+
+  const fillBlock = (block: BlockType, plan: ZoneSegment[]) => {
+    const ordered = seats
+      .filter((s) => s.block === block)
+      .sort((a, b) => {
+        const rowDiff = FRONT_TO_BACK.indexOf(a.row) - FRONT_TO_BACK.indexOf(b.row);
+        return rowDiff !== 0 ? rowDiff : a.col - b.col;
+      });
+
+    let i = 0;
+    for (const segment of plan) {
+      for (let n = 0; n < segment.seats && i < ordered.length; n++, i++) {
+        zoneBySeat.set(ordered[i].id, segment.categoryId);
+      }
+    }
+    // Any seat the plan doesn't reach stays 'available'.
   };
 
-  const assign = (block: BlockType, rows: [string, number][], categoryId: CategoryId) => {
-    rows.forEach(([row]) => zoneByRow.set(`${block}|${row}`, categoryId));
-  };
-
-  /** How many rows, taken in order, are needed to hold `needed` people. */
-  const rowsToHold = (rows: [string, number][], needed: number) => {
-    let held = 0;
-    let taken = 0;
-    while (taken < rows.length && held < needed) held += rows[taken++][1];
-    return taken;
-  };
-
-  const right = rowsOf('LOWER_RIGHT');
-  assign('LOWER_RIGHT', right.slice(0, 3), 'reporters');
-  assign('LOWER_RIGHT', right.slice(3, 5), 'admin_staff');
-  assign('LOWER_RIGHT', right.slice(5), 'accompanying');
-
-  const middle = rowsOf('LOWER_CENTER');
-  assign('LOWER_CENTER', middle.slice(0, 2), 'vip');
-  assign('LOWER_CENTER', middle.slice(2, 3), 'admin_staff');
-  assign('LOWER_CENTER', middle.slice(3, 4), 'reporters');
-  const middleRest = middle.slice(4);
-  // Nursing is reserved from the back first, so faculty can never crowd it out.
-  const nursingRows = rowsToHold([...middleRest].reverse(), counts.nursing);
-  const nursingStart = middleRest.length - nursingRows;
-  const facultyRows = rowsToHold(middleRest.slice(0, nursingStart), counts.faculty);
-  assign('LOWER_CENTER', middleRest.slice(0, facultyRows), 'faculty');
-  assign('LOWER_CENTER', middleRest.slice(facultyRows, nursingStart), 'pdcc');
-  assign('LOWER_CENTER', middleRest.slice(nursingStart), 'nursing');
-
-  const left = rowsOf('LOWER_LEFT');
-  assign('LOWER_LEFT', left.slice(0, 2), 'it_staff');
-  const leftRest = left.slice(2);
-  const mbbsRows = rowsToHold(leftRest, counts.mbbs);
-  assign('LOWER_LEFT', leftRest.slice(0, mbbsRows), 'mbbs');
-  assign('LOWER_LEFT', leftRest.slice(mbbsRows), 'pg');
+  fillBlock('LOWER_LEFT', LEFT_WING_PLAN);
+  fillBlock('LOWER_CENTER', MIDDLE_BLOCK_PLAN);
+  fillBlock('LOWER_RIGHT', RIGHT_WING_PLAN);
 
   return seats.map((s) => ({
     ...s,
-    categoryId: s.tier === 'UPPER' ? 'accompanying' : zoneByRow.get(`${s.block}|${s.row}`) ?? 'available',
+    categoryId: s.tier === 'UPPER' ? 'accompanying' : zoneBySeat.get(s.id) ?? 'available',
     isBlocked: false,
   }));
 }
@@ -221,16 +234,17 @@ export function generateDefaultSeats(): Seat[] {
 export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   eventTitle: 'Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)',
   departmentName: 'Convocation Organizing Committee',
-  numVip: 26,             // Middle rows B–C
+  numVip: 26,             // Center rows C–D
   numSeniorFaculty: 0,
-  numFaculty: 163,        // 153 faculty + 10 — decides how many middle rows go to faculty
+  numFaculty: 175,        // Center rows E–Q
   numAwardees: 0,
-  numReporters: 32,       // Right rows A–C (19) + middle row E (13)
-  numAccompanying: 265,   // Whole balcony (132) + right rows F–X (133)
+  numReporters: 21,       // Right rows B–D
+  numAccompanying: 247,   // Balcony (132) + Right rows J–X (105) + Right A (5) + misc
   numBandParty: 0,
   numConsole: 0,
   numBlocked: 0,
-  numAudience: 264,       // Everyone else: admin, IT staff and all students
+  numAudience: 281,       // Everyone else: admin(30), IT staff(21), MBBS(108), nursing(45), PG(15), guide(5), blank(57)
   totalSeats: 750,
-  notes: 'AIIMS Kalyani Convocation layout: parents in the balcony and right wing, VIP/admin/reporters up front, faculty then students in the middle, IT staff then students on the left.',
+  notes: 'AIIMS Kalyani Convocation layout (matching PDF): parents in balcony + right back, VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B.',
 };
+

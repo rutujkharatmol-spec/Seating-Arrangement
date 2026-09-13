@@ -407,6 +407,27 @@ export function App() {
     showToast(`Updated ${seatIds.length} seat(s) to ${catName}`);
   };
 
+  const handleRemoveAllSeatColors = useCallback(() => {
+    if (
+      window.confirm(
+        'Are you sure you want to remove all colors from all seats? All seats will be reset to Unassigned (no color).'
+      )
+    ) {
+      plan.commit(
+        (p) => ({
+          ...p,
+          seats: p.seats.map((s) => ({
+            ...s,
+            categoryId: 'available',
+            isBlocked: false,
+          })),
+        }),
+        'Remove all seat colors'
+      );
+      showToast('Removed colors from all seats');
+    }
+  }, [plan, showToast]);
+
   const handleToggleBlockedSeats = (seatIds: string[], isBlocked: boolean) => {
     if (seatIds.length === 0) return;
     const targetSet = new Set(seatIds);
@@ -977,6 +998,7 @@ export function App() {
             onUpdateVolunteer={handleUpdateVolunteer}
             onDeleteVolunteer={handleDeleteVolunteer}
             onSwapSeats={handleSwapSeats}
+            onRemoveAllColors={handleRemoveAllSeatColors}
             focusSeatId={focusSeatId}
             onFocusHandled={() => setFocusSeatId(null)}
             onInitiateSwap={handleInitiateSwap}
@@ -1004,6 +1026,8 @@ export function App() {
             onUpdateVolunteer={handleUpdateVolunteer}
             onDeleteVolunteer={handleDeleteVolunteer}
             onSwapSeats={handleSwapSeats}
+            onRemoveAllColors={handleRemoveAllSeatColors}
+            categories={categories}
           />
         )}
 

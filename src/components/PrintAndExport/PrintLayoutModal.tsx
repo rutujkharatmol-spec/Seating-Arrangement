@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Seat, Attendee, Volunteer, CategoryInfo } from '../../types/seating';
 import { PrintableChart } from './PrintableChart';
 import { SeatPassBadge } from './SeatPassBadge';
-import { Printer, Map, DoorOpen, Ticket } from 'lucide-react';
+import { SeatTicketSheet } from './SeatTicketSheet';
+import { Printer, Map, DoorOpen, Ticket, Scissors } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
 
 interface PrintLayoutModalProps {
@@ -24,7 +25,9 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
   totalSeats,
   categories = CATEGORIES,
 }) => {
-  const [printMode, setPrintMode] = useState<'chart' | 'gate1' | 'gate2' | 'badges'>('chart');
+  const [printMode, setPrintMode] = useState<'chart' | 'gate1' | 'gate2' | 'badges' | 'tickets'>('chart');
+
+  const ticketableSeats = seats.filter((s) => !s.isBlocked);
 
   const handleTriggerPrint = () => {
     window.print();
@@ -37,7 +40,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
 
   const gate2Attendees = attendees.filter((a) => {
     const seat = seats.find((s) => s.id === a.seatId);
-    return seat?.gateRecommendation === 'Gate-2' || a.categoryId === 'senior_faculty' || a.categoryId === 'reporters' || a.categoryId === 'console';
+    return seat?.gateRecommendation === 'Gate-2' || a.categoryId === 'senior_faculty' || a.categoryId === 'reporters';
   });
 
   const printOptions = [
@@ -69,6 +72,13 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
       description: 'Print admission badges & seat passes with QR code representation.',
       badge: `${attendees.length} Passes`,
     },
+    {
+      id: 'tickets' as const,
+      icon: Scissors,
+      title: '5. Seat Tickets (cut & hand out)',
+      description: 'One ticket per seat, 10 per A4 page. Filter by section, area or empty seats.',
+      badge: `${ticketableSeats.length} Seats`,
+    },
   ];
 
   return (
@@ -98,7 +108,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
         </div>
 
         {/* 4 Big Visual Selector Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {printOptions.map((opt) => {
             const Icon = opt.icon;
             const isSelected = printMode === opt.id;
@@ -270,6 +280,16 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
               );
             })}
           </div>
+        )}
+
+        {/* 5. SEAT TICKETS — one per seat, cut and distribute */}
+        {printMode === 'tickets' && (
+          <SeatTicketSheet
+            seats={seats}
+            eventTitle={eventTitle}
+            departmentName={departmentName}
+            categories={categories}
+          />
         )}
 
       </div>

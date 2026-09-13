@@ -8,6 +8,17 @@
   }
 }
 
+/* Ticket typography: an elegant serif for guest names, a geometric sans for
+   seat numbers. Both fall back to system faces if the web fonts don't load. */
+.font-ticket-name {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+.font-ticket-seat {
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Light Theme Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
@@ -103,6 +114,20 @@
     break-inside: avoid;
     page-break-inside: avoid;
     margin-bottom: 20px;
+  }
+
+  /* Seat tickets: never split a ticket, and start each sheet on a new page. */
+  .seat-ticket {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .ticket-page {
+    break-inside: avoid-page;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
   }
 }
 

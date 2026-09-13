@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Seat, Volunteer, CategoryId, QuestionnaireAnswers, Attendee } from '../../types/seating';
+import { Seat, Volunteer, CategoryId, QuestionnaireAnswers, Attendee, CategoryInfo } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import { QuestionnaireWizard } from './QuestionnaireWizard';
 import { SeatInspector } from './SeatInspector';
@@ -25,6 +25,8 @@ interface EditorTabProps {
   onUpdateVolunteer: (vol: Volunteer) => void;
   onDeleteVolunteer: (id: string) => void;
   onSwapSeats?: (seatIdA: string, seatIdB: string) => void;
+  onRemoveAllColors?: () => void;
+  categories?: Record<string, CategoryInfo>;
 }
 
 const SHORTCUTS: [string, string][] = [
@@ -56,6 +58,8 @@ export const EditorTab: React.FC<EditorTabProps> = ({
   onUpdateVolunteer,
   onDeleteVolunteer,
   onSwapSeats,
+  onRemoveAllColors,
+  categories,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'wizard' | 'seats' | 'volunteers'>('wizard');
 
@@ -146,6 +150,8 @@ export const EditorTab: React.FC<EditorTabProps> = ({
               onUpdateVolunteer={onUpdateVolunteer}
               onDeleteVolunteer={onDeleteVolunteer}
               onSwapSeats={onSwapSeats}
+              onRemoveAllColors={onRemoveAllColors}
+              categories={categories}
             />
           </div>
 

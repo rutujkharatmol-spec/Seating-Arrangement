@@ -54,13 +54,13 @@ export function mapToCategoryId(catStr: string): CategoryId {
   if (clean.includes('media') || clean.includes('press') || clean.includes('reporter')) return 'reporters';
   if (clean.includes('mbbs')) return 'mbbs';
   if (clean.includes('nurs')) return 'nursing';
-  if (clean.includes('pdcc') || clean.includes('fellow')) return 'pdcc';
-  if (clean.includes('pg') || clean.includes('md') || clean.includes('ms') || clean.includes('mds') || clean.includes('resident')) return 'pg';
+  if (clean.includes('pdcc') || clean.includes('fellow') || clean.includes('pg') || clean.includes('md') || clean.includes('ms') || clean.includes('mds') || clean.includes('resident')) return 'pg';
   if (clean.includes('parent') || clean.includes('accompany') || clean.includes('family') || clean.includes('guardian')) return 'accompanying';
   if (clean.includes('faculty') || clean.includes('prof') || clean.includes('doctor') || clean.includes('teacher')) return 'faculty';
   if (clean.includes('senior') || clean.includes('registrar')) return 'faculty';
   if (clean.includes('admin')) return 'admin_staff';
-  if (clean.includes('console') || clean.includes('av') || clean.includes('tech')) return 'console';
+  if (clean.includes('it') || clean.includes('console') || clean.includes('av') || clean.includes('tech')) return 'it_staff';
+  if (clean.includes('guide') || clean.includes('usher')) return 'guide';
   if (clean.includes('student')) return 'mbbs';
 
   return 'faculty';

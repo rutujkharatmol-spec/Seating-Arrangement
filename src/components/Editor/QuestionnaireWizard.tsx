@@ -46,7 +46,6 @@ export const QuestionnaireWizard: React.FC<QuestionnaireWizardProps> = ({
       formData.numReporters +
       formData.numAccompanying +
       formData.numBandParty +
-      formData.numConsole +
       formData.numBlocked;
 
     const remainingForAudience = Math.max(0, (formData.totalSeats || 750) - currentWithoutAudience);
@@ -132,16 +131,6 @@ export const QuestionnaireWizard: React.FC<QuestionnaireWizardProps> = ({
       borderColor: '#ca8a04',
       value: formData.numBandParty,
       default: 39,
-    },
-    {
-      id: 'numConsole',
-      name: 'Console',
-      emoji: '💻',
-      color: '#a5f3fc',
-      textColor: '#164e63',
-      borderColor: '#0891b2',
-      value: formData.numConsole,
-      default: 35,
     },
     {
       id: 'numAudience',

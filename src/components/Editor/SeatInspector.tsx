@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   UserPlus,
   Paintbrush,
+  Eraser,
   Sliders,
   Sparkles,
   RotateCcw,
@@ -49,6 +50,7 @@ export interface SeatInspectorProps {
   onApplyAnswers?: (answers: QuestionnaireAnswers) => void;
   paintCategory?: CategoryId | null;
   onSetPaintCategory?: (cat: CategoryId | null) => void;
+  onRemoveAllColors?: () => void;
   volunteers?: Volunteer[];
   onAddVolunteer?: (vol: Volunteer) => void;
   onUpdateVolunteer?: (vol: Volunteer) => void;
@@ -74,6 +76,7 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
   onApplyAnswers,
   paintCategory,
   onSetPaintCategory,
+  onRemoveAllColors,
   volunteers = [],
   onAddVolunteer,
   onUpdateVolunteer,
@@ -404,6 +407,24 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
                 </button>
               );
             })}
+
+            {/* Clear color for selected seats */}
+            <button
+              type="button"
+              onClick={() => onUpdateSeatsCategory(seatIds, 'available')}
+              className={`flex items-center justify-between px-2 py-1.5 rounded-lg text-[11px] font-bold border transition-all cursor-pointer shadow-2xs ${
+                !isMultiple && singleSeat!.categoryId === 'available'
+                  ? 'ring-2 ring-slate-900 scale-[1.02] bg-slate-200 border-slate-400 text-slate-900'
+                  : 'bg-white hover:bg-slate-100 border-dashed border-slate-300 text-slate-700'
+              }`}
+              title="Remove color and set selected seats as Unassigned"
+            >
+              <span className="flex items-center gap-1 truncate">
+                <Eraser className="w-3 h-3 text-slate-500 shrink-0" />
+                <span className="truncate">No Color (Clear)</span>
+              </span>
+              {!isMultiple && singleSeat!.categoryId === 'available' && <Check className="w-3 h-3 shrink-0 text-slate-900" />}
+            </button>
           </div>
         </div>
 
@@ -713,28 +734,60 @@ const SeatInspectorComponent: React.FC<SeatInspectorProps> = ({
                 </button>
               );
             })}
+
+            {/* Eraser / Clear Seat Color swatch */}
+            <button
+              type="button"
+              onClick={() => onSetPaintCategory && onSetPaintCategory(paintCategory === 'available' ? null : 'available')}
+              className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-2xs ${
+                paintCategory === 'available'
+                  ? 'ring-2 ring-slate-900 scale-105 font-black shadow-md bg-slate-200 border-slate-400 text-slate-900'
+                  : 'bg-white hover:bg-slate-100 border-dashed border-slate-300 text-slate-700'
+              }`}
+              title="Click chairs to erase color and set as unassigned"
+            >
+              <span className="flex items-center gap-1 truncate">
+                <Eraser className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span className="truncate">Eraser (No Color)</span>
+              </span>
+              {paintCategory === 'available' && <Paintbrush className="w-3.5 h-3.5 shrink-0 text-slate-800" />}
+            </button>
           </div>
 
-          {onOpenSectionManager && (
-            <button
-              type="button"
-              onClick={onOpenSectionManager}
-              className="w-full py-1.5 rounded-xl border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Create New Custom Section</span>
-            </button>
-          )}
+          <div className="space-y-2 pt-1 border-t border-slate-200">
+            {onRemoveAllColors && (
+              <button
+                type="button"
+                onClick={onRemoveAllColors}
+                className="w-full py-2 px-3 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs active:scale-[0.99]"
+                title="Remove all colors of seats in the auditorium (resets to unassigned)"
+              >
+                <Eraser className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                <span>Remove All Colors of Seats</span>
+              </button>
+            )}
 
-          {paintCategory && (
-            <button
-              type="button"
-              onClick={() => onSetPaintCategory && onSetPaintCategory(null)}
-              className="w-full py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-300 transition cursor-pointer"
-            >
-              Turn Off Paintbrush (Normal Mode)
-            </button>
-          )}
+            {onOpenSectionManager && (
+              <button
+                type="button"
+                onClick={onOpenSectionManager}
+                className="w-full py-1.5 rounded-xl border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create New Custom Section</span>
+              </button>
+            )}
+
+            {paintCategory && (
+              <button
+                type="button"
+                onClick={() => onSetPaintCategory && onSetPaintCategory(null)}
+                className="w-full py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-300 transition cursor-pointer"
+              >
+                Turn Off Paintbrush (Normal Mode)
+              </button>
+            )}
+          </div>
         </div>
       )}
 

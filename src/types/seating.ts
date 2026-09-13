@@ -9,12 +9,11 @@ export type BuiltinCategoryId =
   | 'mbbs'
   | 'nursing'
   | 'pg'
-  | 'pdcc'
   | 'accompanying'
   | 'band_party'
-  | 'console'
   | 'admin_staff'
   | 'it_staff'
+  | 'guide'
   | 'available';
 
 export type CategoryId = string;
