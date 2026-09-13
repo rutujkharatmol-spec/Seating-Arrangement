@@ -166,11 +166,13 @@ export function App() {
   const tierCounts = useMemo(() => {
     let lower = 0;
     let upper = 0;
+    let examHall = 0;
     for (const s of seats) {
       if (s.tier === 'LOWER') lower++;
       else if (s.tier === 'UPPER') upper++;
+      else if (s.tier === 'EXAM_HALL') examHall++;
     }
-    return { lower, upper, total: seats.length };
+    return { lower, upper, examHall, total: seats.length };
   }, [seats]);
 
   const assignedCount = useMemo(
@@ -946,6 +948,7 @@ export function App() {
             highlightedCount={matchingSeatIds.length}
             lowerCount={tierCounts.lower}
             upperCount={tierCounts.upper}
+            examHallCount={tierCounts.examHall}
             totalCount={tierCounts.total}
           />
           <PlanHealthBar

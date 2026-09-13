@@ -19,7 +19,20 @@ const LOWER_ROWS = [
 // Front to back for the balcony (UB1 overlooks the stage).
 const UPPER_ROWS = ['UB1', 'UB2', 'UB3', 'UB4', 'UB5'];
 
+// Exam hall rows A through J
+const EXAM_ROWS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+const TIER_ORDER: Record<string, number> = {
+  LOWER: 0,
+  UPPER: 1,
+  EXAM_HALL: 2,
+};
+
 function rowRank(seat: Seat): number {
+  if (seat.tier === 'EXAM_HALL') {
+    const idx = EXAM_ROWS.indexOf(seat.row);
+    return idx === -1 ? 999 : idx;
+  }
   const list = seat.tier === 'UPPER' ? UPPER_ROWS : LOWER_ROWS;
   const idx = list.indexOf(seat.row);
   return idx === -1 ? 999 : idx;
@@ -31,6 +44,10 @@ function rowRank(seat: Seat): number {
  */
 function colRank(seat: Seat): number {
   switch (seat.block) {
+    case 'EXAM_HALL': {
+      // Centre aisle in exam hall is between col 5 and 6
+      return Math.abs(seat.col - 5.5);
+    }
     case 'LOWER_CENTER':
     case 'UPPER_CENTER': {
       const centre = seat.row === 'UB5' ? 12.5 : 14;
@@ -49,9 +66,11 @@ function colRank(seat: Seat): number {
   }
 }
 
-/** Ground floor before balcony, then front-to-back, then centre-outwards. */
+/** Ground floor before balcony before exam hall, then front-to-back, then centre-outwards. */
 export function compareSeatDesirability(a: Seat, b: Seat): number {
-  if (a.tier !== b.tier) return a.tier === 'LOWER' ? -1 : 1;
+  if (a.tier !== b.tier) {
+    return (TIER_ORDER[a.tier] ?? 99) - (TIER_ORDER[b.tier] ?? 99);
+  }
   const row = rowRank(a) - rowRank(b);
   if (row !== 0) return row;
   const col = colRank(a) - colRank(b);
@@ -61,13 +80,17 @@ export function compareSeatDesirability(a: Seat, b: Seat): number {
 
 /**
  * The order the pre-assigned roster has always been seated in: ground floor
- * before the balcony, front row to back row, and within a row the highest seat
- * number first.
+ * before the balcony before the exam hall, front row to back row.
  */
 export function compareSeatFillOrder(a: Seat, b: Seat): number {
-  if (a.tier !== b.tier) return a.tier === 'LOWER' ? -1 : 1;
+  if (a.tier !== b.tier) {
+    return (TIER_ORDER[a.tier] ?? 99) - (TIER_ORDER[b.tier] ?? 99);
+  }
   const row = rowRank(a) - rowRank(b);
   if (row !== 0) return row;
+  if (a.tier === 'EXAM_HALL') {
+    return a.col - b.col || a.id.localeCompare(b.id);
+  }
   return b.col - a.col || a.id.localeCompare(b.id);
 }
 

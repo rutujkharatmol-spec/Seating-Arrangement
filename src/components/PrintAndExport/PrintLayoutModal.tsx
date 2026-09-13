@@ -25,7 +25,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
   totalSeats,
   categories = CATEGORIES,
 }) => {
-  const [printMode, setPrintMode] = useState<'chart' | 'gate1' | 'gate2' | 'badges' | 'tickets'>('chart');
+  const [printMode, setPrintMode] = useState<'chart' | 'gate1' | 'gate2' | 'gateExam' | 'badges' | 'tickets'>('chart');
 
   const ticketableSeats = seats.filter((s) => !s.isBlocked);
 
@@ -35,7 +35,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
 
   const gate1Attendees = attendees.filter((a) => {
     const seat = seats.find((s) => s.id === a.seatId);
-    return seat?.gateRecommendation === 'Gate-1' || a.categoryId === 'awardees' || a.categoryId === 'accompanying';
+    return seat?.gateRecommendation === 'Gate-1' || a.categoryId === 'awardees' || a.categoryId === 'accompanying' && seat?.tier !== 'EXAM_HALL';
   });
 
   const gate2Attendees = attendees.filter((a) => {
@@ -43,12 +43,17 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
     return seat?.gateRecommendation === 'Gate-2' || a.categoryId === 'senior_faculty' || a.categoryId === 'reporters';
   });
 
+  const examGateAttendees = attendees.filter((a) => {
+    const seat = seats.find((s) => s.id === a.seatId);
+    return seat?.gateRecommendation === 'Exam Hall Gate' || seat?.tier === 'EXAM_HALL';
+  });
+
   const printOptions = [
     {
       id: 'chart' as const,
       icon: Map,
       title: '1. Full Seating Map',
-      description: 'Auditorium blueprint chart for notice boards & lobby entrance.',
+      description: 'Auditorium & Exam Hall blueprint chart for notice boards & lobby entrance.',
       badge: 'Master Chart',
     },
     {
@@ -66,17 +71,24 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
       badge: `${gate2Attendees.length} Guests`,
     },
     {
+      id: 'gateExam' as const,
+      icon: DoorOpen,
+      title: '4. Exam Hall Usher Sheet',
+      description: 'Print for volunteers & ushers managing Exam Section Hall entrance.',
+      badge: `${examGateAttendees.length} Guests`,
+    },
+    {
       id: 'badges' as const,
       icon: Ticket,
-      title: '4. Guest Entry Passes',
+      title: '5. Guest Entry Passes',
       description: 'Print admission badges & seat passes with QR code representation.',
       badge: `${attendees.length} Passes`,
     },
     {
       id: 'tickets' as const,
       icon: Scissors,
-      title: '5. Seat Tickets (cut & hand out)',
-      description: 'One ticket per seat, 10 per A4 page. Filter by section, area or empty seats.',
+      title: '6. Seat Tickets (cut & hand out)',
+      description: 'One ticket per seat, 8 per A4 page. Filter by section, area or empty seats.',
       badge: `${ticketableSeats.length} Seats`,
     },
   ];
@@ -263,7 +275,55 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
           </div>
         )}
 
-        {/* 4. SEAT PASS BADGES */}
+        {/* 4. EXAM HALL USHER LIST */}
+        {printMode === 'gateExam' && (
+          <div className="bg-white text-slate-900 p-8 max-w-4xl mx-auto rounded-3xl shadow-sm border border-slate-300 print:shadow-none print:border-0 print:p-0">
+            <div className="border-b-2 border-pink-700 pb-3 mb-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-black text-slate-900 uppercase">
+                  Exam Section Hall Entry Usher Sheet
+                </h2>
+                <span className="px-3 py-1 bg-pink-100 text-pink-900 font-bold rounded-xl text-xs font-mono border border-pink-200">
+                  EXAM SECTION ENTRANCE (Overflow Parents — 100 Seats)
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 mt-1">
+                {eventTitle} • {departmentName}
+              </p>
+            </div>
+
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-100 border-b border-slate-300 font-bold text-slate-700">
+                <tr>
+                  <th className="p-2.5">Seat</th>
+                  <th className="p-2.5">Guest Name</th>
+                  <th className="p-2.5">Category</th>
+                  <th className="p-2.5">Student / Relationship</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                {examGateAttendees.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="p-4 text-center text-slate-400 italic">
+                      No guests assigned to Exam Section Hall yet.
+                    </td>
+                  </tr>
+                ) : (
+                  examGateAttendees.map((att) => (
+                    <tr key={att.id}>
+                      <td className="p-2.5 font-mono font-bold text-pink-900">{att.seatId || '—'}</td>
+                      <td className="p-2.5 font-bold text-slate-900">{att.name}</td>
+                      <td className="p-2.5">{categories[att.categoryId]?.name || att.categoryId}</td>
+                      <td className="p-2.5 text-slate-600">{att.department || att.designation || '—'}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* 5. SEAT PASS BADGES */}
         {printMode === 'badges' && (
           <div className="flex flex-wrap gap-4 justify-center">
             {attendees.map((att) => {

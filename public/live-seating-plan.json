@@ -7,12 +7,12 @@
     "numFaculty": 175,
     "numAwardees": 0,
     "numReporters": 21,
-    "numAccompanying": 247,
+    "numAccompanying": 347,
     "numBandParty": 0,
     "numConsole": 0,
     "numBlocked": 0,
     "numAudience": 281,
-    "totalSeats": 750,
+    "totalSeats": 850,
     "notes": "AIIMS Kalyani Convocation layout (matching PDF): parents in balcony + right back, VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B."
   },
   "seats": [
@@ -10515,6 +10515,1406 @@
       "gateRecommendation": "Gate-2",
       "x": 85,
       "y": 300
+    },
+    {
+      "id": "EH-A1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 1,
+      "seatNumber": "EH-A1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 250
+    },
+    {
+      "id": "EH-A2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 2,
+      "seatNumber": "EH-A2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 250
+    },
+    {
+      "id": "EH-A3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 3,
+      "seatNumber": "EH-A3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 250
+    },
+    {
+      "id": "EH-A4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 4,
+      "seatNumber": "EH-A4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 250
+    },
+    {
+      "id": "EH-A5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 5,
+      "seatNumber": "EH-A5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 250
+    },
+    {
+      "id": "EH-A6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 6,
+      "seatNumber": "EH-A6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 250
+    },
+    {
+      "id": "EH-A7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 7,
+      "seatNumber": "EH-A7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 250
+    },
+    {
+      "id": "EH-A8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 8,
+      "seatNumber": "EH-A8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 250
+    },
+    {
+      "id": "EH-A9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 9,
+      "seatNumber": "EH-A9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 250
+    },
+    {
+      "id": "EH-A10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "A",
+      "col": 10,
+      "seatNumber": "EH-A10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 250
+    },
+    {
+      "id": "EH-B1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 1,
+      "seatNumber": "EH-B1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 312
+    },
+    {
+      "id": "EH-B2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 2,
+      "seatNumber": "EH-B2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 312
+    },
+    {
+      "id": "EH-B3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 3,
+      "seatNumber": "EH-B3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 312
+    },
+    {
+      "id": "EH-B4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 4,
+      "seatNumber": "EH-B4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 312
+    },
+    {
+      "id": "EH-B5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 5,
+      "seatNumber": "EH-B5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 312
+    },
+    {
+      "id": "EH-B6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 6,
+      "seatNumber": "EH-B6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 312
+    },
+    {
+      "id": "EH-B7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 7,
+      "seatNumber": "EH-B7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 312
+    },
+    {
+      "id": "EH-B8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 8,
+      "seatNumber": "EH-B8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 312
+    },
+    {
+      "id": "EH-B9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 9,
+      "seatNumber": "EH-B9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 312
+    },
+    {
+      "id": "EH-B10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "B",
+      "col": 10,
+      "seatNumber": "EH-B10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 312
+    },
+    {
+      "id": "EH-C1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 1,
+      "seatNumber": "EH-C1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 374
+    },
+    {
+      "id": "EH-C2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 2,
+      "seatNumber": "EH-C2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 374
+    },
+    {
+      "id": "EH-C3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 3,
+      "seatNumber": "EH-C3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 374
+    },
+    {
+      "id": "EH-C4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 4,
+      "seatNumber": "EH-C4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 374
+    },
+    {
+      "id": "EH-C5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 5,
+      "seatNumber": "EH-C5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 374
+    },
+    {
+      "id": "EH-C6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 6,
+      "seatNumber": "EH-C6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 374
+    },
+    {
+      "id": "EH-C7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 7,
+      "seatNumber": "EH-C7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 374
+    },
+    {
+      "id": "EH-C8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 8,
+      "seatNumber": "EH-C8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 374
+    },
+    {
+      "id": "EH-C9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 9,
+      "seatNumber": "EH-C9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 374
+    },
+    {
+      "id": "EH-C10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "C",
+      "col": 10,
+      "seatNumber": "EH-C10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 374
+    },
+    {
+      "id": "EH-D1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 1,
+      "seatNumber": "EH-D1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 436
+    },
+    {
+      "id": "EH-D2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 2,
+      "seatNumber": "EH-D2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 436
+    },
+    {
+      "id": "EH-D3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 3,
+      "seatNumber": "EH-D3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 436
+    },
+    {
+      "id": "EH-D4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 4,
+      "seatNumber": "EH-D4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 436
+    },
+    {
+      "id": "EH-D5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 5,
+      "seatNumber": "EH-D5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 436
+    },
+    {
+      "id": "EH-D6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 6,
+      "seatNumber": "EH-D6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 436
+    },
+    {
+      "id": "EH-D7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 7,
+      "seatNumber": "EH-D7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 436
+    },
+    {
+      "id": "EH-D8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 8,
+      "seatNumber": "EH-D8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 436
+    },
+    {
+      "id": "EH-D9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 9,
+      "seatNumber": "EH-D9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 436
+    },
+    {
+      "id": "EH-D10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "D",
+      "col": 10,
+      "seatNumber": "EH-D10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 436
+    },
+    {
+      "id": "EH-E1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 1,
+      "seatNumber": "EH-E1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 498
+    },
+    {
+      "id": "EH-E2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 2,
+      "seatNumber": "EH-E2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 498
+    },
+    {
+      "id": "EH-E3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 3,
+      "seatNumber": "EH-E3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 498
+    },
+    {
+      "id": "EH-E4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 4,
+      "seatNumber": "EH-E4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 498
+    },
+    {
+      "id": "EH-E5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 5,
+      "seatNumber": "EH-E5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 498
+    },
+    {
+      "id": "EH-E6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 6,
+      "seatNumber": "EH-E6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 498
+    },
+    {
+      "id": "EH-E7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 7,
+      "seatNumber": "EH-E7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 498
+    },
+    {
+      "id": "EH-E8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 8,
+      "seatNumber": "EH-E8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 498
+    },
+    {
+      "id": "EH-E9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 9,
+      "seatNumber": "EH-E9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 498
+    },
+    {
+      "id": "EH-E10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "E",
+      "col": 10,
+      "seatNumber": "EH-E10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 498
+    },
+    {
+      "id": "EH-F1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 1,
+      "seatNumber": "EH-F1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 560
+    },
+    {
+      "id": "EH-F2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 2,
+      "seatNumber": "EH-F2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 560
+    },
+    {
+      "id": "EH-F3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 3,
+      "seatNumber": "EH-F3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 560
+    },
+    {
+      "id": "EH-F4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 4,
+      "seatNumber": "EH-F4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 560
+    },
+    {
+      "id": "EH-F5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 5,
+      "seatNumber": "EH-F5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 560
+    },
+    {
+      "id": "EH-F6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 6,
+      "seatNumber": "EH-F6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 560
+    },
+    {
+      "id": "EH-F7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 7,
+      "seatNumber": "EH-F7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 560
+    },
+    {
+      "id": "EH-F8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 8,
+      "seatNumber": "EH-F8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 560
+    },
+    {
+      "id": "EH-F9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 9,
+      "seatNumber": "EH-F9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 560
+    },
+    {
+      "id": "EH-F10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "F",
+      "col": 10,
+      "seatNumber": "EH-F10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 560
+    },
+    {
+      "id": "EH-G1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 1,
+      "seatNumber": "EH-G1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 622
+    },
+    {
+      "id": "EH-G2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 2,
+      "seatNumber": "EH-G2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 622
+    },
+    {
+      "id": "EH-G3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 3,
+      "seatNumber": "EH-G3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 622
+    },
+    {
+      "id": "EH-G4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 4,
+      "seatNumber": "EH-G4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 622
+    },
+    {
+      "id": "EH-G5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 5,
+      "seatNumber": "EH-G5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 622
+    },
+    {
+      "id": "EH-G6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 6,
+      "seatNumber": "EH-G6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 622
+    },
+    {
+      "id": "EH-G7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 7,
+      "seatNumber": "EH-G7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 622
+    },
+    {
+      "id": "EH-G8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 8,
+      "seatNumber": "EH-G8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 622
+    },
+    {
+      "id": "EH-G9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 9,
+      "seatNumber": "EH-G9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 622
+    },
+    {
+      "id": "EH-G10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "G",
+      "col": 10,
+      "seatNumber": "EH-G10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 622
+    },
+    {
+      "id": "EH-H1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 1,
+      "seatNumber": "EH-H1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 684
+    },
+    {
+      "id": "EH-H2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 2,
+      "seatNumber": "EH-H2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 684
+    },
+    {
+      "id": "EH-H3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 3,
+      "seatNumber": "EH-H3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 684
+    },
+    {
+      "id": "EH-H4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 4,
+      "seatNumber": "EH-H4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 684
+    },
+    {
+      "id": "EH-H5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 5,
+      "seatNumber": "EH-H5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 684
+    },
+    {
+      "id": "EH-H6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 6,
+      "seatNumber": "EH-H6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 684
+    },
+    {
+      "id": "EH-H7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 7,
+      "seatNumber": "EH-H7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 684
+    },
+    {
+      "id": "EH-H8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 8,
+      "seatNumber": "EH-H8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 684
+    },
+    {
+      "id": "EH-H9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 9,
+      "seatNumber": "EH-H9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 684
+    },
+    {
+      "id": "EH-H10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "H",
+      "col": 10,
+      "seatNumber": "EH-H10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 684
+    },
+    {
+      "id": "EH-I1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 1,
+      "seatNumber": "EH-I1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 746
+    },
+    {
+      "id": "EH-I2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 2,
+      "seatNumber": "EH-I2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 746
+    },
+    {
+      "id": "EH-I3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 3,
+      "seatNumber": "EH-I3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 746
+    },
+    {
+      "id": "EH-I4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 4,
+      "seatNumber": "EH-I4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 746
+    },
+    {
+      "id": "EH-I5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 5,
+      "seatNumber": "EH-I5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 746
+    },
+    {
+      "id": "EH-I6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 6,
+      "seatNumber": "EH-I6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 746
+    },
+    {
+      "id": "EH-I7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 7,
+      "seatNumber": "EH-I7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 746
+    },
+    {
+      "id": "EH-I8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 8,
+      "seatNumber": "EH-I8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 746
+    },
+    {
+      "id": "EH-I9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 9,
+      "seatNumber": "EH-I9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 746
+    },
+    {
+      "id": "EH-I10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "I",
+      "col": 10,
+      "seatNumber": "EH-I10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 746
+    },
+    {
+      "id": "EH-J1",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 1,
+      "seatNumber": "EH-J1",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 210,
+      "y": 808
+    },
+    {
+      "id": "EH-J2",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 2,
+      "seatNumber": "EH-J2",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 266,
+      "y": 808
+    },
+    {
+      "id": "EH-J3",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 3,
+      "seatNumber": "EH-J3",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 322,
+      "y": 808
+    },
+    {
+      "id": "EH-J4",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 4,
+      "seatNumber": "EH-J4",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 378,
+      "y": 808
+    },
+    {
+      "id": "EH-J5",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 5,
+      "seatNumber": "EH-J5",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 434,
+      "y": 808
+    },
+    {
+      "id": "EH-J6",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 6,
+      "seatNumber": "EH-J6",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 550,
+      "y": 808
+    },
+    {
+      "id": "EH-J7",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 7,
+      "seatNumber": "EH-J7",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 606,
+      "y": 808
+    },
+    {
+      "id": "EH-J8",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 8,
+      "seatNumber": "EH-J8",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 662,
+      "y": 808
+    },
+    {
+      "id": "EH-J9",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 9,
+      "seatNumber": "EH-J9",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 718,
+      "y": 808
+    },
+    {
+      "id": "EH-J10",
+      "tier": "EXAM_HALL",
+      "block": "EXAM_HALL",
+      "blockName": "Exam Section Hall",
+      "row": "J",
+      "col": 10,
+      "seatNumber": "EH-J10",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Exam Hall Gate",
+      "x": 774,
+      "y": 808
     }
   ],
   "attendees": [
@@ -17247,7 +18647,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of MOHUA KHATUN | Assigned Seat: none (section full)"
+      "notes": "Mother of MOHUA KHATUN | Assigned Seat: none (section full)",
+      "seatId": "EH-A1"
     },
     {
       "id": "att-guest-mabuda-begam-248",
@@ -17258,7 +18659,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Aunty of MOHUA KHATUN | Assigned Seat: none (section full)"
+      "notes": "Aunty of MOHUA KHATUN | Assigned Seat: none (section full)",
+      "seatId": "EH-A2"
     },
     {
       "id": "att-guest-nasim-akhter-249",
@@ -17269,7 +18671,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of NARGIS BANU | Assigned Seat: none (section full)"
+      "notes": "Father of NARGIS BANU | Assigned Seat: none (section full)",
+      "seatId": "EH-A3"
     },
     {
       "id": "att-guest-nasima-khatun-250",
@@ -17280,7 +18683,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Sister of NARGIS BANU | Assigned Seat: none (section full)"
+      "notes": "Sister of NARGIS BANU | Assigned Seat: none (section full)",
+      "seatId": "EH-A4"
     },
     {
       "id": "att-guest-prabir-kumar-ghoshal-251",
@@ -17291,7 +18695,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of PAROMITA GHOSHAL | Assigned Seat: none (section full)"
+      "notes": "Father of PAROMITA GHOSHAL | Assigned Seat: none (section full)",
+      "seatId": "EH-A5"
     },
     {
       "id": "att-guest-purnima-ghoshal-252",
@@ -17302,7 +18707,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of PAROMITA GHOSHAL | Assigned Seat: none (section full)"
+      "notes": "Mother of PAROMITA GHOSHAL | Assigned Seat: none (section full)",
+      "seatId": "EH-A6"
     },
     {
       "id": "att-guest-ms-babita-253",
@@ -17313,7 +18719,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Sister of Pinki Sharma | Assigned Seat: none (section full)"
+      "notes": "Sister of Pinki Sharma | Assigned Seat: none (section full)",
+      "seatId": "EH-A7"
     },
     {
       "id": "att-guest-mr-birendra-sharma-254",
@@ -17324,7 +18731,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Uncle of Pinki Sharma | Assigned Seat: none (section full)"
+      "notes": "Uncle of Pinki Sharma | Assigned Seat: none (section full)",
+      "seatId": "EH-A8"
     },
     {
       "id": "att-guest-satya-charan-dutta-255",
@@ -17335,7 +18743,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of PREETI DUTTA | Assigned Seat: none (section full)"
+      "notes": "Father of PREETI DUTTA | Assigned Seat: none (section full)",
+      "seatId": "EH-A9"
     },
     {
       "id": "att-guest-archana-dutta-256",
@@ -17346,7 +18755,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of PREETI DUTTA | Assigned Seat: none (section full)"
+      "notes": "Mother of PREETI DUTTA | Assigned Seat: none (section full)",
+      "seatId": "EH-A10"
     },
     {
       "id": "att-guest-mr-dipak-kumar-roy-257",
@@ -17357,7 +18767,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of PRITHA ROY | Assigned Seat: none (section full)"
+      "notes": "Father of PRITHA ROY | Assigned Seat: none (section full)",
+      "seatId": "EH-B1"
     },
     {
       "id": "att-guest-mrs-soma-roy-258",
@@ -17368,7 +18779,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of PRITHA ROY | Assigned Seat: none (section full)"
+      "notes": "Mother of PRITHA ROY | Assigned Seat: none (section full)",
+      "seatId": "EH-B2"
     },
     {
       "id": "att-guest-kakali-biswas-259",
@@ -17379,7 +18791,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of PUSPITA BISWAS | Assigned Seat: none (section full)"
+      "notes": "Mother of PUSPITA BISWAS | Assigned Seat: none (section full)",
+      "seatId": "EH-B3"
     },
     {
       "id": "att-guest-pinaki-biswas-260",
@@ -17390,7 +18803,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of PUSPITA BISWAS | Assigned Seat: none (section full)"
+      "notes": "Father of PUSPITA BISWAS | Assigned Seat: none (section full)",
+      "seatId": "EH-B4"
     },
     {
       "id": "att-guest-md-islamuddin-261",
@@ -17401,7 +18815,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SAMINA YASMIN | Assigned Seat: none (section full)"
+      "notes": "Father of SAMINA YASMIN | Assigned Seat: none (section full)",
+      "seatId": "EH-B5"
     },
     {
       "id": "att-guest-sushanta-das-262",
@@ -17412,7 +18827,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SANANDA DAS | Assigned Seat: none (section full)"
+      "notes": "Father of SANANDA DAS | Assigned Seat: none (section full)",
+      "seatId": "EH-B6"
     },
     {
       "id": "att-guest-piyali-das-263",
@@ -17423,7 +18839,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SANANDA DAS | Assigned Seat: none (section full)"
+      "notes": "Mother of SANANDA DAS | Assigned Seat: none (section full)",
+      "seatId": "EH-B7"
     },
     {
       "id": "att-guest-bablu-mondal-264",
@@ -17434,7 +18851,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SARMIN SULTANA | Assigned Seat: none (section full)"
+      "notes": "Father of SARMIN SULTANA | Assigned Seat: none (section full)",
+      "seatId": "EH-B8"
     },
     {
       "id": "att-guest-sayra-khatun-265",
@@ -17445,7 +18863,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SARMIN SULTANA | Assigned Seat: none (section full)"
+      "notes": "Mother of SARMIN SULTANA | Assigned Seat: none (section full)",
+      "seatId": "EH-B9"
     },
     {
       "id": "att-guest-idrish-ali-266",
@@ -17456,7 +18875,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SHABNAM PARVIN | Assigned Seat: none (section full)"
+      "notes": "Father of SHABNAM PARVIN | Assigned Seat: none (section full)",
+      "seatId": "EH-B10"
     },
     {
       "id": "att-guest-jesminnhar-begum-267",
@@ -17467,7 +18887,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SHABNAM PARVIN | Assigned Seat: none (section full)"
+      "notes": "Mother of SHABNAM PARVIN | Assigned Seat: none (section full)",
+      "seatId": "EH-C1"
     },
     {
       "id": "att-guest-ranjan-kumar-268",
@@ -17478,7 +18899,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SONAM KUMARI | Assigned Seat: none (section full)"
+      "notes": "Father of SONAM KUMARI | Assigned Seat: none (section full)",
+      "seatId": "EH-C2"
     },
     {
       "id": "att-guest-rani-devi-269",
@@ -17489,7 +18911,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SONAM KUMARI | Assigned Seat: none (section full)"
+      "notes": "Mother of SONAM KUMARI | Assigned Seat: none (section full)",
+      "seatId": "EH-C3"
     },
     {
       "id": "att-guest-ramesh-chandra-tikadar-270",
@@ -17500,7 +18923,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SUCHISMITA TIKADAR | Assigned Seat: none (section full)"
+      "notes": "Father of SUCHISMITA TIKADAR | Assigned Seat: none (section full)",
+      "seatId": "EH-C4"
     },
     {
       "id": "att-guest-sima-tikadar-271",
@@ -17511,7 +18935,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SUCHISMITA TIKADAR | Assigned Seat: none (section full)"
+      "notes": "Mother of SUCHISMITA TIKADAR | Assigned Seat: none (section full)",
+      "seatId": "EH-C5"
     },
     {
       "id": "att-guest-tapas-banerjee-272",
@@ -17522,7 +18947,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SUKANYA BANERJEE | Assigned Seat: none (section full)"
+      "notes": "Father of SUKANYA BANERJEE | Assigned Seat: none (section full)",
+      "seatId": "EH-C6"
     },
     {
       "id": "att-guest-sreerup-banerjee-273",
@@ -17533,7 +18959,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Brother of SUKANYA BANERJEE | Assigned Seat: none (section full)"
+      "notes": "Brother of SUKANYA BANERJEE | Assigned Seat: none (section full)",
+      "seatId": "EH-C7"
     },
     {
       "id": "att-guest-tapas-mondal-274",
@@ -17544,7 +18971,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SUSHMITA MONDAL | Assigned Seat: none (section full)"
+      "notes": "Father of SUSHMITA MONDAL | Assigned Seat: none (section full)",
+      "seatId": "EH-C8"
     },
     {
       "id": "att-guest-namita-mondal-275",
@@ -17555,7 +18983,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SUSHMITA MONDAL | Assigned Seat: none (section full)"
+      "notes": "Mother of SUSHMITA MONDAL | Assigned Seat: none (section full)",
+      "seatId": "EH-C9"
     },
     {
       "id": "att-guest-supriya-biswas-276",
@@ -17566,7 +18995,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of TANISHA BISWAS | Assigned Seat: none (section full)"
+      "notes": "Mother of TANISHA BISWAS | Assigned Seat: none (section full)",
+      "seatId": "EH-C10"
     },
     {
       "id": "att-guest-tapan-kumar-biswas-277",
@@ -17577,7 +19007,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of TANISHA BISWAS | Assigned Seat: none (section full)"
+      "notes": "Father of TANISHA BISWAS | Assigned Seat: none (section full)",
+      "seatId": "EH-D1"
     },
     {
       "id": "att-guest-nirapada-de-278",
@@ -17588,7 +19019,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of NABANITA DE | Assigned Seat: none (section full)"
+      "notes": "Father of NABANITA DE | Assigned Seat: none (section full)",
+      "seatId": "EH-D2"
     },
     {
       "id": "att-guest-sulekha-de-279",
@@ -17599,7 +19031,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of NABANITA DE | Assigned Seat: none (section full)"
+      "notes": "Mother of NABANITA DE | Assigned Seat: none (section full)",
+      "seatId": "EH-D3"
     },
     {
       "id": "att-guest-subrata-hati-280",
@@ -17610,7 +19043,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of Shreyasi Hati | Assigned Seat: none (section full)"
+      "notes": "Father of Shreyasi Hati | Assigned Seat: none (section full)",
+      "seatId": "EH-D4"
     },
     {
       "id": "att-guest-ivi-hati-281",
@@ -17621,7 +19055,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of Shreyasi Hati | Assigned Seat: none (section full)"
+      "notes": "Mother of Shreyasi Hati | Assigned Seat: none (section full)",
+      "seatId": "EH-D5"
     },
     {
       "id": "att-guest-subodh-kumar-pal-282",
@@ -17632,7 +19067,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of Aprajita Pal | Assigned Seat: none (section full)"
+      "notes": "Father of Aprajita Pal | Assigned Seat: none (section full)",
+      "seatId": "EH-D6"
     },
     {
       "id": "att-guest-pushpa-rajpali-283",
@@ -17643,7 +19079,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of Aprajita Pal | Assigned Seat: none (section full)"
+      "notes": "Mother of Aprajita Pal | Assigned Seat: none (section full)",
+      "seatId": "EH-D7"
     },
     {
       "id": "att-guest-narsing-bag-284",
@@ -17654,7 +19091,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of SASHI BAG | Assigned Seat: none (section full)"
+      "notes": "Father of SASHI BAG | Assigned Seat: none (section full)",
+      "seatId": "EH-D8"
     },
     {
       "id": "att-guest-shakuntala-bag-285",
@@ -17665,7 +19103,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of SASHI BAG | Assigned Seat: none (section full)"
+      "notes": "Mother of SASHI BAG | Assigned Seat: none (section full)",
+      "seatId": "EH-D9"
     },
     {
       "id": "att-guest-milan-maji-286",
@@ -17676,7 +19115,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of MOUMITA MAJI | Assigned Seat: none (section full)"
+      "notes": "Father of MOUMITA MAJI | Assigned Seat: none (section full)",
+      "seatId": "EH-D10"
     },
     {
       "id": "att-guest-dipali-maji-287",
@@ -17687,7 +19127,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of MOUMITA MAJI | Assigned Seat: none (section full)"
+      "notes": "Mother of MOUMITA MAJI | Assigned Seat: none (section full)",
+      "seatId": "EH-E1"
     },
     {
       "id": "att-guest-tarun-kumar-chatterjee-288",
@@ -17698,7 +19139,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "FATHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)"
+      "notes": "FATHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)",
+      "seatId": "EH-E2"
     },
     {
       "id": "att-guest-sampa-chatterjee-289",
@@ -17709,7 +19151,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "MOTHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)"
+      "notes": "MOTHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)",
+      "seatId": "EH-E3"
     },
     {
       "id": "att-guest-ranjit-kumar-mandal-290",
@@ -17720,7 +19163,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of Roji Mandal | Assigned Seat: none (section full)"
+      "notes": "Father of Roji Mandal | Assigned Seat: none (section full)",
+      "seatId": "EH-E4"
     },
     {
       "id": "att-guest-sheli-mandal-291",
@@ -17731,7 +19175,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of Roji Mandal | Assigned Seat: none (section full)"
+      "notes": "Mother of Roji Mandal | Assigned Seat: none (section full)",
+      "seatId": "EH-E5"
     },
     {
       "id": "att-guest-pramod-kumar-292",
@@ -17742,7 +19187,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Father of Swati Sonam | Assigned Seat: none (section full)"
+      "notes": "Father of Swati Sonam | Assigned Seat: none (section full)",
+      "seatId": "EH-E6"
     },
     {
       "id": "att-guest-kumari-raushan-293",
@@ -17753,7 +19199,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Mother of Swati Sonam | Assigned Seat: none (section full)"
+      "notes": "Mother of Swati Sonam | Assigned Seat: none (section full)",
+      "seatId": "EH-E7"
     },
     {
       "id": "att-guest-barkha-294",
@@ -17764,7 +19211,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Sister of Nidhi | Assigned Seat: none (section full)"
+      "notes": "Sister of Nidhi | Assigned Seat: none (section full)",
+      "seatId": "EH-E8"
     },
     {
       "id": "att-guest-sneha-295",
@@ -17775,7 +19223,8 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "notes": "Sister of Nidhi | Assigned Seat: none (section full)"
+      "notes": "Sister of Nidhi | Assigned Seat: none (section full)",
+      "seatId": "EH-E9"
     }
   ],
   "volunteers": [
@@ -18065,6 +19514,6 @@
       "isCustom": false
     }
   },
-  "layoutVersion": "convocation-2026-09-13-no-console",
-  "_publishedAt": "2026-09-13T05:34:07.424Z"
+  "layoutVersion": "convocation-2026-09-13-exam-hall-100",
+  "_publishedAt": "2026-09-13T06:32:07.889Z"
 }

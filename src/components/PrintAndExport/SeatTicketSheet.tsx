@@ -49,10 +49,11 @@ const AREA_LABEL: Record<BlockType, string> = {
   LOWER_LEFT: 'Left Wing',
   LOWER_CENTER: 'Middle Block',
   LOWER_RIGHT: 'Right Wing',
+  EXAM_HALL: 'Exam Section Hall',
 };
 
 /** Order the printed pile follows: front rows first, area by area. */
-const AREA_ORDER = ['Middle Block', 'Left Wing', 'Right Wing', 'Balcony'];
+const AREA_ORDER = ['Middle Block', 'Left Wing', 'Right Wing', 'Balcony', 'Exam Section Hall'];
 const ROW_ORDER = [
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -520,7 +521,7 @@ const SeatTicket: React.FC<{
         <div className="absolute inset-[1mm] border border-white/25 rounded-md pointer-events-none" />
 
         {/* Top: Category Icon Emblem & Brand */}
-        <div className="relative z-1 flex flex-col items-center w-full">
+        <div className="relative z-1 flex flex-col items-center w-full pt-[3mm]">
           <div className="w-[5.8mm] h-[5.8mm] rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/35 shadow-2xs">
             <Icon className="w-[3.2mm] h-[3.2mm] opacity-95" />
           </div>
@@ -546,7 +547,7 @@ const SeatTicket: React.FC<{
         </div>
 
         {/* Bottom: Enter Via Gate Card */}
-        <div className="relative z-1 flex flex-col items-center w-full">
+        <div className="relative z-1 flex flex-col items-center w-full mb-[3mm]">
           <div className="w-full bg-white/95 text-slate-900 rounded py-[0.8mm] px-[1mm] shadow-2xs border border-black/10">
             <div className="text-[3.8pt] font-black uppercase tracking-widest text-slate-500 leading-none">
               GATE
@@ -561,25 +562,22 @@ const SeatTicket: React.FC<{
         </div>
       </div>
 
-      {/* -------------------- Perforation Divider -------------------- */}
-      <div className="absolute left-[24mm] top-0 h-full border-l border-dashed border-slate-300 pointer-events-none z-10" />
-
       {/* -------------------- Main Ticket Body -------------------- */}
       <div className="flex-1 min-w-0 flex flex-col relative bg-white">
         {/* Top Luxury Banner Ribbon */}
-        <div className="h-[6mm] shrink-0 bg-gradient-to-r from-slate-950 via-blue-950 to-indigo-950 border-b-2 border-amber-400/80 px-[2.8mm] flex items-center justify-between text-white shadow-2xs">
+        <div className="h-[6.2mm] shrink-0 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 border-b border-blue-400/30 px-[2.8mm] flex items-center justify-between text-white shadow-2xs">
           <div className="flex items-center gap-[1.2mm] leading-none">
-            <span className="text-[6pt] font-black tracking-[0.16em] text-white uppercase whitespace-nowrap">
+            <span className="text-[6.2pt] font-black tracking-[0.16em] text-white uppercase whitespace-nowrap drop-shadow-xs">
               AIIMS KALYANI
             </span>
-            <span className="text-amber-400/80 font-bold text-[5pt]">·</span>
-            <span className="text-[5pt] font-extrabold tracking-wider text-amber-300 uppercase whitespace-nowrap">
+            <span className="text-sky-400 font-bold text-[5.5pt]">·</span>
+            <span className="text-[5.2pt] font-extrabold tracking-wider text-sky-200 uppercase whitespace-nowrap">
               CONVOCATION 2026
             </span>
           </div>
 
           <div className="flex items-center">
-            <span className="text-[4.8pt] font-mono font-bold text-amber-300 bg-amber-400/20 border border-amber-400/40 uppercase tracking-wide px-[2mm] py-[0.5mm] rounded whitespace-nowrap">
+            <span className="text-[4.8pt] font-mono font-black text-sky-100 bg-white/15 border border-white/25 uppercase tracking-wide px-[2.2mm] py-[0.5mm] rounded-md shadow-2xs whitespace-nowrap">
               PASS #{seat.id}
             </span>
           </div>
@@ -623,8 +621,10 @@ const SeatTicket: React.FC<{
                       )}
                     </div>
                     {(guest.designation || guest.department) && (
-                      <div className="text-[5.8pt] font-semibold text-slate-600 truncate leading-tight mt-[0.5mm]">
-                        {[guest.designation, guest.department].filter(Boolean).join(' · ')}
+                      <div className="text-[5.5pt] font-semibold text-slate-600 leading-tight mt-[0.5mm] break-words line-clamp-2">
+                        {seat.categoryId === 'accompanying' && guest.department
+                          ? guest.department
+                          : [guest.designation, guest.department].filter(Boolean).join(' · ')}
                       </div>
                     )}
                   </>
@@ -655,7 +655,7 @@ const SeatTicket: React.FC<{
               {/* Area location with MapPin */}
               <div className="inline-flex items-center gap-[0.8mm] text-[6pt] font-extrabold text-slate-800 bg-slate-100 border border-slate-200 px-[2mm] py-[0.6mm] rounded-md shadow-2xs shrink-0">
                 <MapPin className="w-[2.4mm] h-[2.4mm] text-rose-600 shrink-0" />
-                <span>{AREA_LABEL[seat.block]} · Row {seat.row}</span>
+                <span>{seat.block === 'EXAM_HALL' ? 'Exam Section Hall' : `${AREA_LABEL[seat.block]} · Row ${seat.row}`}</span>
               </div>
             </div>
           </div>

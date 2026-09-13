@@ -17,7 +17,7 @@ import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
  * Bump whenever the zone rules change. Any saved plan (cloud, snapshot or
  * browser cache) carrying an older version is moved onto the new layout once.
  */
-export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-no-console';
+export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-exam-hall-100';
 
 const LOWER_ROW_LIST = [
   'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
@@ -40,6 +40,7 @@ const BLOCK_NAMES: Record<BlockType, string> = {
   LOWER_RIGHT: 'Right Wing (Ground Floor)',
   LOWER_CENTER: 'Center Block (Ground Floor)',
   LOWER_LEFT: 'Left Wing (Ground Floor)',
+  EXAM_HALL: 'Exam Section Hall',
 };
 
 function makeSeat(
@@ -222,29 +223,72 @@ export function assignConvocationZones(seats: Seat[], _counts: ZoneCounts = DEFA
 
   return seats.map((s) => ({
     ...s,
-    categoryId: s.tier === 'UPPER' ? 'accompanying' : zoneBySeat.get(s.id) ?? 'available',
+    categoryId:
+      s.tier === 'EXAM_HALL'
+        ? 'accompanying'
+        : s.tier === 'UPPER'
+        ? 'accompanying'
+        : zoneBySeat.get(s.id) ?? 'available',
     isBlocked: false,
   }));
 }
 
+/**
+ * 10 by 10 seats Exam Section Hall — 100 seats (Rows A–J, Cols 1–10).
+ * Dedicated overflow hall specifically designated for parents and accompanying guests.
+ */
+export const EXAM_HALL_ROWS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+export function buildExamHallSeatGeometry(): Seat[] {
+  const seats: Seat[] = [];
+
+  EXAM_HALL_ROWS.forEach((row, rIdx) => {
+    // Rows start at y=250 and step by 62px downwards
+    const y = 250 + rIdx * 62;
+    for (let col = 1; col <= 10; col++) {
+      // 5 seats on left (x: 210..434), 100px wide center aisle, 5 seats on right (x: 550..774)
+      const x = col <= 5 ? 210 + (col - 1) * 56 : 550 + (col - 6) * 56;
+      const id = `EH-${row}${col}`;
+      seats.push({
+        id,
+        tier: 'EXAM_HALL',
+        block: 'EXAM_HALL',
+        blockName: 'Exam Section Hall',
+        row,
+        col,
+        seatNumber: id,
+        categoryId: 'accompanying',
+        isBlocked: false,
+        gateRecommendation: 'Exam Hall Gate',
+        x,
+        y,
+      });
+    }
+  });
+
+  return seats;
+}
+
 export function generateDefaultSeats(): Seat[] {
-  return assignConvocationZones(buildSeatGeometry());
+  const auditoriumSeats = assignConvocationZones(buildSeatGeometry());
+  const examHallSeats = buildExamHallSeatGeometry();
+  return [...auditoriumSeats, ...examHallSeats];
 }
 
 export const INITIAL_QUESTIONNAIRE_ANSWERS = {
-  eventTitle: 'Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)',
+  eventTitle: 'Convocation Seating Arrangement (Auditorium & Exam Hall, AIIMS Kalyani)',
   departmentName: 'Convocation Organizing Committee',
   numVip: 26,             // Center rows C–D
   numSeniorFaculty: 0,
   numFaculty: 175,        // Center rows E–Q
   numAwardees: 0,
   numReporters: 21,       // Right rows B–D
-  numAccompanying: 247,   // Balcony (132) + Right rows J–X (105) + Right A (5) + misc
+  numAccompanying: 347,   // Balcony (132) + Right rows J–X (115) + Exam Section Hall (100)
   numBandParty: 0,
   numConsole: 0,
   numBlocked: 0,
   numAudience: 281,       // Everyone else: admin(30), IT staff(21), MBBS(108), nursing(45), PG(15), guide(5), blank(57)
-  totalSeats: 750,
-  notes: 'AIIMS Kalyani Convocation layout (matching PDF): parents in balcony + right back, VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B.',
+  totalSeats: 850,
+  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (750 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B.',
 };
 

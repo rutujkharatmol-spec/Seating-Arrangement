@@ -16,6 +16,7 @@ export interface SearchFilterBarProps {
   highlightedCount: number;
   lowerCount?: number;
   upperCount?: number;
+  examHallCount?: number;
   totalCount?: number;
 }
 
@@ -33,7 +34,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   highlightedCount,
   lowerCount = 618,
   upperCount = 132,
-  totalCount = 750,
+  examHallCount = 100,
+  totalCount = 850,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && onJumpToFirstMatch && highlightedCount > 0) {
@@ -105,7 +107,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              All Floors ({totalCount})
+              All Venues ({totalCount})
             </button>
             <button
               onClick={() => setSelectedTier('LOWER')}
@@ -126,6 +128,16 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               }`}
             >
               Balcony ({upperCount})
+            </button>
+            <button
+              onClick={() => setSelectedTier('EXAM_HALL')}
+              className={`px-3 py-1 rounded-lg font-bold transition cursor-pointer ${
+                selectedTier === 'EXAM_HALL'
+                  ? 'bg-white text-pink-700 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Exam Section Hall ({examHallCount})
             </button>
           </div>
 

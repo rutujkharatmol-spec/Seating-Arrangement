@@ -7,7 +7,7 @@ import { GatesAndExitsLayer } from './GatesAndExitsLayer';
 import { MapControls } from './MapControls';
 import { Legend } from './Legend';
 import { SeatInspector } from '../Editor/SeatInspector';
-import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Settings, ArrowLeftRight } from 'lucide-react';
+import { MapPin, User, Shield, MousePointerSquareDashed, X, Paintbrush, Edit3, Settings, ArrowLeftRight, Building2, Armchair } from 'lucide-react';
 
 export interface AuditoriumMapProps {
   seats: Seat[];
@@ -77,6 +77,13 @@ const SEAT_SIZE = 20;
 export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
   if (seat.x !== undefined && seat.y !== undefined) {
     return { x: seat.x, y: seat.y };
+  }
+
+  if (seat.tier === 'EXAM_HALL') {
+    const rIdx = seat.row.charCodeAt(0) - 65;
+    const y = 250 + (rIdx >= 0 && rIdx < 10 ? rIdx : 0) * 62;
+    const x = seat.col <= 5 ? 210 + (seat.col - 1) * 56 : 550 + (seat.col - 6) * 56;
+    return { x, y };
   }
 
   if (seat.tier === 'UPPER') {
@@ -184,6 +191,16 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     volunteer?: Volunteer;
   }>({ visible: false, x: 0, y: 0, type: 'seat' });
 
+  const [activeVenue, setActiveVenue] = useState<'AUDITORIUM' | 'EXAM_HALL'>('AUDITORIUM');
+
+  useEffect(() => {
+    if (selectedTier === 'EXAM_HALL') {
+      setActiveVenue('EXAM_HALL');
+    } else if (selectedTier === 'LOWER' || selectedTier === 'UPPER') {
+      setActiveVenue('AUDITORIUM');
+    }
+  }, [selectedTier]);
+
   const selectedIds = useMemo(() => new Set(selectedSeats.map((s) => s.id)), [selectedSeats]);
   const matchingIds = useMemo(() => new Set(matchingSeatIds), [matchingSeatIds]);
 
@@ -195,11 +212,18 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     return counts;
   }, [seats]);
 
+  const currentVenueSeats = useMemo(() => {
+    if (activeVenue === 'EXAM_HALL') {
+      return seats.filter((s) => s.tier === 'EXAM_HALL');
+    }
+    return seats.filter((s) => s.tier !== 'EXAM_HALL');
+  }, [seats, activeVenue]);
+
   // Seat positions depend only on seat identity, so compute them once per seats
   // change rather than on every pan/zoom frame. Reused by lasso hit-testing.
   const seatLayout = useMemo(
-    () => seats.map((seat) => ({ seat, ...getSeatCoordinates(seat) })),
-    [seats]
+    () => currentVenueSeats.map((seat) => ({ seat, ...getSeatCoordinates(seat) })),
+    [currentVenueSeats]
   );
 
   const isSeatDimmed = useCallback(
@@ -229,6 +253,11 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
   const resetView = useCallback(() => setView({ zoom: 1, x: 0, y: 0 }), []);
 
+  const handleSwitchVenue = (venue: 'AUDITORIUM' | 'EXAM_HALL') => {
+    setActiveVenue(venue);
+    resetView();
+  };
+
   const centreOn = useCallback((x: number, y: number, nextZoom: number) => {
     const z = clampZoom(nextZoom);
     setView({ zoom: z, x: VIEW_W / 2 - z * x, y: VIEW_H / 2 - z * y });
@@ -238,6 +267,11 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
     if (!focusSeatId) return;
     const seat = seats.find((s) => s.id === focusSeatId);
     if (seat) {
+      if (seat.tier === 'EXAM_HALL') {
+        setActiveVenue('EXAM_HALL');
+      } else {
+        setActiveVenue('AUDITORIUM');
+      }
       const { x, y } = getSeatCoordinates(seat);
       centreOn(x + SEAT_SIZE / 2, y + SEAT_SIZE / 2, 2.2);
     }
@@ -498,9 +532,43 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
           />
         </div>
 
+        {/* Top-Center Floating Venue Switcher */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center bg-white/95 backdrop-blur-md p-1 rounded-2xl border border-slate-300 shadow-md">
+          <button
+            type="button"
+            onClick={() => handleSwitchVenue('AUDITORIUM')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              activeVenue === 'AUDITORIUM'
+                ? 'bg-blue-600 text-white shadow-xs scale-[1.02]'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Building2 className="w-3.5 h-3.5" />
+            <span>Main Auditorium</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${activeVenue === 'AUDITORIUM' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'}`}>
+              750
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSwitchVenue('EXAM_HALL')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              activeVenue === 'EXAM_HALL'
+                ? 'bg-pink-600 text-white shadow-xs scale-[1.02]'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Armchair className="w-3.5 h-3.5" />
+            <span>Exam Section Hall (10×10)</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${activeVenue === 'EXAM_HALL' ? 'bg-white/20 text-white' : 'bg-pink-100 text-pink-700'}`}>
+              100
+            </span>
+          </button>
+        </div>
+
         {/* Floating Quick Swap Action Bar when 2 Seats Selected */}
         {selectedSeats.length === 2 && onSwapSeats && (
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-900/95 text-white px-4 py-2 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 backdrop-blur-md animate-fade-in text-xs">
+          <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 bg-slate-900/95 text-white px-4 py-2 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 backdrop-blur-md animate-fade-in text-xs">
             <div className="flex items-center gap-2 font-mono">
               <span className="font-black text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-lg border border-emerald-800">
                 {selectedSeats[0].id}
@@ -535,7 +603,7 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
         {/* Floating Paintbrush Active Banner */}
         {paintCategory && (
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white px-4 py-2 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-xs animate-bounce">
+          <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white px-4 py-2 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-xs animate-bounce">
             <Paintbrush className="w-4 h-4 text-amber-400" />
             <span>
               Painting as: <strong className="text-amber-400">{categories[paintCategory]?.name || paintCategory}</strong>
@@ -586,67 +654,168 @@ export const AuditoriumMap: React.FC<AuditoriumMapProps> = ({
 
           <g ref={viewportRef} transform={`translate(${view.x} ${view.y}) scale(${view.zoom})`}>
             <rect width={VIEW_W} height={VIEW_H} fill="url(#lightGrid)" />
-            <rect x="200" y="800" width="600" height="250" fill="url(#stageGlowLight)" />
 
-            {/* Event Titles */}
-            <text x="500" y="32" textAnchor="middle" fill="#0f172a" fontSize="18" fontWeight="bold" fontFamily="system-ui" letterSpacing="0.5">
-              {eventTitle}
-            </text>
-            <text x="500" y="50" textAnchor="middle" fill="#475569" fontSize="13" fontWeight="600" fontFamily="system-ui">
-              {departmentName}
-            </text>
-            <text x="500" y="68" textAnchor="middle" fill="#0284c7" fontSize="14" fontWeight="bold" fontFamily="system-ui">
-              Total Seats – {seats.length}
-            </text>
+            {activeVenue === 'AUDITORIUM' ? (
+              <>
+                <rect x="200" y="800" width="600" height="250" fill="url(#stageGlowLight)" />
 
-            <g transform="translate(60, 45)">
-              <g transform="scale(0.8)" fill="#059669">
-                <circle cx="12" cy="5" r="3.5" fill="#10b981" />
-                <path d="M6 11c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v5c0 .55-.45 1-1 1h-1v7c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-6h-2v6c0 .55-.45 1-1 1H8c-.55 0-1-.45-1-1v-7H6c-.55 0-1-.45-1-1v-5z" />
-              </g>
-              <text x="26" y="10" fill="#334155" fontSize="10" fontWeight="bold">Volunteers</text>
-              <text x="26" y="21" fill="#334155" fontSize="10" fontWeight="bold">Arrangement</text>
-            </g>
+                {/* Event Titles */}
+                <text x="500" y="32" textAnchor="middle" fill="#0f172a" fontSize="18" fontWeight="bold" fontFamily="system-ui" letterSpacing="0.5">
+                  {eventTitle}
+                </text>
+                <text x="500" y="50" textAnchor="middle" fill="#475569" fontSize="13" fontWeight="600" fontFamily="system-ui">
+                  {departmentName}
+                </text>
+                <text x="500" y="68" textAnchor="middle" fill="#0284c7" fontSize="14" fontWeight="bold" fontFamily="system-ui">
+                  Main Auditorium — 750 Seats
+                </text>
 
-            {/* Clean, Non-Overlapping Dashed Boundaries (No Muddy Background Fills) */}
-            {/* Balcony Tier */}
-            <rect x="65" y="78" width="870" height="160" rx="24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 4" />
-            <rect x="80" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="340" y="85" width="320" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="695" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-
-            {/* Lower Floor Dashed Section Dividers */}
-            <rect x="75" y="290" width="230" height="295" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="75" y="590" width="230" height="135" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="75" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-
-            <rect x="340" y="290" width="320" height="60" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="340" y="355" width="320" height="375" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="340" y="735" width="320" height="85" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="340" y="805" width="320" height="110" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-
-            <rect x="695" y="290" width="230" height="245" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="695" y="540" width="230" height="185" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-            <rect x="695" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-
-            {/* Row Letter Labels */}
-            {LOWER_ROW_LIST.map((rowLetter, idx) => {
-              const yPos = 315 + idx * 26.5;
-              return (
-                <g key={rowLetter}>
-                  <text x="315" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
-                  <text x="670" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
-                  <text x="935" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                <g transform="translate(60, 45)">
+                  <g transform="scale(0.8)" fill="#059669">
+                    <circle cx="12" cy="5" r="3.5" fill="#10b981" />
+                    <path d="M6 11c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v5c0 .55-.45 1-1 1h-1v7c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-6h-2v6c0 .55-.45 1-1 1H8c-.55 0-1-.45-1-1v-7H6c-.55 0-1-.45-1-1v-5z" />
+                  </g>
+                  <text x="26" y="10" fill="#334155" fontSize="10" fontWeight="bold">Volunteers</text>
+                  <text x="26" y="21" fill="#334155" fontSize="10" fontWeight="bold">Arrangement</text>
                 </g>
-              );
-            })}
 
-            <GatesAndExitsLayer />
+                {/* Clean, Non-Overlapping Dashed Boundaries */}
+                {/* Balcony Tier */}
+                <rect x="65" y="78" width="870" height="160" rx="24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 4" />
+                <rect x="80" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="85" width="320" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="695" y="85" width="215" height="145" rx="10" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+
+                {/* Lower Floor Dashed Section Dividers */}
+                <rect x="75" y="290" width="230" height="295" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="75" y="590" width="230" height="135" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="75" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+
+                <rect x="340" y="290" width="320" height="60" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="355" width="320" height="375" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="735" width="320" height="85" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="340" y="805" width="320" height="110" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+
+                <rect x="695" y="290" width="230" height="245" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="695" y="540" width="230" height="185" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                <rect x="695" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+
+                {/* Row Letter Labels */}
+                {LOWER_ROW_LIST.map((rowLetter, idx) => {
+                  const yPos = 315 + idx * 26.5;
+                  return (
+                    <g key={rowLetter}>
+                      <text x="315" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                      <text x="670" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                      <text x="935" y={yPos} textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="bold">{rowLetter}</text>
+                    </g>
+                  );
+                })}
+
+                <GatesAndExitsLayer />
+              </>
+            ) : (
+              <>
+                {/* -------------------- Exam Section Hall (100 Seats: 10x10) -------------------- */}
+                {/* Titles */}
+                <text x="500" y="32" textAnchor="middle" fill="#0f172a" fontSize="18" fontWeight="bold" fontFamily="system-ui" letterSpacing="0.5">
+                  AIIMS KALYANI • EXAM SECTION HALL
+                </text>
+                <text x="500" y="50" textAnchor="middle" fill="#475569" fontSize="13" fontWeight="600" fontFamily="system-ui">
+                  Overflow Convocation Seating — 100 Seats (10 Rows × 10 Columns)
+                </text>
+                <text x="500" y="68" textAnchor="middle" fill="#db2777" fontSize="13" fontWeight="bold" fontFamily="system-ui">
+                  Parents & Accompanying Dignitaries Overflow Venue
+                </text>
+
+                {/* Stage / Live Stream Broadcast Screen */}
+                <g>
+                  <rect x="200" y="82" width="600" height="80" rx="16" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
+                  <rect x="204" y="86" width="592" height="72" rx="12" fill="#1e293b" />
+                  
+                  {/* Glowing live pulse indicator */}
+                  <circle cx="230" cy="112" r="5" fill="#ef4444" />
+                  <text x="245" y="116" fill="#38bdf8" fontSize="11" fontWeight="900" letterSpacing="1.5" fontFamily="system-ui">
+                    🔴 LIVE CONVOCATION STREAM & PROJECTION DISPLAY
+                  </text>
+                  <text x="500" y="142" textAnchor="middle" fill="#94a3b8" fontSize="12" fontWeight="500" fontFamily="system-ui">
+                    Real-time ceremony broadcast with direct stage audio for attending parents
+                  </text>
+
+                  {/* Invigilator / Usher Desk */}
+                  <rect x="430" y="174" width="140" height="28" rx="8" fill="#334155" stroke="#64748b" strokeWidth="1" />
+                  <text x="500" y="192" textAnchor="middle" fill="#f8fafc" fontSize="10" fontWeight="bold" fontFamily="system-ui">
+                    Exam Hall Usher Desk
+                  </text>
+                </g>
+
+                {/* Dashed outer boundary for 10x10 seating */}
+                <rect x="150" y="215" width="700" height="660" rx="20" fill="none" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="6 4" />
+
+                {/* Left wing box (cols 1-5) */}
+                <rect x="175" y="225" width="310" height="635" rx="12" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+                {/* Right wing box (cols 6-10) */}
+                <rect x="515" y="225" width="310" height="635" rx="12" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+
+                {/* Central walking aisle watermark */}
+                <text x="500" y="550" textAnchor="middle" fill="#cbd5e1" fontSize="11" fontWeight="black" letterSpacing="3" transform="rotate(-90 500 550)">
+                  CENTRAL AISLE
+                </text>
+
+                {/* Row Letters (A through J) */}
+                {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((rowLetter, idx) => {
+                  const y = 265 + idx * 62;
+                  return (
+                    <g key={rowLetter}>
+                      <rect x="140" y={y - 14} width="24" height="24" rx="6" fill="#f8fafc" stroke="#cbd5e1" />
+                      <text x="152" y={y + 2} textAnchor="middle" fill="#475569" fontSize="12" fontWeight="bold">
+                        {rowLetter}
+                      </text>
+                      <rect x="836" y={y - 14} width="24" height="24" rx="6" fill="#f8fafc" stroke="#cbd5e1" />
+                      <text x="848" y={y + 2} textAnchor="middle" fill="#475569" fontSize="12" fontWeight="bold">
+                        {rowLetter}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Column number labels (1 through 10) */}
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((c) => {
+                  const x = c <= 5 ? 210 + (c - 1) * 56 + 10 : 550 + (c - 6) * 56 + 10;
+                  return (
+                    <text key={c} x={x} y="222" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="bold">
+                      #{c}
+                    </text>
+                  );
+                })}
+
+                {/* Entry Doors */}
+                <g transform="translate(60, 840)">
+                  <rect width="105" height="38" rx="8" fill="#ecfdf5" stroke="#10b981" strokeWidth="1.5" />
+                  <text x="52" y="16" textAnchor="middle" fill="#047857" fontSize="10" fontWeight="black">
+                    DOOR E1
+                  </text>
+                  <text x="52" y="29" textAnchor="middle" fill="#065f46" fontSize="9" fontWeight="600">
+                    West Entrance
+                  </text>
+                </g>
+
+                <g transform="translate(835, 840)">
+                  <rect width="105" height="38" rx="8" fill="#ecfdf5" stroke="#10b981" strokeWidth="1.5" />
+                  <text x="52" y="16" textAnchor="middle" fill="#047857" fontSize="10" fontWeight="black">
+                    DOOR E2
+                  </text>
+                  <text x="52" y="29" textAnchor="middle" fill="#065f46" fontSize="9" fontWeight="600">
+                    East Entrance
+                  </text>
+                </g>
+              </>
+            )}
 
             {/* Individual Seat Nodes (Pure, crisp, high-contrast colors) */}
             <g className="seats-layer">{seatNodes}</g>
 
-            {showVolunteers && (
+            {activeVenue === 'AUDITORIUM' && showVolunteers && (
               <VolunteersLayer
                 volunteers={volunteers}
                 onHoverVolunteer={handleVolunteerEnter}

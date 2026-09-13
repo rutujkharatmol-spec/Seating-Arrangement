@@ -23,11 +23,12 @@ export interface PlanState {
   layoutVersion?: string;
 }
 
-const STORAGE_KEY = 'aiims_seating_plan_v14';
+const STORAGE_KEY = 'aiims_seating_plan_v15';
 
 export function createDefaultPlan(): PlanState {
-  const attendees = [...INITIAL_ATTENDEES];
-  const seats = withAttendees(generateDefaultSeats(), attendees);
+  const baseSeats = generateDefaultSeats();
+  const { attendees } = seatRosterByZone(baseSeats, [...INITIAL_ATTENDEES]);
+  const seats = withAttendees(baseSeats, attendees);
   return {
     answers: INITIAL_QUESTIONNAIRE_ANSWERS,
     seats,
@@ -166,6 +167,7 @@ export function loadPlan(): PlanState {
     localStorage.removeItem('aiims_seating_plan_v11');
     localStorage.removeItem('aiims_seating_plan_v12');
     localStorage.removeItem('aiims_seating_plan_v13');
+    localStorage.removeItem('aiims_seating_plan_v14');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan_v12');
     localStorage.removeItem('aiims_kalyani_mobile_cached_plan_v13');

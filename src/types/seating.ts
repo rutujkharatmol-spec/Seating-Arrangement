@@ -1,5 +1,12 @@
-export type TierType = 'UPPER' | 'LOWER';
-export type BlockType = 'UPPER_LEFT' | 'UPPER_CENTER' | 'UPPER_RIGHT' | 'LOWER_LEFT' | 'LOWER_CENTER' | 'LOWER_RIGHT';
+export type TierType = 'UPPER' | 'LOWER' | 'EXAM_HALL';
+export type BlockType = 
+  | 'UPPER_LEFT' 
+  | 'UPPER_CENTER' 
+  | 'UPPER_RIGHT' 
+  | 'LOWER_LEFT' 
+  | 'LOWER_CENTER' 
+  | 'LOWER_RIGHT'
+  | 'EXAM_HALL';
 
 export type BuiltinCategoryId = 
   | 'vip'
@@ -60,7 +67,7 @@ export interface Seat {
   attendee?: Attendee;
   isBlocked?: boolean;
   notes?: string;
-  gateRecommendation: 'Gate-1' | 'Gate-2' | 'Balcony Gate';
+  gateRecommendation: 'Gate-1' | 'Gate-2' | 'Balcony Gate' | 'Exam Hall Gate';
   customColor?: string;
   x?: number;              // Layout X coordinate
   y?: number;              // Layout Y coordinate

@@ -226,7 +226,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     setView({ zoom: 1, x: 0, y: 0 });
   };
 
-  const handleQuickZoom = (zone: 'center' | 'left' | 'right' | 'balcony') => {
+  const handleQuickZoom = (zone: 'center' | 'left' | 'right' | 'balcony' | 'exam_hall') => {
     if (zone === 'center') {
       setView({ zoom: 1.6, x: -140, y: -450 });
     } else if (zone === 'left') {
@@ -235,6 +235,8 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
       setView({ zoom: 1.8, x: -650, y: -450 });
     } else if (zone === 'balcony') {
       setView({ zoom: 1.8, x: -280, y: 50 });
+    } else if (zone === 'exam_hall') {
+      setView({ zoom: 1.5, x: -180, y: -250 });
     }
   };
 
@@ -565,6 +567,8 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                       ? 'Right Wing Lobby Entrance'
                       : selectedSeat.gateRecommendation === 'Gate-2'
                       ? 'Left Wing Lobby Entrance'
+                      : selectedSeat.gateRecommendation === 'Exam Hall Gate'
+                      ? 'Exam Section Building Entrance'
                       : 'Upper Floor Balcony Staircase'}
                   </div>
                 </div>
@@ -581,6 +585,9 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                   <li>Enter the building through <strong className="text-emerald-700 font-bold">{selectedSeat.gateRecommendation}</strong>.</li>
                   <li>Walk towards the <strong className="text-slate-900">{selectedSeat.blockName}</strong> aisle.</li>
                   <li>Locate <strong className="text-amber-700 font-bold">Row {selectedSeat.row}</strong>, and proceed to <strong className="text-slate-900 font-bold">Seat {selectedSeat.col}</strong>.</li>
+                  {selectedSeat.tier === 'EXAM_HALL' && (
+                    <li className="text-pink-700 font-semibold">📺 Equipped with Live High-Definition Convocation Ceremony Projection Broadcast.</li>
+                  )}
                 </ol>
               </div>
 
@@ -717,6 +724,13 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                 className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer"
               >
                 Balcony
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickZoom('exam_hall')}
+                className="px-2 py-0.5 rounded-md bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-[10px] transition cursor-pointer"
+              >
+                Exam Hall (10×10)
               </button>
             </div>
 
