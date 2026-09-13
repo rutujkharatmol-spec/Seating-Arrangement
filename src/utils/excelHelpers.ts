@@ -53,6 +53,8 @@ export function mapToCategoryId(catStr: string): CategoryId {
   if (CATEGORIES[clean]) return clean;
 
   if (clean.includes('vip') || clean.includes('dignitar')) return 'vip';
+  if (clean.includes('wheelchair') || clean.includes('accessible') || clean.includes('divyang')) return 'accessible';
+  if (clean.includes('awardee') || clean.includes('rank') || clean.includes('medal') || clean.includes('topper')) return 'awardees';
   if (clean.includes('media') || clean.includes('press') || clean.includes('reporter')) return 'reporters';
   if (clean.includes('mbbs')) return 'mbbs';
   if (clean.includes('nurs')) return 'nursing';

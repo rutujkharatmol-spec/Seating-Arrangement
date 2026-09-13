@@ -103,14 +103,29 @@ const HOUSEHOLD_CATEGORY: CategoryId = 'accompanying';
  * anyone whose zone is already full is left without a seat. When the parents'
  * section runs out, a family that no longer fits is left out as a whole rather
  * than split, and the spare seat goes to the next family that fits.
+ *
+ * Anyone marked seatLock keeps the exact seat named on the committee's chart:
+ * that seat is taken out of its zone pool first, so no one else is given it.
  */
 export function seatRosterByZone(
   seats: Seat[],
   attendees: Attendee[]
 ): { attendees: Attendee[]; unseated: Attendee[] } {
+  // Reserved seats, claimed in roster order so a repeated seat goes to the
+  // person listed first.
+  const lockedByAttendee = new Map<string, string>();
+  const reserved = new Set<string>();
+  const seatIds = new Set(seats.filter((s) => !s.isBlocked).map((s) => s.id));
+  attendees.forEach((a) => {
+    if (!a.seatLock || !a.seatId) return;
+    if (!seatIds.has(a.seatId) || reserved.has(a.seatId)) return;
+    reserved.add(a.seatId);
+    lockedByAttendee.set(a.id, a.seatId);
+  });
+
   const pools = new Map<CategoryId, { seats: Seat[]; next: number }>();
   seats
-    .filter((s) => !s.isBlocked)
+    .filter((s) => !s.isBlocked && !reserved.has(s.id))
     .sort(compareSeatFillOrder)
     .forEach((s) => {
       const pool = pools.get(s.categoryId);
@@ -123,6 +138,13 @@ export function seatRosterByZone(
 
   for (let i = 0; i < attendees.length; ) {
     const first = attendees[i];
+
+    const locked = lockedByAttendee.get(first.id);
+    if (locked) {
+      updated[i] = { ...first, seatId: locked };
+      i += 1;
+      continue;
+    }
 
     // A household is the run of consecutive parents listed for one student.
     let end = i + 1;

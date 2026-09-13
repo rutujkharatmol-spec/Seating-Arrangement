@@ -426,9 +426,10 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "institution": "AIIMS Kalyani",
     "email": "tandra.physiol@aiimskalyani.edu.in",
     "phone": "9674177880",
-    "categoryId": "faculty",
-    "seatId": "G13",
-    "notes": "Faculty | Additional Professor | Physiology | Assigned Seat: G13"
+    "categoryId": "guide",
+    "seatId": "A10",
+    "seatLock": true,
+    "notes": "Faculty in-charge, Student Guides | Additional Professor | Physiology | Assigned Seat: A10"
   },
   {
     "id": "att-fac-tanmay-saha",
@@ -1471,8 +1472,9 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "manjusha.physiol@aiimskalyani.edu.in",
     "phone": "9221232423",
     "categoryId": "faculty",
-    "seatId": "N17",
-    "notes": "Faculty | Assistant professor | Physiology | Assigned Seat: N17"
+    "seatId": "F8",
+    "seatLock": true,
+    "notes": "Faculty | Assistant professor | Physiology | Convocation Organising Committee | Assigned Seat: F8"
   },
   {
     "id": "att-fac-kalyan-kumar-saha",
@@ -7297,7 +7299,310 @@ export const AWARDEE_ATTENDEES: Attendee[] = [
   }
 ];
 
+/**
+ * Named seat reservations from the Convocation Organising Committee's marked-up
+ * chart ("Names alloted seats auditorium"). Every one of these carries
+ * seatLock, so re-seating the roster never moves them off the seat the
+ * committee wrote down.
+ *
+ *   Centre Row B  B8–B17  deans and visiting Executive Directors
+ *   Centre Row C  C8–C11  Registrar and Associate Deans
+ *   Centre Row D  D8      Dr Mukesh          Centre Row E  E8  Dr Somya
+ *   Centre Row F  F8      Dr Manjusha A Shinde (on the faculty list below)
+ *   Left Row A    A10     Dr Tandra Ghosh (on the faculty list below), A9–A6 student guides
+ *   Left Row A    A12–A11 wheelchair spaces (added at the corner)
+ */
+export const RESERVED_SEAT_ATTENDEES: Attendee[] = [
+  {
+    "id": "att-dig-dean-examination",
+    "name": "Dean (Examination)",
+    "designation": "Dean (Examination)",
+    "department": "Office of the Dean",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B8",
+    "seatLock": true,
+    "notes": "Dignitary | Assigned Seat: B8"
+  },
+  {
+    "id": "att-dig-dean-research",
+    "name": "Dean (Research)",
+    "designation": "Dean (Research)",
+    "department": "Office of the Dean",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B9",
+    "seatLock": true,
+    "notes": "Dignitary | Assigned Seat: B9"
+  },
+  {
+    "id": "att-dig-ashok-puranik",
+    "name": "Prof. (Dr.) Ashok Puranik",
+    "designation": "Executive Director",
+    "department": "Executive Director's Office",
+    "institution": "AIIMS Guwahati",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B10",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B10"
+  },
+  {
+    "id": "att-dig-ahanthem-santa-singh",
+    "name": "Prof. (Dr.) Ahanthem Santa Singh",
+    "designation": "Executive Director",
+    "department": "Executive Director's Office",
+    "institution": "AIIMS Mangalagiri",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B11",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B11"
+  },
+  {
+    "id": "att-dig-ashok-kumar-jindal",
+    "name": "Lt Gen Ashok Kumar Jindal",
+    "designation": "Executive Director",
+    "department": "Executive Director's Office",
+    "institution": "AIIMS Raipur",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B12",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B12"
+  },
+  {
+    "id": "att-dig-ashutosh-biswas",
+    "name": "Prof. (Dr.) Ashutosh Biswas",
+    "designation": "Executive Director",
+    "department": "Executive Director's Office",
+    "institution": "AIIMS Bhubaneswar",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B13",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B13"
+  },
+  {
+    "id": "att-dig-y-k-gupta",
+    "name": "Prof. (Dr.) Y K Gupta",
+    "designation": "President",
+    "department": "President's Office",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B14",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B14"
+  },
+  {
+    "id": "att-dig-madhabananda-kar",
+    "name": "Prof. (Dr.) Madhabananda Kar",
+    "designation": "Executive Director",
+    "department": "Executive Director's Office",
+    "institution": "AIIMS Darbhanga",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B15",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B15"
+  },
+  {
+    "id": "att-dig-vandana-raphael",
+    "name": "Prof. (Dr.) Vandana Raphael",
+    "designation": "HoD (Pathology)",
+    "department": "Pathology",
+    "institution": "NEIGRIHMS, Shillong",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B16",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B16"
+  },
+  {
+    "id": "att-dig-prakash-hazarika",
+    "name": "Shri Prakash Hazarika",
+    "designation": "Financial Advisor",
+    "department": "Finance",
+    "institution": "AIIMS Guwahati",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "B17",
+    "seatLock": true,
+    "notes": "Visiting dignitary | Assigned Seat: B17"
+  },
+  {
+    "id": "att-dig-registrar",
+    "name": "Registrar",
+    "designation": "Registrar",
+    "department": "Registrar's Office",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "C8",
+    "seatLock": true,
+    "notes": "Institute officer | Assigned Seat: C8"
+  },
+  {
+    "id": "att-dig-assoc-dean-academics",
+    "name": "Associate Dean (Academics)",
+    "designation": "Associate Dean (Academics)",
+    "department": "Office of the Dean",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "C9",
+    "seatLock": true,
+    "notes": "Institute officer | Assigned Seat: C9"
+  },
+  {
+    "id": "att-dig-assoc-dean-research",
+    "name": "Associate Dean (Research)",
+    "designation": "Associate Dean (Research)",
+    "department": "Office of the Dean",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "C10",
+    "seatLock": true,
+    "notes": "Institute officer | Assigned Seat: C10"
+  },
+  {
+    "id": "att-dig-assoc-dean-examinations",
+    "name": "Associate Dean (Examinations)",
+    "designation": "Associate Dean (Examinations)",
+    "department": "Office of the Dean",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "C11",
+    "seatLock": true,
+    "notes": "Institute officer | Assigned Seat: C11"
+  },
+  {
+    "id": "att-dig-dr-mukesh",
+    "name": "Dr Mukesh",
+    "designation": "Convocation Organising Committee",
+    "department": "Convocation Organising Committee",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "vip",
+    "seatId": "D8",
+    "seatLock": true,
+    "notes": "Organising committee | Assigned Seat: D8"
+  },
+  {
+    "id": "att-dig-dr-somya",
+    "name": "Dr Somya",
+    "designation": "Convocation Organising Committee",
+    "department": "Convocation Organising Committee",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "faculty",
+    "seatId": "E8",
+    "seatLock": true,
+    "notes": "Organising committee | Assigned Seat: E8"
+  },
+  {
+    "id": "att-acc-dr-sahana",
+    "name": "Dr Sahana",
+    "designation": "Assisted guest (wheelchair)",
+    "department": "Accessible Seating",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "accessible",
+    "seatId": "A12",
+    "seatLock": true,
+    "notes": "Wheelchair space, left wing Row A corner | Assigned Seat: A12"
+  },
+  {
+    "id": "att-acc-dr-kamini",
+    "name": "Dr Kamini",
+    "designation": "Assisted guest (wheelchair)",
+    "department": "Accessible Seating",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "accessible",
+    "seatId": "A11",
+    "seatLock": true,
+    "notes": "Wheelchair space, left wing Row A corner | Assigned Seat: A11"
+  },
+  {
+    "id": "att-guide-student-1",
+    "name": "Student Guide 1",
+    "designation": "Student Guide",
+    "department": "Student Guides",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "guide",
+    "seatId": "A9",
+    "seatLock": true,
+    "notes": "Student guide, under Dr Tandra Ghosh | Assigned Seat: A9"
+  },
+  {
+    "id": "att-guide-student-2",
+    "name": "Student Guide 2",
+    "designation": "Student Guide",
+    "department": "Student Guides",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "guide",
+    "seatId": "A8",
+    "seatLock": true,
+    "notes": "Student guide, under Dr Tandra Ghosh | Assigned Seat: A8"
+  },
+  {
+    "id": "att-guide-student-3",
+    "name": "Student Guide 3",
+    "designation": "Student Guide",
+    "department": "Student Guides",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "guide",
+    "seatId": "A7",
+    "seatLock": true,
+    "notes": "Student guide, under Dr Tandra Ghosh | Assigned Seat: A7"
+  },
+  {
+    "id": "att-guide-student-4",
+    "name": "Student Guide 4",
+    "designation": "Student Guide",
+    "department": "Student Guides",
+    "institution": "AIIMS Kalyani",
+    "email": "",
+    "phone": "",
+    "categoryId": "guide",
+    "seatId": "A6",
+    "seatLock": true,
+    "notes": "Student guide, under Dr Tandra Ghosh | Assigned Seat: A6"
+  }
+];
+
 export const INITIAL_ATTENDEES: Attendee[] = [
+  ...RESERVED_SEAT_ATTENDEES,
   ...AWARDEE_ATTENDEES,
   ...FACULTY_ATTENDEES,
   ...STUDENT_ATTENDEES,

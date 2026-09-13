@@ -22,6 +22,7 @@ export type BuiltinCategoryId =
   | 'admin_staff'
   | 'it_staff'
   | 'guide'
+  | 'accessible'
   | 'available';
 
 export type CategoryId = string;
@@ -51,6 +52,8 @@ export interface Attendee {
   phone?: string;
   categoryId: CategoryId;
   seatId?: string;
+  /** Holds this exact seat when the roster is re-seated (named reservations). */
+  seatLock?: boolean;
   notes?: string;
   isVip?: boolean;
 }

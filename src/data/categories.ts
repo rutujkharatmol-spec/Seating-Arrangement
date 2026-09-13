@@ -144,6 +144,19 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     recommendedGate: 'Gate-2',
     isCustom: false,
   },
+  accessible: {
+    id: 'accessible',
+    name: 'Wheelchair / Accessible Seating',
+    shortName: 'Wheelchair',
+    color: '#22d3ee',       // Cyan
+    textColor: '#164e63',
+    borderColor: '#0891b2',
+    description: 'Wheelchair users and assisted guests (Left Wing Row A corner, 2 seats)',
+    defaultCount: 2,
+    priority: 12,
+    recommendedGate: 'Gate-1',
+    isCustom: false,
+  },
   available: {
     id: 'available',
     name: 'Unassigned / Available',
@@ -151,9 +164,9 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#e2e8f0',       // Slate Gray
     textColor: '#475569',
     borderColor: '#94a3b8',
-    description: 'Seats kept blank (Middle Rows B, R–S and U–V, 57 seats)',
-    defaultCount: 57,
-    priority: 12,
+    description: 'Seats kept blank (Middle Rows Q–U, 60 seats)',
+    defaultCount: 60,
+    priority: 13,
     recommendedGate: 'Gate-1 or Gate-2',
     isCustom: false,
   },

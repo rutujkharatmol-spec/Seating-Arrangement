@@ -43,8 +43,24 @@ interface SeatTrackerKioskProps {
 }
 
 const VIEW_W = 1000;
-const VIEW_H = 1050;
+const VIEW_H = 1700;
 const SEAT_SIZE = 20;
+
+/**
+ * In the kiosk, the Exam Hall seats are rendered BELOW the auditorium + stage
+ * instead of overlapping. This offset is added to every exam hall seat's Y
+ * coordinate so they appear in their own section below the stage.
+ */
+const EXAM_HALL_Y_OFFSET = 780;
+
+/** Wraps getSeatCoordinates with the kiosk-specific exam hall Y offset. */
+function getKioskSeatCoordinates(seat: Seat): { x: number; y: number } {
+  const coords = getSeatCoordinates(seat);
+  if (seat.tier === 'EXAM_HALL') {
+    return { x: coords.x, y: coords.y + EXAM_HALL_Y_OFFSET };
+  }
+  return coords;
+}
 
 export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
   seats: propSeats,
@@ -167,7 +183,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
 
   // Center on seat
   const centerOnSeat = useCallback((seat: Seat) => {
-    const { x, y } = getSeatCoordinates(seat);
+    const { x, y } = getKioskSeatCoordinates(seat);
     const targetZoom = 2.4;
     setView({
       zoom: targetZoom,
@@ -236,7 +252,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     } else if (zone === 'balcony') {
       setView({ zoom: 1.8, x: -280, y: 50 });
     } else if (zone === 'exam_hall') {
-      setView({ zoom: 1.5, x: -180, y: -250 });
+      setView({ zoom: 1.3, x: -80, y: -1100 });
     }
   };
 
@@ -825,9 +841,26 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                 <rect x="695" y="540" width="230" height="185" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
                 <rect x="695" y="730" width="230" height="215" rx="8" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
 
+                {/* ── Exam Section Hall (rendered below stage) ── */}
+                <g transform="translate(0, 1010)">
+                  {/* Separator line */}
+                  <line x1="100" y1="0" x2="900" y2="0" stroke="#e879a0" strokeWidth="2" strokeDasharray="8 4" />
+                  {/* Label */}
+                  <rect x="320" y="-14" width="360" height="28" rx="14" fill="#fdf2f8" stroke="#f9a8d4" strokeWidth="1.5" />
+                  <text x="500" y="4" textAnchor="middle" fill="#be185d" fontSize="13" fontWeight="bold" letterSpacing="0.5">
+                    📋 EXAM SECTION HALL (Overflow — 100 Seats)
+                  </text>
+                </g>
+                {/* Dashed border around exam hall seats area */}
+                <rect x="180" y={250 + EXAM_HALL_Y_OFFSET - 15} width={620} height={9 * 62 + 50} rx="16" fill="none" stroke="#f9a8d4" strokeWidth="1.5" strokeDasharray="6 4" />
+                {/* Exam Hall Gate label */}
+                <g transform={`translate(360, ${250 + EXAM_HALL_Y_OFFSET + 9 * 62 + 55})`}>
+                  <text x="140" y="15" textAnchor="middle" fill="#be185d" fontSize="12" fontWeight="bold">▼ Exam Hall Gate ▼</text>
+                </g>
+
                 {/* Render All Seats */}
                 {liveSeats.map((seat) => {
-                  const { x, y } = getSeatCoordinates(seat);
+                  const { x, y } = getKioskSeatCoordinates(seat);
                   const size = SEAT_SIZE;
                   const isSelected = selectedSeat?.id === seat.id;
                   const cat = categories[seat.categoryId] || { color: '#e2e8f0', borderColor: '#64748b' };

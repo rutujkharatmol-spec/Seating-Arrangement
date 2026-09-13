@@ -2,20 +2,76 @@
   "answers": {
     "eventTitle": "Convocation Seating Arrangement (Auditorium, AIIMS Kalyani)",
     "departmentName": "Convocation Organizing Committee",
-    "numVip": 26,
+    "numVip": 39,
     "numSeniorFaculty": 0,
-    "numFaculty": 175,
-    "numAwardees": 0,
+    "numFaculty": 159,
+    "numAwardees": 7,
     "numReporters": 21,
-    "numAccompanying": 347,
+    "numAccompanying": 341,
     "numBandParty": 0,
     "numConsole": 0,
     "numBlocked": 0,
-    "numAudience": 281,
-    "totalSeats": 850,
+    "numAudience": 280,
+    "totalSeats": 832,
     "notes": "AIIMS Kalyani Convocation layout (matching PDF): parents in balcony + right back, VIP in center front, faculty in center middle, reporters in right front, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows T–U, guides in left row B."
   },
   "seats": [
+    {
+      "id": "UB6-11",
+      "tier": "UPPER",
+      "block": "UPPER_CENTER",
+      "blockName": "Upper Center Balcony",
+      "row": "UB6",
+      "col": 11,
+      "seatNumber": "UB6-11",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Balcony Gate",
+      "x": 536,
+      "y": 90
+    },
+    {
+      "id": "UB6-12",
+      "tier": "UPPER",
+      "block": "UPPER_CENTER",
+      "blockName": "Upper Center Balcony",
+      "row": "UB6",
+      "col": 12,
+      "seatNumber": "UB6-12",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Balcony Gate",
+      "x": 510,
+      "y": 90
+    },
+    {
+      "id": "UB6-13",
+      "tier": "UPPER",
+      "block": "UPPER_CENTER",
+      "blockName": "Upper Center Balcony",
+      "row": "UB6",
+      "col": 13,
+      "seatNumber": "UB6-13",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Balcony Gate",
+      "x": 484,
+      "y": 90
+    },
+    {
+      "id": "UB6-14",
+      "tier": "UPPER",
+      "block": "UPPER_CENTER",
+      "blockName": "Upper Center Balcony",
+      "row": "UB6",
+      "col": 14,
+      "seatNumber": "UB6-14",
+      "categoryId": "accompanying",
+      "isBlocked": false,
+      "gateRecommendation": "Balcony Gate",
+      "x": 458,
+      "y": 90
+    },
     {
       "id": "UB5-1",
       "tier": "UPPER",
@@ -28,7 +84,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 873,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-2",
@@ -42,7 +98,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 845,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-3",
@@ -56,7 +112,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 817,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-4",
@@ -70,7 +126,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 789,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-5",
@@ -84,7 +140,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 761,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-6",
@@ -98,7 +154,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 733,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-7",
@@ -112,35 +168,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 705,
-      "y": 90
-    },
-    {
-      "id": "UB5-8",
-      "tier": "UPPER",
-      "block": "UPPER_CENTER",
-      "blockName": "Upper Center Balcony",
-      "row": "UB5",
-      "col": 8,
-      "seatNumber": "UB5-8",
-      "categoryId": "accompanying",
-      "isBlocked": false,
-      "gateRecommendation": "Balcony Gate",
-      "x": 614,
-      "y": 90
-    },
-    {
-      "id": "UB5-9",
-      "tier": "UPPER",
-      "block": "UPPER_CENTER",
-      "blockName": "Upper Center Balcony",
-      "row": "UB5",
-      "col": 9,
-      "seatNumber": "UB5-9",
-      "categoryId": "accompanying",
-      "isBlocked": false,
-      "gateRecommendation": "Balcony Gate",
-      "x": 588,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-10",
@@ -154,7 +182,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 562,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-11",
@@ -168,7 +196,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 536,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-12",
@@ -182,7 +210,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 510,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-13",
@@ -196,7 +224,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 484,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-14",
@@ -210,7 +238,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 458,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-15",
@@ -224,35 +252,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 432,
-      "y": 90
-    },
-    {
-      "id": "UB5-16",
-      "tier": "UPPER",
-      "block": "UPPER_CENTER",
-      "blockName": "Upper Center Balcony",
-      "row": "UB5",
-      "col": 16,
-      "seatNumber": "UB5-16",
-      "categoryId": "accompanying",
-      "isBlocked": false,
-      "gateRecommendation": "Balcony Gate",
-      "x": 406,
-      "y": 90
-    },
-    {
-      "id": "UB5-17",
-      "tier": "UPPER",
-      "block": "UPPER_CENTER",
-      "blockName": "Upper Center Balcony",
-      "row": "UB5",
-      "col": 17,
-      "seatNumber": "UB5-17",
-      "categoryId": "accompanying",
-      "isBlocked": false,
-      "gateRecommendation": "Balcony Gate",
-      "x": 380,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-18",
@@ -266,7 +266,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 258,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-19",
@@ -280,7 +280,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 230,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-20",
@@ -294,7 +294,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 202,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-21",
@@ -308,7 +308,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 174,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-22",
@@ -322,7 +322,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 146,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-23",
@@ -336,7 +336,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 118,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB5-24",
@@ -350,7 +350,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 90,
-      "y": 90
+      "y": 115
     },
     {
       "id": "UB4-1",
@@ -364,7 +364,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 873,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-2",
@@ -378,7 +378,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 845,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-3",
@@ -392,7 +392,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 817,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-4",
@@ -406,7 +406,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 789,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-5",
@@ -420,7 +420,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 761,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-6",
@@ -434,7 +434,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 733,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-7",
@@ -448,7 +448,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 705,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-8",
@@ -462,7 +462,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 626,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-9",
@@ -476,7 +476,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 603,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-10",
@@ -490,7 +490,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 580,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-11",
@@ -504,7 +504,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 557,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-12",
@@ -518,7 +518,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 534,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-13",
@@ -532,7 +532,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 511,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-14",
@@ -546,7 +546,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 488,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-15",
@@ -560,7 +560,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 465,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-16",
@@ -574,7 +574,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 442,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-17",
@@ -588,7 +588,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 419,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-18",
@@ -602,7 +602,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 396,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-19",
@@ -616,7 +616,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 373,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-20",
@@ -630,7 +630,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 350,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-21",
@@ -644,7 +644,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 258,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-22",
@@ -658,7 +658,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 230,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-23",
@@ -672,7 +672,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 202,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-24",
@@ -686,7 +686,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 174,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-25",
@@ -700,7 +700,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 146,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-26",
@@ -714,7 +714,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 118,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB4-27",
@@ -728,7 +728,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 90,
-      "y": 115
+      "y": 140
     },
     {
       "id": "UB3-1",
@@ -742,7 +742,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 873,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-2",
@@ -756,7 +756,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 845,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-3",
@@ -770,7 +770,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 817,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-4",
@@ -784,7 +784,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 789,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-5",
@@ -798,7 +798,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 761,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-6",
@@ -812,7 +812,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 733,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-7",
@@ -826,7 +826,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 705,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-8",
@@ -840,7 +840,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 626,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-9",
@@ -854,7 +854,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 603,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-10",
@@ -868,7 +868,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 580,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-11",
@@ -882,7 +882,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 557,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-12",
@@ -896,7 +896,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 534,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-13",
@@ -910,7 +910,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 511,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-14",
@@ -924,7 +924,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 488,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-15",
@@ -938,7 +938,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 465,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-16",
@@ -952,7 +952,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 442,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-17",
@@ -966,7 +966,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 419,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-18",
@@ -980,7 +980,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 396,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-19",
@@ -994,7 +994,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 373,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-20",
@@ -1008,7 +1008,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 350,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-21",
@@ -1022,7 +1022,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 258,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-22",
@@ -1036,7 +1036,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 230,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-23",
@@ -1050,7 +1050,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 202,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-24",
@@ -1064,7 +1064,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 174,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-25",
@@ -1078,7 +1078,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 146,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-26",
@@ -1092,7 +1092,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 118,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB3-27",
@@ -1106,7 +1106,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 90,
-      "y": 140
+      "y": 165
     },
     {
       "id": "UB2-1",
@@ -1120,7 +1120,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 873,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-2",
@@ -1134,7 +1134,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 845,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-3",
@@ -1148,7 +1148,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 817,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-4",
@@ -1162,7 +1162,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 789,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-5",
@@ -1176,7 +1176,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 761,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-6",
@@ -1190,7 +1190,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 733,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-7",
@@ -1204,7 +1204,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 705,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-8",
@@ -1218,7 +1218,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 626,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-9",
@@ -1232,7 +1232,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 603,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-10",
@@ -1246,7 +1246,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 580,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-11",
@@ -1260,7 +1260,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 557,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-12",
@@ -1274,7 +1274,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 534,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-13",
@@ -1288,7 +1288,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 511,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-14",
@@ -1302,7 +1302,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 488,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-15",
@@ -1316,7 +1316,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 465,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-16",
@@ -1330,7 +1330,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 442,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-17",
@@ -1344,7 +1344,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 419,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-18",
@@ -1358,7 +1358,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 396,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-19",
@@ -1372,7 +1372,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 373,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-20",
@@ -1386,7 +1386,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 350,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-21",
@@ -1400,7 +1400,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 258,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-22",
@@ -1414,7 +1414,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 230,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-23",
@@ -1428,7 +1428,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 202,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-24",
@@ -1442,7 +1442,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 174,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-25",
@@ -1456,7 +1456,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 146,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-26",
@@ -1470,7 +1470,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 118,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB2-27",
@@ -1484,7 +1484,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 90,
-      "y": 165
+      "y": 190
     },
     {
       "id": "UB1-1",
@@ -1498,7 +1498,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 873,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-2",
@@ -1512,7 +1512,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 845,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-3",
@@ -1526,7 +1526,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 817,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-4",
@@ -1540,7 +1540,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 789,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-5",
@@ -1554,7 +1554,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 761,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-6",
@@ -1568,7 +1568,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 733,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-7",
@@ -1582,7 +1582,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 705,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-8",
@@ -1596,7 +1596,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 626,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-9",
@@ -1610,7 +1610,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 603,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-10",
@@ -1624,7 +1624,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 580,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-11",
@@ -1638,7 +1638,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 557,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-12",
@@ -1652,7 +1652,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 534,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-13",
@@ -1666,7 +1666,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 511,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-14",
@@ -1680,7 +1680,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 488,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-15",
@@ -1694,7 +1694,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 465,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-16",
@@ -1708,7 +1708,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 442,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-17",
@@ -1722,7 +1722,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 419,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-18",
@@ -1736,7 +1736,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 396,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-19",
@@ -1750,7 +1750,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 373,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-20",
@@ -1764,7 +1764,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 350,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-21",
@@ -1778,7 +1778,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 258,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-22",
@@ -1792,7 +1792,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 230,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-23",
@@ -1806,7 +1806,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 202,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-24",
@@ -1820,7 +1820,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 174,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-25",
@@ -1834,7 +1834,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 146,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-26",
@@ -1848,7 +1848,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 118,
-      "y": 190
+      "y": 215
     },
     {
       "id": "UB1-27",
@@ -1862,7 +1862,7 @@
       "isBlocked": false,
       "gateRecommendation": "Balcony Gate",
       "x": 90,
-      "y": 190
+      "y": 215
     },
     {
       "id": "A1",
@@ -1872,7 +1872,7 @@
       "row": "A",
       "col": 1,
       "seatNumber": "A1",
-      "categoryId": "accompanying",
+      "categoryId": "accessible",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 817,
@@ -1886,7 +1886,7 @@
       "row": "A",
       "col": 2,
       "seatNumber": "A2",
-      "categoryId": "accompanying",
+      "categoryId": "accessible",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 789,
@@ -1900,7 +1900,7 @@
       "row": "A",
       "col": 3,
       "seatNumber": "A3",
-      "categoryId": "accompanying",
+      "categoryId": "accessible",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 761,
@@ -1914,7 +1914,7 @@
       "row": "A",
       "col": 4,
       "seatNumber": "A4",
-      "categoryId": "accompanying",
+      "categoryId": "accessible",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 733,
@@ -1928,7 +1928,7 @@
       "row": "A",
       "col": 5,
       "seatNumber": "A5",
-      "categoryId": "accompanying",
+      "categoryId": "accessible",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 705,
@@ -2110,7 +2110,7 @@
       "row": "B",
       "col": 8,
       "seatNumber": "B8",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 626,
@@ -2124,7 +2124,7 @@
       "row": "B",
       "col": 9,
       "seatNumber": "B9",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 603,
@@ -2138,7 +2138,7 @@
       "row": "B",
       "col": 10,
       "seatNumber": "B10",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 580,
@@ -2152,7 +2152,7 @@
       "row": "B",
       "col": 11,
       "seatNumber": "B11",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 557,
@@ -2166,7 +2166,7 @@
       "row": "B",
       "col": 12,
       "seatNumber": "B12",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 534,
@@ -2180,7 +2180,7 @@
       "row": "B",
       "col": 13,
       "seatNumber": "B13",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 511,
@@ -2194,7 +2194,7 @@
       "row": "B",
       "col": 14,
       "seatNumber": "B14",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 488,
@@ -2208,7 +2208,7 @@
       "row": "B",
       "col": 15,
       "seatNumber": "B15",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 465,
@@ -2222,7 +2222,7 @@
       "row": "B",
       "col": 16,
       "seatNumber": "B16",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 442,
@@ -2236,7 +2236,7 @@
       "row": "B",
       "col": 17,
       "seatNumber": "B17",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 419,
@@ -2250,7 +2250,7 @@
       "row": "B",
       "col": 18,
       "seatNumber": "B18",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 396,
@@ -2264,7 +2264,7 @@
       "row": "B",
       "col": 19,
       "seatNumber": "B19",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 373,
@@ -2278,7 +2278,7 @@
       "row": "B",
       "col": 20,
       "seatNumber": "B20",
-      "categoryId": "available",
+      "categoryId": "vip",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 350,
@@ -2292,7 +2292,7 @@
       "row": "B",
       "col": 21,
       "seatNumber": "B21",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 253,
@@ -2306,7 +2306,7 @@
       "row": "B",
       "col": 22,
       "seatNumber": "B22",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 225,
@@ -2320,7 +2320,7 @@
       "row": "B",
       "col": 23,
       "seatNumber": "B23",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 197,
@@ -2334,7 +2334,7 @@
       "row": "B",
       "col": 24,
       "seatNumber": "B24",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 169,
@@ -2348,7 +2348,7 @@
       "row": "B",
       "col": 25,
       "seatNumber": "B25",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 141,
@@ -2362,7 +2362,7 @@
       "row": "B",
       "col": 26,
       "seatNumber": "B26",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 113,
@@ -2376,7 +2376,7 @@
       "row": "B",
       "col": 27,
       "seatNumber": "B27",
-      "categoryId": "mbbs",
+      "categoryId": "awardees",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 85,
@@ -4938,7 +4938,7 @@
       "row": "I",
       "col": 21,
       "seatNumber": "I21",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 253,
@@ -4952,7 +4952,7 @@
       "row": "I",
       "col": 22,
       "seatNumber": "I22",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 225,
@@ -4966,7 +4966,7 @@
       "row": "I",
       "col": 23,
       "seatNumber": "I23",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 197,
@@ -4980,7 +4980,7 @@
       "row": "I",
       "col": 24,
       "seatNumber": "I24",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 169,
@@ -4994,7 +4994,7 @@
       "row": "I",
       "col": 25,
       "seatNumber": "I25",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 141,
@@ -5008,7 +5008,7 @@
       "row": "I",
       "col": 26,
       "seatNumber": "I26",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 113,
@@ -5022,7 +5022,7 @@
       "row": "I",
       "col": 27,
       "seatNumber": "I27",
-      "categoryId": "it_staff",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 85,
@@ -6072,7 +6072,7 @@
       "row": "L",
       "col": 21,
       "seatNumber": "L21",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 253,
@@ -6086,7 +6086,7 @@
       "row": "L",
       "col": 22,
       "seatNumber": "L22",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 225,
@@ -6100,7 +6100,7 @@
       "row": "L",
       "col": 23,
       "seatNumber": "L23",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 197,
@@ -6114,7 +6114,7 @@
       "row": "L",
       "col": 24,
       "seatNumber": "L24",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 169,
@@ -6128,7 +6128,7 @@
       "row": "L",
       "col": 25,
       "seatNumber": "L25",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 141,
@@ -6142,7 +6142,7 @@
       "row": "L",
       "col": 26,
       "seatNumber": "L26",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 113,
@@ -6156,7 +6156,7 @@
       "row": "L",
       "col": 27,
       "seatNumber": "L27",
-      "categoryId": "mbbs",
+      "categoryId": "it_staff",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 85,
@@ -7297,20 +7297,6 @@
       "y": 538.5
     },
     {
-      "id": "P1",
-      "tier": "LOWER",
-      "block": "LOWER_RIGHT",
-      "blockName": "Right Wing (Ground Floor)",
-      "row": "P",
-      "col": 1,
-      "seatNumber": "P1",
-      "categoryId": "accompanying",
-      "isBlocked": false,
-      "gateRecommendation": "Gate-1",
-      "x": 873,
-      "y": 512
-    },
-    {
       "id": "P2",
       "tier": "LOWER",
       "block": "LOWER_RIGHT",
@@ -7661,20 +7647,6 @@
       "y": 512
     },
     {
-      "id": "P27",
-      "tier": "LOWER",
-      "block": "LOWER_LEFT",
-      "blockName": "Left Wing (Ground Floor)",
-      "row": "P",
-      "col": 27,
-      "seatNumber": "P27",
-      "categoryId": "mbbs",
-      "isBlocked": false,
-      "gateRecommendation": "Gate-2",
-      "x": 85,
-      "y": 512
-    },
-    {
       "id": "Q1",
       "tier": "LOWER",
       "block": "LOWER_RIGHT",
@@ -7822,7 +7794,7 @@
       "row": "Q",
       "col": 11,
       "seatNumber": "Q11",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 557,
@@ -7836,7 +7808,7 @@
       "row": "Q",
       "col": 12,
       "seatNumber": "Q12",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 534,
@@ -7850,7 +7822,7 @@
       "row": "Q",
       "col": 13,
       "seatNumber": "Q13",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 511,
@@ -7864,7 +7836,7 @@
       "row": "Q",
       "col": 14,
       "seatNumber": "Q14",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 488,
@@ -7878,7 +7850,7 @@
       "row": "Q",
       "col": 15,
       "seatNumber": "Q15",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 465,
@@ -7892,7 +7864,7 @@
       "row": "Q",
       "col": 16,
       "seatNumber": "Q16",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 442,
@@ -7906,7 +7878,7 @@
       "row": "Q",
       "col": 17,
       "seatNumber": "Q17",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 419,
@@ -7920,7 +7892,7 @@
       "row": "Q",
       "col": 18,
       "seatNumber": "Q18",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 396,
@@ -7934,7 +7906,7 @@
       "row": "Q",
       "col": 19,
       "seatNumber": "Q19",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 373,
@@ -7948,7 +7920,7 @@
       "row": "Q",
       "col": 20,
       "seatNumber": "Q20",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 350,
@@ -8158,7 +8130,7 @@
       "row": "R",
       "col": 8,
       "seatNumber": "R8",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 626,
@@ -8172,7 +8144,7 @@
       "row": "R",
       "col": 9,
       "seatNumber": "R9",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 603,
@@ -8186,7 +8158,7 @@
       "row": "R",
       "col": 10,
       "seatNumber": "R10",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 580,
@@ -8200,7 +8172,7 @@
       "row": "R",
       "col": 11,
       "seatNumber": "R11",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 557,
@@ -8214,7 +8186,7 @@
       "row": "R",
       "col": 12,
       "seatNumber": "R12",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 534,
@@ -8228,7 +8200,7 @@
       "row": "R",
       "col": 13,
       "seatNumber": "R13",
-      "categoryId": "faculty",
+      "categoryId": "available",
       "isBlocked": false,
       "gateRecommendation": "Gate-1",
       "x": 511,
@@ -9138,7 +9110,7 @@
       "row": "T",
       "col": 24,
       "seatNumber": "T24",
-      "categoryId": "nursing",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 169,
@@ -9152,7 +9124,7 @@
       "row": "T",
       "col": 25,
       "seatNumber": "T25",
-      "categoryId": "nursing",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 141,
@@ -9166,7 +9138,7 @@
       "row": "T",
       "col": 26,
       "seatNumber": "T26",
-      "categoryId": "nursing",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 113,
@@ -9180,7 +9152,7 @@
       "row": "T",
       "col": 27,
       "seatNumber": "T27",
-      "categoryId": "nursing",
+      "categoryId": "mbbs",
       "isBlocked": false,
       "gateRecommendation": "Gate-2",
       "x": 85,
@@ -13667,7 +13639,7 @@
       "email": "aman1.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7665571951",
       "categoryId": "mbbs",
-      "seatId": "B27",
+      "seatId": "C27",
       "notes": "Enrollment No: 10/20200160 | Hometown: Motihari | Assigned Seat: B27"
     },
     {
@@ -13679,7 +13651,7 @@
       "email": "ambuj.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8858150858",
       "categoryId": "mbbs",
-      "seatId": "B26",
+      "seatId": "C26",
       "notes": "Enrollment No: 12/20200162 | Hometown: Pratapgarh Uttar Pradesh | Assigned Seat: B26"
     },
     {
@@ -13691,7 +13663,7 @@
       "email": "aniket.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9547483864",
       "categoryId": "mbbs",
-      "seatId": "B25",
+      "seatId": "C25",
       "notes": "Enrollment No: 16/ 20200166 | Hometown: Haldia | Assigned Seat: B25"
     },
     {
@@ -13703,7 +13675,7 @@
       "email": "anirudh.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9464906137",
       "categoryId": "mbbs",
-      "seatId": "B24",
+      "seatId": "C24",
       "notes": "Enrollment No: 17 / 20200167 | Hometown: Chandigarh | Assigned Seat: B24"
     },
     {
@@ -13715,7 +13687,7 @@
       "email": "aan012013@gmail.com",
       "phone": "8777643438",
       "categoryId": "mbbs",
-      "seatId": "B23",
+      "seatId": "C23",
       "notes": "Enrollment No: 18/20200168 | Hometown: Kolkata | Assigned Seat: B23"
     },
     {
@@ -13727,7 +13699,7 @@
       "email": "anurag.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6372093986",
       "categoryId": "mbbs",
-      "seatId": "B22",
+      "seatId": "C22",
       "notes": "Enrollment No: 20/20200170 | Hometown: Berhampur, Odisha | Assigned Seat: B22"
     },
     {
@@ -13739,7 +13711,7 @@
       "email": "anurags.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7602481593",
       "categoryId": "mbbs",
-      "seatId": "B21",
+      "seatId": "C21",
       "notes": "Enrollment No: 21/20200171 | Hometown: Mecheda ,Purba Medinipur | Assigned Seat: B21"
     },
     {
@@ -13751,7 +13723,7 @@
       "email": "rikghosh2015@gmail.com",
       "phone": "7339814841",
       "categoryId": "mbbs",
-      "seatId": "C27",
+      "seatId": "D27",
       "notes": "Enrollment No: 24 | Hometown: Kalyani | Assigned Seat: C27"
     },
     {
@@ -13763,7 +13735,7 @@
       "email": "ashutoshajnvi@gmail.com",
       "phone": "9128781515",
       "categoryId": "mbbs",
-      "seatId": "C26",
+      "seatId": "D26",
       "notes": "Enrollment No: 28 / 20200178 | Hometown: Nawada | Assigned Seat: C26"
     },
     {
@@ -13775,7 +13747,7 @@
       "email": "atul.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6299592194",
       "categoryId": "mbbs",
-      "seatId": "C25",
+      "seatId": "D25",
       "notes": "Enrollment No: 29/20200179 | Hometown: Patna, Bihar | Assigned Seat: C25"
     },
     {
@@ -13787,7 +13759,7 @@
       "email": "ayrin.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8281643135",
       "categoryId": "mbbs",
-      "seatId": "C24",
+      "seatId": "D24",
       "notes": "Enrollment No: 32/20200182 | Hometown: Thrissur | Assigned Seat: C24"
     },
     {
@@ -13799,7 +13771,7 @@
       "email": "debmalya.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9883948330",
       "categoryId": "mbbs",
-      "seatId": "C23",
+      "seatId": "D23",
       "notes": "Enrollment No: 42/ 20200192 | Hometown: Burdwan | Assigned Seat: C23"
     },
     {
@@ -13811,7 +13783,7 @@
       "email": "honkap.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9383106349",
       "categoryId": "mbbs",
-      "seatId": "C22",
+      "seatId": "D22",
       "notes": "Enrollment No: 51/202001101 | Hometown: Village- Hasse Russa, PS/PO-Kanubari, Pincode-792131, District-Longding, State- Arunachal Pradesh. | Assigned Seat: C22"
     },
     {
@@ -13823,7 +13795,7 @@
       "email": "jagruti.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7848081502",
       "categoryId": "mbbs",
-      "seatId": "C21",
+      "seatId": "D21",
       "notes": "Enrollment No: 53/202001103 | Hometown: Khamar , Dist- Angul , Odisha | Assigned Seat: C21"
     },
     {
@@ -13835,7 +13807,7 @@
       "email": "kaki.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8328165594",
       "categoryId": "mbbs",
-      "seatId": "D27",
+      "seatId": "E27",
       "notes": "Enrollment No: 55/ 202001105 | Hometown: Hyderabad, Telangana | Assigned Seat: D27"
     },
     {
@@ -13847,7 +13819,7 @@
       "email": "khadija.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9234370051",
       "categoryId": "mbbs",
-      "seatId": "D26",
+      "seatId": "E26",
       "notes": "Enrollment No: 56/202001106 | Hometown: Bihar | Assigned Seat: D26"
     },
     {
@@ -13859,7 +13831,7 @@
       "email": "krishnasmahi1@gmail.com",
       "phone": "9110167850",
       "categoryId": "mbbs",
-      "seatId": "D25",
+      "seatId": "E25",
       "notes": "Enrollment No: 58/202001108 | Hometown: Bhagalpur | Assigned Seat: D25"
     },
     {
@@ -13871,7 +13843,7 @@
       "email": "naman.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7015830025",
       "categoryId": "mbbs",
-      "seatId": "D24",
+      "seatId": "E24",
       "notes": "Enrollment No: 65/202001115 | Hometown: Gohana | Assigned Seat: D24"
     },
     {
@@ -13883,7 +13855,7 @@
       "email": "prabeshk99@gmail.com",
       "phone": "7752071706",
       "categoryId": "mbbs",
-      "seatId": "D23",
+      "seatId": "E23",
       "notes": "Enrollment No: 68/202001118 | Hometown: Bahalda, Mayurbhanj, Odisha | Assigned Seat: D23"
     },
     {
@@ -13895,7 +13867,7 @@
       "email": "Pebble12000@gmail.com",
       "phone": "9821267506",
       "categoryId": "mbbs",
-      "seatId": "D22",
+      "seatId": "E22",
       "notes": "Enrollment No: 69 / 202001119 | Hometown: Patna, bihar | Assigned Seat: D22"
     },
     {
@@ -13907,7 +13879,7 @@
       "email": "pritamkdas21@gmail.com",
       "phone": "9903416146",
       "categoryId": "mbbs",
-      "seatId": "D21",
+      "seatId": "E21",
       "notes": "Enrollment No: 70 / 202001120 | Hometown: Ara - Bihar | Assigned Seat: D21"
     },
     {
@@ -13919,7 +13891,7 @@
       "email": "dr.rohitrajkhandelwal@gmail.com",
       "phone": "9674313474",
       "categoryId": "mbbs",
-      "seatId": "E27",
+      "seatId": "F27",
       "notes": "Enrollment No: 79/ 202001129 | Hometown: Bhubaneswar | Assigned Seat: E27"
     },
     {
@@ -13931,7 +13903,7 @@
       "email": "asad.sadia145@gmail.com",
       "phone": "9334519662",
       "categoryId": "mbbs",
-      "seatId": "E26",
+      "seatId": "F26",
       "notes": "Enrollment No: 81 | Hometown: Patna | Assigned Seat: E26"
     },
     {
@@ -13943,7 +13915,7 @@
       "email": "satyajit.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8984155610",
       "categoryId": "mbbs",
-      "seatId": "E25",
+      "seatId": "F25",
       "notes": "Enrollment No: 86(202001136) | Hometown: Bhadrak | Assigned Seat: E25"
     },
     {
@@ -13955,7 +13927,7 @@
       "email": "sharafudheencu@gmail.com",
       "phone": "6383560594",
       "categoryId": "mbbs",
-      "seatId": "E24",
+      "seatId": "F24",
       "notes": "Enrollment No: 88/202001138 | Hometown: Kozhikode | Assigned Seat: E24"
     },
     {
@@ -13967,7 +13939,7 @@
       "email": "shraddha.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8319646271",
       "categoryId": "mbbs",
-      "seatId": "E23",
+      "seatId": "F23",
       "notes": "Enrollment No: 93/202001143 | Hometown: Dhamtari | Assigned Seat: E23"
     },
     {
@@ -13979,7 +13951,7 @@
       "email": "shrutijoshi0304@gmail.com",
       "phone": "8696426826",
       "categoryId": "mbbs",
-      "seatId": "E22",
+      "seatId": "F22",
       "notes": "Enrollment No: 94 | Hometown: Sriganganagar | Assigned Seat: E22"
     },
     {
@@ -13991,7 +13963,7 @@
       "email": "mandalsoham30@gmail.com",
       "phone": "8250397348",
       "categoryId": "mbbs",
-      "seatId": "E21",
+      "seatId": "F21",
       "notes": "Enrollment No: 96/ 2020001146 | Hometown: Siliguri | Assigned Seat: E21"
     },
     {
@@ -14003,7 +13975,7 @@
       "email": "sony.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8709565947",
       "categoryId": "mbbs",
-      "seatId": "F27",
+      "seatId": "G27",
       "notes": "Enrollment No: 97/202001147 | Hometown: Siwan | Assigned Seat: F27"
     },
     {
@@ -14015,7 +13987,7 @@
       "email": "soutrikoff@gmail.com",
       "phone": "9073368142",
       "categoryId": "mbbs",
-      "seatId": "F26",
+      "seatId": "G26",
       "notes": "Enrollment No: 99/202001149 | Hometown: Mogra Natungram, Hooghly, West Bengal | Assigned Seat: F26"
     },
     {
@@ -14027,7 +13999,7 @@
       "email": "subhasispanja11@gmail.com",
       "phone": "7908126837",
       "categoryId": "mbbs",
-      "seatId": "F25",
+      "seatId": "G25",
       "notes": "Enrollment No: 100/202001150 | Hometown: Arambagh | Assigned Seat: F25"
     },
     {
@@ -14039,7 +14011,7 @@
       "email": "subhodip.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9679602964",
       "categoryId": "mbbs",
-      "seatId": "F24",
+      "seatId": "G24",
       "notes": "Enrollment No: 101/202001151 | Hometown: Asansol | Assigned Seat: F24"
     },
     {
@@ -14051,7 +14023,7 @@
       "email": "sudipchatterjee429@gmail.com",
       "phone": "8116171221",
       "categoryId": "mbbs",
-      "seatId": "F23",
+      "seatId": "G23",
       "notes": "Enrollment No: 102/202001152 | Hometown: Tarakeswar | Assigned Seat: F23"
     },
     {
@@ -14063,7 +14035,7 @@
       "email": "sumit.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8274949371",
       "categoryId": "mbbs",
-      "seatId": "F22",
+      "seatId": "G22",
       "notes": "Enrollment No: 103/202001153 | Hometown: BARUIPUR | Assigned Seat: F22"
     },
     {
@@ -14075,7 +14047,7 @@
       "email": "swastik.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7604052975",
       "categoryId": "mbbs",
-      "seatId": "F21",
+      "seatId": "G21",
       "notes": "Enrollment No: 104 / 202001154 | Hometown: Bhubaneswar | Assigned Seat: F21"
     },
     {
@@ -14087,7 +14059,7 @@
       "email": "tanmay.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6290905708",
       "categoryId": "mbbs",
-      "seatId": "G27",
+      "seatId": "H27",
       "notes": "Enrollment No: 105/202001155 | Hometown: Kolkata | Assigned Seat: G27"
     },
     {
@@ -14099,7 +14071,7 @@
       "email": "imsidroy1@gmail.com",
       "phone": "9866469739",
       "categoryId": "mbbs",
-      "seatId": "G26",
+      "seatId": "H26",
       "notes": "Enrollment No: 109/ 202001159 | Hometown: Visakhapatnam | Assigned Seat: G26"
     },
     {
@@ -14111,7 +14083,7 @@
       "email": "vikash.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9546802465",
       "categoryId": "mbbs",
-      "seatId": "G25",
+      "seatId": "H25",
       "notes": "Enrollment No: 111/202001161 | Hometown: Pokhrera,Taraiya ,Saran ,841424 ,Bihar | Assigned Seat: G25"
     },
     {
@@ -14123,7 +14095,7 @@
       "email": "zinadzidan04@gmail.com",
       "phone": "9633760376",
       "categoryId": "mbbs",
-      "seatId": "G24",
+      "seatId": "H24",
       "notes": "Enrollment No: 115 | Hometown: Kerala | Assigned Seat: G24"
     },
     {
@@ -14135,7 +14107,7 @@
       "email": "ajay.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8606642894",
       "categoryId": "mbbs",
-      "seatId": "G23",
+      "seatId": "H23",
       "notes": "Enrollment No: 116/202001166 | Hometown: KOLLAM | Assigned Seat: G23"
     },
     {
@@ -14147,7 +14119,7 @@
       "email": "nicebalramsharma@gmail.com",
       "phone": "9024523413",
       "categoryId": "mbbs",
-      "seatId": "G22",
+      "seatId": "H22",
       "notes": "Enrollment No: 117 | Hometown: Vimalpura | Assigned Seat: G22"
     },
     {
@@ -14159,7 +14131,7 @@
       "email": "fayiza.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7025146621",
       "categoryId": "mbbs",
-      "seatId": "G21",
+      "seatId": "H21",
       "notes": "Enrollment No: 119/202001169 | Hometown: Kottakkal | Assigned Seat: G21"
     },
     {
@@ -14171,7 +14143,7 @@
       "email": "sreeram.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9188573375",
       "categoryId": "mbbs",
-      "seatId": "H27",
+      "seatId": "I27",
       "notes": "Enrollment No: 124 / 202001174 | Hometown: Kerala | Assigned Seat: H27"
     },
     {
@@ -14183,7 +14155,7 @@
       "email": "adithyakiranjb@gmail.com",
       "phone": "9645919222",
       "categoryId": "mbbs",
-      "seatId": "H26",
+      "seatId": "I26",
       "notes": "Enrollment No: 20190115 | Hometown: Kozhikode | Assigned Seat: H26"
     },
     {
@@ -14195,7 +14167,7 @@
       "email": "mourupa.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6295614611",
       "categoryId": "mbbs",
-      "seatId": "H25",
+      "seatId": "I25",
       "notes": "Enrollment No: 20200114 | Hometown: Alipur Duar | Assigned Seat: H25"
     },
     {
@@ -14207,7 +14179,7 @@
       "email": "sabothabhilasha@gmail.com",
       "phone": "9337129829",
       "categoryId": "mbbs",
-      "seatId": "H24",
+      "seatId": "I24",
       "notes": "Enrollment No: 20200151 | Hometown: Bhubaneswar, Odisha | Assigned Seat: H24"
     },
     {
@@ -14219,7 +14191,7 @@
       "email": "abhisaini00011@gmail.com",
       "phone": "9671886427",
       "categoryId": "mbbs",
-      "seatId": "H23",
+      "seatId": "I23",
       "notes": "Enrollment No: 20200152 | Hometown: Yamunanagar (haryana) | Assigned Seat: H23"
     },
     {
@@ -14231,7 +14203,7 @@
       "email": "adibij02mai@gmail.com",
       "phone": "8590209664",
       "categoryId": "mbbs",
-      "seatId": "H22",
+      "seatId": "I22",
       "notes": "Enrollment No: 20200153 | Hometown: Arayoor ,kerala | Assigned Seat: H22"
     },
     {
@@ -14243,7 +14215,7 @@
       "email": "draditya1199@gmail.com",
       "phone": "8102771334",
       "categoryId": "mbbs",
-      "seatId": "H21",
+      "seatId": "I21",
       "notes": "Enrollment No: 20200155 | Hometown: Pagra, Dalsinghsarai | Assigned Seat: H21"
     },
     {
@@ -14255,7 +14227,7 @@
       "email": "xaysharma6365@gmail.com",
       "phone": "8016283467",
       "categoryId": "mbbs",
-      "seatId": "L27",
+      "seatId": "M27",
       "notes": "Enrollment No: 20200157 | Hometown: Sikar | Assigned Seat: L27"
     },
     {
@@ -14267,7 +14239,7 @@
       "email": "Altaf.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9453612551",
       "categoryId": "mbbs",
-      "seatId": "L26",
+      "seatId": "M26",
       "notes": "Enrollment No: 20200158 | Hometown: Lucknow | Assigned Seat: L26"
     },
     {
@@ -14279,7 +14251,7 @@
       "email": "aman2.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8637357310",
       "categoryId": "mbbs",
-      "seatId": "L25",
+      "seatId": "M25",
       "notes": "Enrollment No: 20200161 | Hometown: Samastipur | Assigned Seat: L25"
     },
     {
@@ -14291,7 +14263,7 @@
       "email": "amritrajanand51054@gmail.com",
       "phone": "7484027360",
       "categoryId": "mbbs",
-      "seatId": "L24",
+      "seatId": "M24",
       "notes": "Enrollment No: 20200163 | Hometown: Chhapra | Assigned Seat: L24"
     },
     {
@@ -14303,7 +14275,7 @@
       "email": "aryankita5@gmail.com",
       "phone": "9078841355",
       "categoryId": "mbbs",
-      "seatId": "L23",
+      "seatId": "M23",
       "notes": "Enrollment No: 20200164 | Hometown: Bhubaneswar | Assigned Seat: L23"
     },
     {
@@ -14315,7 +14287,7 @@
       "email": "quantum101p@gmail.com",
       "phone": "8855042775",
       "categoryId": "mbbs",
-      "seatId": "L22",
+      "seatId": "M22",
       "notes": "Enrollment No: 20200165 | Hometown: Ahilyanagar,Maharashtra | Assigned Seat: L22"
     },
     {
@@ -14327,7 +14299,7 @@
       "email": "anubhabsaha.med@gmail.com",
       "phone": "9591180260",
       "categoryId": "mbbs",
-      "seatId": "L21",
+      "seatId": "M21",
       "notes": "Enrollment No: 20200169 | Hometown: Bangalore | Assigned Seat: L21"
     },
     {
@@ -14339,7 +14311,7 @@
       "email": "anusreejayan77@gmail.com",
       "phone": "7510692429",
       "categoryId": "mbbs",
-      "seatId": "M27",
+      "seatId": "N27",
       "notes": "Enrollment No: 20200172 | Hometown: Edappal, Kerala | Assigned Seat: M27"
     },
     {
@@ -14351,7 +14323,7 @@
       "email": "aprajita.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9142852466",
       "categoryId": "mbbs",
-      "seatId": "M26",
+      "seatId": "N26",
       "notes": "Enrollment No: 20200173 | Hometown: Bihar | Assigned Seat: M26"
     },
     {
@@ -14363,7 +14335,7 @@
       "email": "arman.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9110037439",
       "categoryId": "mbbs",
-      "seatId": "M25",
+      "seatId": "N25",
       "notes": "Enrollment No: 20200175 | Hometown: Pakur | Assigned Seat: M25"
     },
     {
@@ -14375,7 +14347,7 @@
       "email": "gauravdrashish@gmail.com",
       "phone": "7352453050",
       "categoryId": "mbbs",
-      "seatId": "M24",
+      "seatId": "N24",
       "notes": "Enrollment No: 20200176 | Hometown: Mashrak, chapra | Assigned Seat: M24"
     },
     {
@@ -14387,7 +14359,7 @@
       "email": "ashok.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9610132738",
       "categoryId": "mbbs",
-      "seatId": "M23",
+      "seatId": "N23",
       "notes": "Enrollment No: 20200177 | Hometown: Gudamalani, Barmer, Rajasthan | Assigned Seat: M23"
     },
     {
@@ -14399,7 +14371,7 @@
       "email": "avtans.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9622113289",
       "categoryId": "mbbs",
-      "seatId": "M22",
+      "seatId": "N22",
       "notes": "Enrollment No: 20200180 | Hometown: Kathua J and K | Assigned Seat: M22"
     },
     {
@@ -14411,7 +14383,7 @@
       "email": "bharathkrishna500@gmail.com",
       "phone": "9526106877",
       "categoryId": "mbbs",
-      "seatId": "M21",
+      "seatId": "N21",
       "notes": "Enrollment No: 20200186 | Hometown: Kerala | Assigned Seat: M21"
     },
     {
@@ -14423,7 +14395,7 @@
       "email": "bijit.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9593374105",
       "categoryId": "mbbs",
-      "seatId": "N27",
+      "seatId": "O27",
       "notes": "Enrollment No: 20200187 | Hometown: Coochbehar ,West Bengal | Assigned Seat: N27"
     },
     {
@@ -14435,7 +14407,7 @@
       "email": "chongtham.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7011342677",
       "categoryId": "mbbs",
-      "seatId": "N26",
+      "seatId": "O26",
       "notes": "Enrollment No: 20200188 | Hometown: Imphal, Manipur | Assigned Seat: N26"
     },
     {
@@ -14447,7 +14419,7 @@
       "email": "dannana.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9381481345",
       "categoryId": "mbbs",
-      "seatId": "N25",
+      "seatId": "O25",
       "notes": "Enrollment No: 20200190 | Hometown: Srikakulam | Assigned Seat: N25"
     },
     {
@@ -14459,7 +14431,7 @@
       "email": "debbanibose@gmail.com",
       "phone": "9945925702",
       "categoryId": "mbbs",
-      "seatId": "N24",
+      "seatId": "O24",
       "notes": "Enrollment No: 20200191 | Hometown: Bangalore, Karnataka. | Assigned Seat: N24"
     },
     {
@@ -14471,7 +14443,7 @@
       "email": "devi.d.nambiar@gmail.com",
       "phone": "7356912559",
       "categoryId": "mbbs",
-      "seatId": "N23",
+      "seatId": "O23",
       "notes": "Enrollment No: 20200193 | Hometown: BANGALORE | Assigned Seat: N23"
     },
     {
@@ -14483,7 +14455,7 @@
       "email": "dilshana.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9048548253",
       "categoryId": "mbbs",
-      "seatId": "N22",
+      "seatId": "O22",
       "notes": "Enrollment No: 20200196 | Hometown: Manjeri | Assigned Seat: N22"
     },
     {
@@ -14495,7 +14467,7 @@
       "email": "mandaldisha21@gmail.com",
       "phone": "9933492817",
       "categoryId": "mbbs",
-      "seatId": "N21",
+      "seatId": "O21",
       "notes": "Enrollment No: 20200197 | Hometown: Bankura | Assigned Seat: N21"
     },
     {
@@ -14507,7 +14479,7 @@
       "email": "druvanj@gmail.com",
       "phone": "7558930045",
       "categoryId": "mbbs",
-      "seatId": "O27",
+      "seatId": "P26",
       "notes": "Enrollment No: 20200198 | Hometown: Malappuram | Assigned Seat: O27"
     },
     {
@@ -14519,7 +14491,7 @@
       "email": "gowtham.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8113071161",
       "categoryId": "mbbs",
-      "seatId": "O26",
+      "seatId": "P25",
       "notes": "Enrollment No: 20200199 | Hometown: Chathenkary, Thiruvalla, Kerala | Assigned Seat: O26"
     },
     {
@@ -14531,7 +14503,7 @@
       "email": "sayak.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6290592637",
       "categoryId": "mbbs",
-      "seatId": "O25",
+      "seatId": "P24",
       "notes": "Enrollment No: 20201137 | Hometown: Rishra | Assigned Seat: O25"
     },
     {
@@ -14543,7 +14515,7 @@
       "email": "dr.raghavjajoo@gmail.com",
       "phone": "9028844721",
       "categoryId": "mbbs",
-      "seatId": "O24",
+      "seatId": "P23",
       "notes": "Enrollment No: 202001104 | Hometown: Akola, Maharashtra | Assigned Seat: O24"
     },
     {
@@ -14555,7 +14527,7 @@
       "email": "mondalkrish958@gmail.com",
       "phone": "6294794461",
       "categoryId": "mbbs",
-      "seatId": "O23",
+      "seatId": "P22",
       "notes": "Enrollment No: 202001109 | Hometown: Bardhaman | Assigned Seat: O23"
     },
     {
@@ -14567,7 +14539,7 @@
       "email": "mansi.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9679315598",
       "categoryId": "mbbs",
-      "seatId": "O22",
+      "seatId": "P21",
       "notes": "Enrollment No: 202001110 | Hometown: Gangtok, Sikkim | Assigned Seat: O22"
     },
     {
@@ -14579,7 +14551,7 @@
       "email": "meenakshi.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6367552915",
       "categoryId": "mbbs",
-      "seatId": "O21",
+      "seatId": "Q27",
       "notes": "Enrollment No: 202001111 | Hometown: Jhalawar | Assigned Seat: O21"
     },
     {
@@ -14591,7 +14563,7 @@
       "email": "meghahazarika270701@gmail.com",
       "phone": "9518596484",
       "categoryId": "mbbs",
-      "seatId": "P27",
+      "seatId": "Q26",
       "notes": "Enrollment No: 202001112 | Hometown: Guwahati | Assigned Seat: P27"
     },
     {
@@ -14603,7 +14575,7 @@
       "email": "nilesh.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7292903856",
       "categoryId": "mbbs",
-      "seatId": "P26",
+      "seatId": "Q25",
       "notes": "Enrollment No: 202001116 | Hometown: Samastipur, Bihar | Assigned Seat: P26"
     },
     {
@@ -14615,7 +14587,7 @@
       "email": "starv2888@gmail.com",
       "phone": "7644977977",
       "categoryId": "mbbs",
-      "seatId": "P25",
+      "seatId": "Q24",
       "notes": "Enrollment No: 202001117 | Hometown: Scarborough, Maine & Anand, Gujarat | Assigned Seat: P25"
     },
     {
@@ -14627,7 +14599,7 @@
       "email": "punyaprakashk2001@gmail.com",
       "phone": "8129749735",
       "categoryId": "mbbs",
-      "seatId": "P24",
+      "seatId": "Q23",
       "notes": "Enrollment No: 202001121 | Hometown: Malappuram, Kerala | Assigned Seat: P24"
     },
     {
@@ -14639,7 +14611,7 @@
       "email": "rahulsaini786xx@gmail.com",
       "phone": "8708840109",
       "categoryId": "mbbs",
-      "seatId": "P23",
+      "seatId": "Q22",
       "notes": "Enrollment No: 202001122 | Hometown: Bhiwani, Haryana | Assigned Seat: P23"
     },
     {
@@ -14651,7 +14623,7 @@
       "email": "rajshree.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6204953438",
       "categoryId": "mbbs",
-      "seatId": "P22",
+      "seatId": "Q21",
       "notes": "Enrollment No: 202001123 | Hometown: Patna, Bihar | Assigned Seat: P22"
     },
     {
@@ -14663,7 +14635,7 @@
       "email": "Rakeshraushan112@gmail.com",
       "phone": "9799092569",
       "categoryId": "mbbs",
-      "seatId": "P21",
+      "seatId": "R27",
       "notes": "Enrollment No: 202001124 | Hometown: Saharsa | Assigned Seat: P21"
     },
     {
@@ -14675,7 +14647,7 @@
       "email": "ritikkotharigrd2000@gmail.com",
       "phone": "7632894316",
       "categoryId": "mbbs",
-      "seatId": "Q27",
+      "seatId": "R26",
       "notes": "Enrollment No: 202001126 | Hometown: Giridih | Assigned Seat: Q27"
     },
     {
@@ -14687,7 +14659,7 @@
       "email": "riya.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8606774642",
       "categoryId": "mbbs",
-      "seatId": "Q26",
+      "seatId": "R25",
       "notes": "Enrollment No: 202001127 | Hometown: Palakkad,Kerala | Assigned Seat: Q26"
     },
     {
@@ -14699,7 +14671,7 @@
       "email": "rohitkrsahani2@gmail.com",
       "phone": "7890847759",
       "categoryId": "mbbs",
-      "seatId": "Q25",
+      "seatId": "R24",
       "notes": "Enrollment No: 202001128 | Hometown: Barrackpore | Assigned Seat: Q25"
     },
     {
@@ -14711,7 +14683,7 @@
       "email": "sabitameher054@gmail.com",
       "phone": "8260607752",
       "categoryId": "mbbs",
-      "seatId": "Q24",
+      "seatId": "R23",
       "notes": "Enrollment No: 202001130 | Hometown: Duajhar, khariar , Nuapada , Odisha | Assigned Seat: Q24"
     },
     {
@@ -14723,7 +14695,7 @@
       "email": "sandeep.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9142602801",
       "categoryId": "mbbs",
-      "seatId": "Q23",
+      "seatId": "R22",
       "notes": "Enrollment No: 202001132 | Hometown: Jehanabad | Assigned Seat: Q23"
     },
     {
@@ -14735,7 +14707,7 @@
       "email": "sandeepp.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7205409551",
       "categoryId": "mbbs",
-      "seatId": "Q22",
+      "seatId": "R21",
       "notes": "Enrollment No: 202001133 | Hometown: Bhubaneswar | Assigned Seat: Q22"
     },
     {
@@ -14747,7 +14719,7 @@
       "email": "satyajeet.mbbs-2020@aiimskalyani.edu.in",
       "phone": "7564035942",
       "categoryId": "mbbs",
-      "seatId": "Q21",
+      "seatId": "S27",
       "notes": "Enrollment No: 202001135 | Hometown: Munger | Assigned Seat: Q21"
     },
     {
@@ -14759,7 +14731,7 @@
       "email": "sharmistha.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8905157891",
       "categoryId": "mbbs",
-      "seatId": "R27",
+      "seatId": "S26",
       "notes": "Enrollment No: 202001139 | Hometown: Bhubaneswar | Assigned Seat: R27"
     },
     {
@@ -14771,7 +14743,7 @@
       "email": "shifana.mbbs-2020@aiimskalyani.edu.in",
       "phone": "6238885248",
       "categoryId": "mbbs",
-      "seatId": "R26",
+      "seatId": "S25",
       "notes": "Enrollment No: 202001140 | Hometown: Kerala | Assigned Seat: R26"
     },
     {
@@ -14783,7 +14755,7 @@
       "email": "shivam10chauhan@gmail.com",
       "phone": "9958065849",
       "categoryId": "mbbs",
-      "seatId": "R25",
+      "seatId": "S24",
       "notes": "Enrollment No: 202001141 | Hometown: Gurgaon | Assigned Seat: R25"
     },
     {
@@ -14795,7 +14767,7 @@
       "email": "shivani.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9199180555",
       "categoryId": "mbbs",
-      "seatId": "R24",
+      "seatId": "S23",
       "notes": "Enrollment No: 202001142 | Hometown: Patna | Assigned Seat: R24"
     },
     {
@@ -14807,7 +14779,7 @@
       "email": "shubhrajit2018@gmail.com",
       "phone": "7848805484",
       "categoryId": "mbbs",
-      "seatId": "R23",
+      "seatId": "S22",
       "notes": "Enrollment No: 202001145 | Hometown: Bhadrak | Assigned Seat: R23"
     },
     {
@@ -14819,7 +14791,7 @@
       "email": "paridasoumya1@gmail.com",
       "phone": "7735479962",
       "categoryId": "mbbs",
-      "seatId": "R22",
+      "seatId": "S21",
       "notes": "Enrollment No: 202001148 | Hometown: Kendrapada , Odisha | Assigned Seat: R22"
     },
     {
@@ -14831,7 +14803,7 @@
       "email": "tiyasha.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9674622440",
       "categoryId": "mbbs",
-      "seatId": "R21",
+      "seatId": "T27",
       "notes": "Enrollment No: 202001157 | Hometown: Kolkata | Assigned Seat: R21"
     },
     {
@@ -14844,7 +14816,7 @@
       "phone": "9656756730",
       "categoryId": "mbbs",
       "notes": "Enrollment No: 202001160 | Hometown: Kerala | Assigned Seat: S27",
-      "seatId": "S27"
+      "seatId": "T26"
     },
     {
       "id": "att-stu-vineeta-meena",
@@ -14856,7 +14828,7 @@
       "phone": "8824036959",
       "categoryId": "mbbs",
       "notes": "Enrollment No: 202001162 | Hometown: Sikar | Assigned Seat: S26",
-      "seatId": "S26"
+      "seatId": "T25"
     },
     {
       "id": "att-stu-vulasala-venkata-sai-charan",
@@ -14868,7 +14840,7 @@
       "phone": "8341737691",
       "categoryId": "mbbs",
       "notes": "Enrollment No: 202001163 | Hometown: Proddatur, Andhra Pradesh | Assigned Seat: S25",
-      "seatId": "S25"
+      "seatId": "T24"
     },
     {
       "id": "att-stu-divyansh-charan",
@@ -14880,7 +14852,7 @@
       "phone": "8824714602",
       "categoryId": "mbbs",
       "notes": "Enrollment No: 202001168 | Hometown: Pali, Rajasthan | Assigned Seat: S24",
-      "seatId": "S24"
+      "seatId": "T23"
     },
     {
       "id": "att-stu-lucky-bansal",
@@ -14892,7 +14864,7 @@
       "phone": "8824926103",
       "categoryId": "mbbs",
       "notes": "Enrollment No: 202001170 | Hometown: Jaipur , Rajasthan | Assigned Seat: S23",
-      "seatId": "S23"
+      "seatId": "T22"
     },
     {
       "id": "att-stu-manisha-kanwar",
@@ -14904,7 +14876,7 @@
       "phone": "8100143700",
       "categoryId": "mbbs",
       "notes": "Enrollment No: 202001172 | Hometown: Nagaur Rajasthan | Assigned Seat: S22",
-      "seatId": "S22"
+      "seatId": "T21"
     },
     {
       "id": "att-stu-murari-sharma",
@@ -14915,8 +14887,7 @@
       "email": "sharmamd1405@gmail.com",
       "phone": "7424949993",
       "categoryId": "mbbs",
-      "notes": "Enrollment No: 202001173 | Hometown: jaipur | Assigned Seat: S21",
-      "seatId": "S21"
+      "notes": "Enrollment No: 202001173 | Hometown: jaipur | Assigned Seat: S21"
     },
     {
       "id": "att-stu-awantika-jha",
@@ -14927,8 +14898,7 @@
       "email": "awantika.mbbs-2020@aiimskalyani.edu.in",
       "phone": "8918275082",
       "categoryId": "mbbs",
-      "notes": "Enrollment No: Enrolment number: 20200181 | Hometown: Durgapur | Assigned Seat: T23",
-      "seatId": "T23"
+      "notes": "Enrollment No: Enrolment number: 20200181 | Hometown: Durgapur | Assigned Seat: T23"
     },
     {
       "id": "att-stu-kinshuk-khalua",
@@ -14939,8 +14909,7 @@
       "email": "kinshuk.mbbs-2020@aiimskalyani.edu.in",
       "phone": "9339307495",
       "categoryId": "mbbs",
-      "notes": "Enrollment No: Roll :-57 / Enrollment no:- 202001107 | Hometown: Moyna, Purba Medinipur , 721642 | Assigned Seat: T22",
-      "seatId": "T22"
+      "notes": "Enrollment No: Roll :-57 / Enrollment no:- 202001107 | Hometown: Moyna, Purba Medinipur , 721642 | Assigned Seat: T22"
     },
     {
       "id": "att-stu-mihir-sutradhar",
@@ -14951,8 +14920,7 @@
       "email": "mihir.sutradhar154@gmail.com",
       "phone": "8822602193",
       "categoryId": "mbbs",
-      "notes": "Enrollment No: Roll no. 63/ enrolment no. 202001113 | Hometown: Silchar,Assam | Assigned Seat: T21",
-      "seatId": "T21"
+      "notes": "Enrollment No: Roll no. 63/ enrolment no. 202001113 | Hometown: Silchar,Assam | Assigned Seat: T21"
     },
     {
       "id": "att-stu-aditi-mandal",
@@ -14963,7 +14931,7 @@
       "email": "aditimandal0328@gmail.com",
       "phone": "7584874474",
       "categoryId": "nursing",
-      "seatId": "T27",
+      "seatId": "U27",
       "notes": "Enrollment No: 20210201 | Hometown: Purba Barddhaman, West Bengal | Assigned Seat: T27"
     },
     {
@@ -14975,7 +14943,7 @@
       "email": "mukherjeeadrita8@gmail.com",
       "phone": "9382419184",
       "categoryId": "nursing",
-      "seatId": "T26",
+      "seatId": "U26",
       "notes": "Enrollment No: 20210202 | Hometown: Midnapore | Assigned Seat: T26"
     },
     {
@@ -14987,7 +14955,7 @@
       "email": "agnibha.bscnursing-2021@aiimskalyani.edu.in",
       "phone": "6296247051",
       "categoryId": "nursing",
-      "seatId": "T25",
+      "seatId": "U25",
       "notes": "Enrollment No: 20210203 | Hometown: Coochbehar, West Bengal | Assigned Seat: T25"
     },
     {
@@ -14999,7 +14967,7 @@
       "email": "anjalisingh11sep2001@gmail.com",
       "phone": "9523587958",
       "categoryId": "nursing",
-      "seatId": "T24",
+      "seatId": "U24",
       "notes": "Enrollment No: 20210204 | Hometown: Bihar | Assigned Seat: T24"
     },
     {
@@ -15011,7 +14979,7 @@
       "email": "ghoshankita9732@gmail.com",
       "phone": "7550811864",
       "categoryId": "nursing",
-      "seatId": "U27",
+      "seatId": "U23",
       "notes": "Enrollment No: 20210205 | Hometown: Howrah | Assigned Seat: U27"
     },
     {
@@ -15023,7 +14991,7 @@
       "email": "halderayantika834@gmail.com",
       "phone": "7810816310",
       "categoryId": "nursing",
-      "seatId": "U26",
+      "seatId": "U22",
       "notes": "Enrollment No: 20210206 | Hometown: Bongaon | Assigned Seat: U26"
     },
     {
@@ -15035,7 +15003,7 @@
       "email": "sultanabasira803@gmail.com",
       "phone": "8945998122",
       "categoryId": "nursing",
-      "seatId": "U25",
+      "seatId": "U21",
       "notes": "Enrollment No: 20210207 | Hometown: Bagnan, Howrah,west bengal | Assigned Seat: U25"
     },
     {
@@ -15047,7 +15015,7 @@
       "email": "bidishachunari46@gmail.com",
       "phone": "6295520563",
       "categoryId": "nursing",
-      "seatId": "U24",
+      "seatId": "V27",
       "notes": "Enrollment No: 20210208 | Hometown: Krishnanagar | Assigned Seat: U24"
     },
     {
@@ -15059,7 +15027,7 @@
       "email": "chayanikabhattacharyya4948@gmail.com",
       "phone": "9830079476",
       "categoryId": "nursing",
-      "seatId": "U23",
+      "seatId": "V26",
       "notes": "Enrollment No: 20210210 | Hometown: Sodepur | Assigned Seat: U23"
     },
     {
@@ -15071,7 +15039,7 @@
       "email": "dipanjanad597@gmail.com",
       "phone": "6290455131",
       "categoryId": "nursing",
-      "seatId": "U22",
+      "seatId": "V25",
       "notes": "Enrollment No: 20210212 | Hometown: Madhyamgram | Assigned Seat: U22"
     },
     {
@@ -15083,7 +15051,7 @@
       "email": "kumarikhushboo0123@gmail.com",
       "phone": "9973417831",
       "categoryId": "nursing",
-      "seatId": "U21",
+      "seatId": "V24",
       "notes": "Enrollment No: 20210216 | Hometown: Jogbani (Bihar) | Assigned Seat: U21"
     },
     {
@@ -15095,7 +15063,7 @@
       "email": "bindukoyel2000@gmail.com",
       "phone": "6295040670",
       "categoryId": "nursing",
-      "seatId": "V27",
+      "seatId": "V23",
       "notes": "Enrollment No: 20210217 | Hometown: Falta ( West Bengal ) | Assigned Seat: V27"
     },
     {
@@ -15107,7 +15075,7 @@
       "email": "kritirani09@gmail.com",
       "phone": "8017475967",
       "categoryId": "nursing",
-      "seatId": "V26",
+      "seatId": "V22",
       "notes": "Enrollment No: 20210218 | Hometown: Patna, Kolkata | Assigned Seat: V26"
     },
     {
@@ -15119,7 +15087,7 @@
       "email": "pal.madhurima2002@gmail.com",
       "phone": "7076867322",
       "categoryId": "nursing",
-      "seatId": "V25",
+      "seatId": "V21",
       "notes": "Enrollment No: 20210219 | Hometown: Nagarukhra, Nadia | Assigned Seat: V25"
     },
     {
@@ -15131,7 +15099,7 @@
       "email": "meghamaiti288@gmail.com",
       "phone": "9593286407",
       "categoryId": "nursing",
-      "seatId": "V24",
+      "seatId": "W27",
       "notes": "Enrollment No: 20210221 | Hometown: Dakshin Mechogram, Panskura, Purba Medinipur | Assigned Seat: V24"
     },
     {
@@ -15143,7 +15111,7 @@
       "email": "shawmegha451@gmail.com",
       "phone": "7908304766",
       "categoryId": "nursing",
-      "seatId": "V23",
+      "seatId": "W26",
       "notes": "Enrollment No: 20210222 | Hometown: Kakdwip,south 24 pargana west bengal | Assigned Seat: V23"
     },
     {
@@ -15155,7 +15123,7 @@
       "email": "mobinaparveen12@gmail.com",
       "phone": "9593972644",
       "categoryId": "nursing",
-      "seatId": "V22",
+      "seatId": "W25",
       "notes": "Enrollment No: 20210224 | Hometown: West bengal | Assigned Seat: V22"
     },
     {
@@ -15167,7 +15135,7 @@
       "email": "mohua.bscnursing-2021@aiimskalyani.edu.in",
       "phone": "7074559669",
       "categoryId": "nursing",
-      "seatId": "V21",
+      "seatId": "W24",
       "notes": "Enrollment No: 20210225 | Hometown: Arambagh, Hooghly, West Bengal | Assigned Seat: V21"
     },
     {
@@ -15179,7 +15147,7 @@
       "email": "nargisbanu004@gmail.com",
       "phone": "7501758665",
       "categoryId": "nursing",
-      "seatId": "W27",
+      "seatId": "W23",
       "notes": "Enrollment No: 20210230 | Hometown: Uttar Dinajpur | Assigned Seat: W27"
     },
     {
@@ -15191,7 +15159,7 @@
       "email": "nehabharti8257@gmail.com",
       "phone": "9534028858",
       "categoryId": "nursing",
-      "seatId": "W26",
+      "seatId": "W22",
       "notes": "Enrollment No: 20210231 | Hometown: Bihar | Assigned Seat: W26"
     },
     {
@@ -15203,7 +15171,7 @@
       "email": "paromitaghoshal10@gmail.com",
       "phone": "6289704330",
       "categoryId": "nursing",
-      "seatId": "W25",
+      "seatId": "W21",
       "notes": "Enrollment No: 20210234 | Hometown: Baruipur | Assigned Seat: W25"
     },
     {
@@ -15215,7 +15183,7 @@
       "email": "pinkisharma.sant1996@gmail.com",
       "phone": "9667437706",
       "categoryId": "nursing",
-      "seatId": "W24",
+      "seatId": "W20",
       "notes": "Enrollment No: 20210235 | Hometown: Delhi | Assigned Seat: W24"
     },
     {
@@ -15227,7 +15195,7 @@
       "email": "preetidutta2021@gmail.com",
       "phone": "7074977255",
       "categoryId": "nursing",
-      "seatId": "W23",
+      "seatId": "W19",
       "notes": "Enrollment No: 20210237 | Hometown: Bankura | Assigned Seat: W23"
     },
     {
@@ -15239,7 +15207,7 @@
       "email": "pritha1405@gmail.com",
       "phone": "8777026833",
       "categoryId": "nursing",
-      "seatId": "W22",
+      "seatId": "W18",
       "notes": "Enrollment No: 20210238 | Hometown: Kolkata | Assigned Seat: W22"
     },
     {
@@ -15251,7 +15219,7 @@
       "email": "puspitatitli@gmail.com",
       "phone": "7001892495",
       "categoryId": "nursing",
-      "seatId": "W21",
+      "seatId": "W17",
       "notes": "Enrollment No: 20210242 | Hometown: Adra, Purulia, West Bengal | Assigned Seat: W21"
     },
     {
@@ -15263,7 +15231,7 @@
       "email": "yasminsamina2312@gmail.com",
       "phone": "8529460880",
       "categoryId": "nursing",
-      "seatId": "W20",
+      "seatId": "W16",
       "notes": "Enrollment No: 20210243 | Hometown: Uttar Dinajpur | Assigned Seat: W20"
     },
     {
@@ -15275,7 +15243,7 @@
       "email": "sanandaavidipta@gmail.com",
       "phone": "9330715505",
       "categoryId": "nursing",
-      "seatId": "W19",
+      "seatId": "W15",
       "notes": "Enrollment No: 20210244 | Hometown: Tarakeswar | Assigned Seat: W19"
     },
     {
@@ -15287,7 +15255,7 @@
       "email": "sarmins2000@gmail.com",
       "phone": "8436365622",
       "categoryId": "nursing",
-      "seatId": "W18",
+      "seatId": "W14",
       "notes": "Enrollment No: 20210247 | Hometown: Barasat | Assigned Seat: W18"
     },
     {
@@ -15299,7 +15267,7 @@
       "email": "parvinshabnam2002@gmail.com",
       "phone": "6297820802",
       "categoryId": "nursing",
-      "seatId": "W17",
+      "seatId": "W13",
       "notes": "Enrollment No: 20210248 | Hometown: Bharatpur | Assigned Seat: W17"
     },
     {
@@ -15311,7 +15279,7 @@
       "email": "sonamriva20@gmail.com",
       "phone": "8404882688",
       "categoryId": "nursing",
-      "seatId": "W16",
+      "seatId": "W12",
       "notes": "Enrollment No: 20210250 | Hometown: Bihar | Assigned Seat: W16"
     },
     {
@@ -15323,7 +15291,7 @@
       "email": "suchismitatikadar06@gmail.com",
       "phone": "8167823201",
       "categoryId": "nursing",
-      "seatId": "W15",
+      "seatId": "W11",
       "notes": "Enrollment No: 20210252 | Hometown: Barrackpore | Assigned Seat: W15"
     },
     {
@@ -15335,7 +15303,7 @@
       "email": "tuabanerjee1998@gmail.com",
       "phone": "8967823183",
       "categoryId": "nursing",
-      "seatId": "W14",
+      "seatId": "W10",
       "notes": "Enrollment No: 20210254 | Hometown: Basirhat | Assigned Seat: W14"
     },
     {
@@ -15347,7 +15315,7 @@
       "email": "sushmitadna21@gmail.com",
       "phone": "7501786976",
       "categoryId": "nursing",
-      "seatId": "W13",
+      "seatId": "W9",
       "notes": "Enrollment No: 20210255 | Hometown: Bagnan | Assigned Seat: W13"
     },
     {
@@ -15359,7 +15327,7 @@
       "email": "tanishabiswas2412@gmail.com",
       "phone": "9735901944",
       "categoryId": "nursing",
-      "seatId": "W12",
+      "seatId": "W8",
       "notes": "Enrollment No: 20210256 | Hometown: Krishnanagar, Nadia | Assigned Seat: W12"
     },
     {
@@ -15371,7 +15339,7 @@
       "email": "denabanita2020@gmail.com",
       "phone": "9163114520",
       "categoryId": "nursing",
-      "seatId": "W11",
+      "seatId": "X14",
       "notes": "Enrollment No: 20210259 | Hometown: DumDum west bengal | Assigned Seat: W11"
     },
     {
@@ -15383,7 +15351,7 @@
       "email": "harukinanase1999@gmail.com",
       "phone": "6297209181",
       "categoryId": "nursing",
-      "seatId": "W10",
+      "seatId": "X13",
       "notes": "Enrollment No: 20210260 | Hometown: Jamuria, Asansol | Assigned Seat: W10"
     },
     {
@@ -15395,7 +15363,7 @@
       "email": "sahnisoni05@gmail.com",
       "phone": "9660339459",
       "categoryId": "nursing",
-      "seatId": "W9",
+      "seatId": "X12",
       "notes": "Enrollment No: 20210261 | Hometown: Patna, Bihar | Assigned Seat: W9"
     },
     {
@@ -15407,7 +15375,7 @@
       "email": "aprajitapal01@gmail.com",
       "phone": "8294678844",
       "categoryId": "nursing",
-      "seatId": "W8",
+      "seatId": "X11",
       "notes": "Enrollment No: 20230401 | Hometown: Bhagalpur | Assigned Seat: W8"
     },
     {
@@ -15419,7 +15387,7 @@
       "email": "sashi.mscnursing-2023@aiimskalyani.edu.in",
       "phone": "8018894955",
       "categoryId": "nursing",
-      "seatId": "X14",
+      "seatId": "X10",
       "notes": "Enrollment No: 20230406 | Hometown: Nuapada, Odisha | Assigned Seat: X14"
     },
     {
@@ -15431,7 +15399,7 @@
       "email": "mandabisarkar@gmail.com",
       "phone": "8900105792",
       "categoryId": "nursing",
-      "seatId": "X13",
+      "seatId": "X9",
       "notes": "Enrollment No: 20240407 | Hometown: Berhampore | Assigned Seat: X13"
     },
     {
@@ -15443,7 +15411,7 @@
       "email": "majimoumita4m@gmail.com",
       "phone": "9134582166",
       "categoryId": "nursing",
-      "seatId": "X12",
+      "seatId": "X8",
       "notes": "Enrollment No: 20240408 | Hometown: Asansol | Assigned Seat: X12"
     },
     {
@@ -15455,7 +15423,6 @@
       "email": "prama.mscnursing-2024@aiimskalyani.edu.in",
       "phone": "8420623906",
       "categoryId": "nursing",
-      "seatId": "X11",
       "notes": "Enrollment No: 20240409 | Hometown: Kolkata, West Bengal | Assigned Seat: X11"
     },
     {
@@ -15467,7 +15434,6 @@
       "email": "rojimandal000@gmail.com",
       "phone": "6291421596",
       "categoryId": "nursing",
-      "seatId": "X10",
       "notes": "Enrollment No: 20240410 | Hometown: Ranaghat, west bengal | Assigned Seat: X10"
     },
     {
@@ -15479,7 +15445,6 @@
       "email": "swatisonam3300@gmail.com",
       "phone": "8677000790",
       "categoryId": "nursing",
-      "seatId": "X9",
       "notes": "Enrollment No: 20240411 | Hometown: Patna | Assigned Seat: X9"
     },
     {
@@ -15491,7 +15456,6 @@
       "email": "nidhidhandhi29@gmail.com",
       "phone": "7015693798",
       "categoryId": "nursing",
-      "seatId": "X8",
       "notes": "Enrollment No: 20240412 | Hometown: Haryana | Assigned Seat: X8"
     },
     {
@@ -15683,7 +15647,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "A5",
+      "seatId": "I7",
       "notes": "FATHER of ARUNDHATI MUKHERJEE | Assigned Seat: A5"
     },
     {
@@ -15695,7 +15659,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "A4",
+      "seatId": "I6",
       "notes": "MOTHER of ARUNDHATI MUKHERJEE | Assigned Seat: A4"
     },
     {
@@ -15707,7 +15671,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "A3",
+      "seatId": "I5",
       "notes": "MOTHER of GRACE LHINGHOITHEM HAOKIP | Assigned Seat: A3"
     },
     {
@@ -15719,7 +15683,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "A2",
+      "seatId": "I4",
       "notes": "GRANDMOTHER of GRACE LHINGHOITHEM HAOKIP | Assigned Seat: A2"
     },
     {
@@ -15731,7 +15695,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "A1",
+      "seatId": "I3",
       "notes": "Father of DR MANSHI KUMARI | Assigned Seat: A1"
     },
     {
@@ -15743,7 +15707,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "I7",
+      "seatId": "J7",
       "notes": "Husband of DR MANSHI KUMARI | Assigned Seat: I7"
     },
     {
@@ -15755,7 +15719,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "I6",
+      "seatId": "J6",
       "notes": "Father of PEEYUSH KIRAN TRIPATHY | Assigned Seat: I6"
     },
     {
@@ -15767,7 +15731,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "I5",
+      "seatId": "J5",
       "notes": "Mother of PEEYUSH KIRAN TRIPATHY | Assigned Seat: I5"
     },
     {
@@ -15779,7 +15743,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "I4",
+      "seatId": "J4",
       "notes": "Husband of Dr. Ramya KP | Assigned Seat: I4"
     },
     {
@@ -15791,7 +15755,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "I3",
+      "seatId": "J3",
       "notes": "AUNT of SAMYA MITRA | Assigned Seat: I3"
     },
     {
@@ -15803,7 +15767,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J7",
+      "seatId": "J2",
       "notes": "SPOUSE of Dr. Sanith Mani | Assigned Seat: J7"
     },
     {
@@ -15815,7 +15779,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J6",
+      "seatId": "J1",
       "notes": "Father of SOUVIK BHATTACHARYA | Assigned Seat: J6"
     },
     {
@@ -15827,7 +15791,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J5",
+      "seatId": "K7",
       "notes": "Mother of SOUVIK BHATTACHARYA | Assigned Seat: J5"
     },
     {
@@ -15839,7 +15803,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J4",
+      "seatId": "K6",
       "notes": "Father of Abhishek Kumar Giri | Assigned Seat: J4"
     },
     {
@@ -15851,7 +15815,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J3",
+      "seatId": "K5",
       "notes": "Mother of Abhishek Kumar Giri | Assigned Seat: J3"
     },
     {
@@ -15863,7 +15827,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J2",
+      "seatId": "K4",
       "notes": "Husband of Dr. ARYALEKSHMI. P | Assigned Seat: J2"
     },
     {
@@ -15875,7 +15839,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "J1",
+      "seatId": "K3",
       "notes": "Brother of Dr. ARYALEKSHMI. P | Assigned Seat: J1"
     },
     {
@@ -15887,7 +15851,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K7",
+      "seatId": "K2",
       "notes": "FATHER of DR. MONALISA MAHAJAN | Assigned Seat: K7"
     },
     {
@@ -15899,7 +15863,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K6",
+      "seatId": "K1",
       "notes": "MOTHER of DR. MONALISA MAHAJAN | Assigned Seat: K6"
     },
     {
@@ -15911,7 +15875,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K5",
+      "seatId": "L7",
       "notes": "FATHER of PRASANJIT DAS | Assigned Seat: K5"
     },
     {
@@ -15923,7 +15887,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K4",
+      "seatId": "L6",
       "notes": "MOTHER of PRASANJIT DAS | Assigned Seat: K4"
     },
     {
@@ -15935,7 +15899,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K3",
+      "seatId": "L5",
       "notes": "Sister of Aman Kumar | Assigned Seat: K3"
     },
     {
@@ -15947,7 +15911,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K2",
+      "seatId": "L4",
       "notes": "Father of ANIKET SARKAR | Assigned Seat: K2"
     },
     {
@@ -15959,7 +15923,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "K1",
+      "seatId": "L3",
       "notes": "Mother of ANIKET SARKAR | Assigned Seat: K1"
     },
     {
@@ -15971,7 +15935,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L7",
+      "seatId": "L2",
       "notes": "Father of ANIRUDH GUPTA | Assigned Seat: L7"
     },
     {
@@ -15983,7 +15947,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L6",
+      "seatId": "L1",
       "notes": "Mother of ANIRUDH GUPTA | Assigned Seat: L6"
     },
     {
@@ -15995,7 +15959,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L5",
+      "seatId": "M7",
       "notes": "Mother of ANOUSHKA CHAUDHURY | Assigned Seat: L5"
     },
     {
@@ -16007,7 +15971,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L4",
+      "seatId": "M6",
       "notes": "Father of ANOUSHKA CHAUDHURY | Assigned Seat: L4"
     },
     {
@@ -16019,7 +15983,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L3",
+      "seatId": "M5",
       "notes": "Father of ANURAG DASH | Assigned Seat: L3"
     },
     {
@@ -16031,7 +15995,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L2",
+      "seatId": "M4",
       "notes": "Mother of ANURAG DASH | Assigned Seat: L2"
     },
     {
@@ -16043,7 +16007,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "L1",
+      "seatId": "M3",
       "notes": "Father of ANURAG SAMANTA | Assigned Seat: L1"
     },
     {
@@ -16055,7 +16019,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M7",
+      "seatId": "M2",
       "notes": "Mother of ANURAG SAMANTA | Assigned Seat: M7"
     },
     {
@@ -16067,7 +16031,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M6",
+      "seatId": "M1",
       "notes": "Mother of ARITPRIYO GHOSH | Assigned Seat: M6"
     },
     {
@@ -16079,7 +16043,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M5",
+      "seatId": "N7",
       "notes": "Father of ARITPRIYO GHOSH | Assigned Seat: M5"
     },
     {
@@ -16091,7 +16055,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M4",
+      "seatId": "N6",
       "notes": "Mother of ASHUTOSH KUMAR | Assigned Seat: M4"
     },
     {
@@ -16103,7 +16067,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M3",
+      "seatId": "N5",
       "notes": "Brother of ASHUTOSH KUMAR | Assigned Seat: M3"
     },
     {
@@ -16115,7 +16079,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M2",
+      "seatId": "N4",
       "notes": "Father of AYRIN C SIMON | Assigned Seat: M2"
     },
     {
@@ -16127,7 +16091,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "M1",
+      "seatId": "N3",
       "notes": "Mother of AYRIN C SIMON | Assigned Seat: M1"
     },
     {
@@ -16139,7 +16103,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N7",
+      "seatId": "N2",
       "notes": "Father of DEBMALYA BANERJEE | Assigned Seat: N7"
     },
     {
@@ -16151,7 +16115,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N6",
+      "seatId": "N1",
       "notes": "Mother of DEBMALYA BANERJEE | Assigned Seat: N6"
     },
     {
@@ -16163,7 +16127,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N5",
+      "seatId": "O7",
       "notes": "Elder sister of HONKAP WANGJEN | Assigned Seat: N5"
     },
     {
@@ -16175,7 +16139,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N4",
+      "seatId": "O6",
       "notes": "Father of JAGRUTI BISWAL | Assigned Seat: N4"
     },
     {
@@ -16187,7 +16151,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N3",
+      "seatId": "O5",
       "notes": "Mother of JAGRUTI BISWAL | Assigned Seat: N3"
     },
     {
@@ -16199,7 +16163,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N2",
+      "seatId": "O4",
       "notes": "Father of Kaki Jessica Pal | Assigned Seat: N2"
     },
     {
@@ -16211,7 +16175,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "N1",
+      "seatId": "O3",
       "notes": "Mother of Kaki Jessica Pal | Assigned Seat: N1"
     },
     {
@@ -16223,7 +16187,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O7",
+      "seatId": "O2",
       "notes": "Sister of KHADIJA KALAM | Assigned Seat: O7"
     },
     {
@@ -16235,7 +16199,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O6",
+      "seatId": "O1",
       "notes": "Brother of KHADIJA KALAM | Assigned Seat: O6"
     },
     {
@@ -16247,7 +16211,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O5",
+      "seatId": "P7",
       "notes": "Father of KRISHNAS MAHI | Assigned Seat: O5"
     },
     {
@@ -16259,7 +16223,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O4",
+      "seatId": "P6",
       "notes": "Mother of KRISHNAS MAHI | Assigned Seat: O4"
     },
     {
@@ -16271,7 +16235,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O3",
+      "seatId": "P5",
       "notes": "Father of NAMAN CHUGH | Assigned Seat: O3"
     },
     {
@@ -16283,7 +16247,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O2",
+      "seatId": "P4",
       "notes": "Mother of NAMAN CHUGH | Assigned Seat: O2"
     },
     {
@@ -16295,7 +16259,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "O1",
+      "seatId": "P3",
       "notes": "Father of PRABESH KUMAR SAHU | Assigned Seat: O1"
     },
     {
@@ -16307,7 +16271,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P7",
+      "seatId": "P2",
       "notes": "Mother of PRABESH KUMAR SAHU | Assigned Seat: P7"
     },
     {
@@ -16319,7 +16283,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P6",
+      "seatId": "Q7",
       "notes": "Mother of PRAGYA BHARATI | Assigned Seat: P6"
     },
     {
@@ -16331,7 +16295,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P5",
+      "seatId": "Q6",
       "notes": "Maternal Uncle of PRAGYA BHARATI | Assigned Seat: P5"
     },
     {
@@ -16343,7 +16307,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P4",
+      "seatId": "Q5",
       "notes": "Father of PRITAM KUMAR DAS | Assigned Seat: P4"
     },
     {
@@ -16355,7 +16319,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P3",
+      "seatId": "Q4",
       "notes": "Mother of PRITAM KUMAR DAS | Assigned Seat: P3"
     },
     {
@@ -16367,7 +16331,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P2",
+      "seatId": "Q3",
       "notes": "Father of ROHIT RAJ KHANDELWAL | Assigned Seat: P2"
     },
     {
@@ -16379,7 +16343,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "P1",
+      "seatId": "Q2",
       "notes": "Mother of ROHIT RAJ KHANDELWAL | Assigned Seat: P1"
     },
     {
@@ -16391,7 +16355,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q7",
+      "seatId": "Q1",
       "notes": "Father of SADIA ASAD | Assigned Seat: Q7"
     },
     {
@@ -16403,7 +16367,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q6",
+      "seatId": "R7",
       "notes": "Mother of SADIA ASAD | Assigned Seat: Q6"
     },
     {
@@ -16415,7 +16379,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q5",
+      "seatId": "R6",
       "notes": "Sister of SATYAJIT BEHERA | Assigned Seat: Q5"
     },
     {
@@ -16427,7 +16391,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q4",
+      "seatId": "R5",
       "notes": "Brother of SATYAJIT BEHERA | Assigned Seat: Q4"
     },
     {
@@ -16439,7 +16403,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q3",
+      "seatId": "R4",
       "notes": "Mother of SHARAFUDHEEN EP | Assigned Seat: Q3"
     },
     {
@@ -16451,7 +16415,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q2",
+      "seatId": "R3",
       "notes": "Father of SHARAFUDHEEN EP | Assigned Seat: Q2"
     },
     {
@@ -16463,7 +16427,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "Q1",
+      "seatId": "R2",
       "notes": "Mother of SHRADDHA MATSYAPAL | Assigned Seat: Q1"
     },
     {
@@ -16475,7 +16439,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R7",
+      "seatId": "R1",
       "notes": "Father of SHRUTI JOSHI | Assigned Seat: R7"
     },
     {
@@ -16487,7 +16451,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R6",
+      "seatId": "S7",
       "notes": "Mother of SHRUTI JOSHI | Assigned Seat: R6"
     },
     {
@@ -16499,7 +16463,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R5",
+      "seatId": "S6",
       "notes": "Father of SOHAM MANDAL | Assigned Seat: R5"
     },
     {
@@ -16511,7 +16475,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R4",
+      "seatId": "S5",
       "notes": "Mother of SOHAM MANDAL | Assigned Seat: R4"
     },
     {
@@ -16523,7 +16487,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R3",
+      "seatId": "S4",
       "notes": "Father of SONY KHATOON | Assigned Seat: R3"
     },
     {
@@ -16535,7 +16499,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R2",
+      "seatId": "S3",
       "notes": "Mother of SONY KHATOON | Assigned Seat: R2"
     },
     {
@@ -16547,7 +16511,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "R1",
+      "seatId": "S2",
       "notes": "Father of SOUTRIK SUR | Assigned Seat: R1"
     },
     {
@@ -16559,7 +16523,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S7",
+      "seatId": "S1",
       "notes": "Mother of SOUTRIK SUR | Assigned Seat: S7"
     },
     {
@@ -16571,7 +16535,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S6",
+      "seatId": "T7",
       "notes": "Father of SUBHASIS PANJA | Assigned Seat: S6"
     },
     {
@@ -16583,7 +16547,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S5",
+      "seatId": "T6",
       "notes": "Mother of SUBHASIS PANJA | Assigned Seat: S5"
     },
     {
@@ -16595,7 +16559,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S4",
+      "seatId": "T5",
       "notes": "Father of SUBHODIP DAS | Assigned Seat: S4"
     },
     {
@@ -16607,7 +16571,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S3",
+      "seatId": "T4",
       "notes": "Mother of SUBHODIP DAS | Assigned Seat: S3"
     },
     {
@@ -16619,7 +16583,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S2",
+      "seatId": "T3",
       "notes": "Father of SUDIP CHATTERJEE | Assigned Seat: S2"
     },
     {
@@ -16631,7 +16595,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "S1",
+      "seatId": "T2",
       "notes": "Mother of SUDIP CHATTERJEE | Assigned Seat: S1"
     },
     {
@@ -16643,7 +16607,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T7",
+      "seatId": "T1",
       "notes": "FATHER of SUMIT KUMAR MONDAL | Assigned Seat: T7"
     },
     {
@@ -16655,7 +16619,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T6",
+      "seatId": "U7",
       "notes": "MOTHER of SUMIT KUMAR MONDAL | Assigned Seat: T6"
     },
     {
@@ -16667,7 +16631,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T5",
+      "seatId": "U6",
       "notes": "FATHER of SWASTIK TRIPATHY | Assigned Seat: T5"
     },
     {
@@ -16679,7 +16643,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T4",
+      "seatId": "U5",
       "notes": "MOTHER of SWASTIK TRIPATHY | Assigned Seat: T4"
     },
     {
@@ -16691,7 +16655,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T3",
+      "seatId": "U4",
       "notes": "Father of TANMAY SAHA | Assigned Seat: T3"
     },
     {
@@ -16703,7 +16667,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T2",
+      "seatId": "U3",
       "notes": "Mother of TANMAY SAHA | Assigned Seat: T2"
     },
     {
@@ -16715,7 +16679,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "T1",
+      "seatId": "U2",
       "notes": "Father of VADDE SIDDHARTH ROY | Assigned Seat: T1"
     },
     {
@@ -16727,7 +16691,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U7",
+      "seatId": "U1",
       "notes": "Mother of VADDE SIDDHARTH ROY | Assigned Seat: U7"
     },
     {
@@ -16739,7 +16703,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U6",
+      "seatId": "V7",
       "notes": "Father of VIKASH KUMAR RAI | Assigned Seat: U6"
     },
     {
@@ -16751,7 +16715,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U5",
+      "seatId": "V6",
       "notes": "Mother of VIKASH KUMAR RAI | Assigned Seat: U5"
     },
     {
@@ -16763,7 +16727,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U4",
+      "seatId": "V5",
       "notes": "Father of Zinadin Zidan T K | Assigned Seat: U4"
     },
     {
@@ -16775,7 +16739,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U3",
+      "seatId": "V4",
       "notes": "Mother of Zinadin Zidan T K | Assigned Seat: U3"
     },
     {
@@ -16787,7 +16751,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U2",
+      "seatId": "V3",
       "notes": "FATHER of AJAY MOHAN | Assigned Seat: U2"
     },
     {
@@ -16799,7 +16763,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "U1",
+      "seatId": "V2",
       "notes": "MOTHER of AJAY MOHAN | Assigned Seat: U1"
     },
     {
@@ -16811,7 +16775,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V7",
+      "seatId": "V1",
       "notes": "Father of FAYIZA C | Assigned Seat: V7"
     },
     {
@@ -16823,7 +16787,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V6",
+      "seatId": "W7",
       "notes": "Mother of FAYIZA C | Assigned Seat: V6"
     },
     {
@@ -16835,7 +16799,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V5",
+      "seatId": "W6",
       "notes": "Mother of Sreeram R S | Assigned Seat: V5"
     },
     {
@@ -16847,7 +16811,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V4",
+      "seatId": "W5",
       "notes": "Father of J B ADITHYAKIRAN | Assigned Seat: V4"
     },
     {
@@ -16859,7 +16823,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V3",
+      "seatId": "W4",
       "notes": "Mother of J B ADITHYAKIRAN | Assigned Seat: V3"
     },
     {
@@ -16871,7 +16835,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V2",
+      "seatId": "W3",
       "notes": "Mother of MOURUPA SARKAR | Assigned Seat: V2"
     },
     {
@@ -16883,7 +16847,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "V1",
+      "seatId": "W2",
       "notes": "Father of MOURUPA SARKAR | Assigned Seat: V1"
     },
     {
@@ -16895,7 +16859,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W7",
+      "seatId": "W1",
       "notes": "Father of ABHILASHA SABOTH | Assigned Seat: W7"
     },
     {
@@ -16907,7 +16871,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W6",
+      "seatId": "X7",
       "notes": "Sister of ADITHYA BIJITH | Assigned Seat: W6"
     },
     {
@@ -16919,7 +16883,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W5",
+      "seatId": "X6",
       "notes": "Mother of ADITHYA BIJITH | Assigned Seat: W5"
     },
     {
@@ -16931,7 +16895,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W4",
+      "seatId": "X5",
       "notes": "Mother of ADITYA KUMAR | Assigned Seat: W4"
     },
     {
@@ -16943,7 +16907,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W3",
+      "seatId": "X4",
       "notes": "Mother of AKSHAY SHARMA | Assigned Seat: W3"
     },
     {
@@ -16955,7 +16919,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W2",
+      "seatId": "X3",
       "notes": "Father of AKSHAY SHARMA | Assigned Seat: W2"
     },
     {
@@ -16967,7 +16931,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "W1",
+      "seatId": "X2",
       "notes": "Father of AMAN KUMAR | Assigned Seat: W1"
     },
     {
@@ -16979,7 +16943,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X7",
+      "seatId": "X1",
       "notes": "Mother of AMAN KUMAR | Assigned Seat: X7"
     },
     {
@@ -16991,7 +16955,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X6",
+      "seatId": "UB1-27",
       "notes": "Grandfather of AMRIT RAJ ANAND | Assigned Seat: X6"
     },
     {
@@ -17003,7 +16967,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X5",
+      "seatId": "UB1-26",
       "notes": "Uncle of AMRIT RAJ ANAND | Assigned Seat: X5"
     },
     {
@@ -17015,7 +16979,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X4",
+      "seatId": "UB1-25",
       "notes": "Father of ANANYA ARYANKITA | Assigned Seat: X4"
     },
     {
@@ -17027,7 +16991,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X3",
+      "seatId": "UB1-24",
       "notes": "Mother of ANANYA ARYANKITA | Assigned Seat: X3"
     },
     {
@@ -17039,7 +17003,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X2",
+      "seatId": "UB1-23",
       "notes": "Mother of ANANYA PANDEY | Assigned Seat: X2"
     },
     {
@@ -17051,7 +17015,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "X1",
+      "seatId": "UB1-22",
       "notes": "Sister of ANANYA PANDEY | Assigned Seat: X1"
     },
     {
@@ -17063,7 +17027,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-27",
+      "seatId": "UB1-21",
       "notes": "Father of Anubhab Saha | Assigned Seat: UB1-27"
     },
     {
@@ -17075,7 +17039,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-26",
+      "seatId": "UB1-20",
       "notes": "Mother of Anubhab Saha | Assigned Seat: UB1-26"
     },
     {
@@ -17087,7 +17051,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-25",
+      "seatId": "UB1-19",
       "notes": "Mother of ANUSREE JAYAN | Assigned Seat: UB1-25"
     },
     {
@@ -17099,7 +17063,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-24",
+      "seatId": "UB1-18",
       "notes": "Father of ANUSREE JAYAN | Assigned Seat: UB1-24"
     },
     {
@@ -17111,7 +17075,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-23",
+      "seatId": "UB1-17",
       "notes": "Father of APRAJITA | Assigned Seat: UB1-23"
     },
     {
@@ -17123,7 +17087,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-22",
+      "seatId": "UB1-16",
       "notes": "Mother of APRAJITA | Assigned Seat: UB1-22"
     },
     {
@@ -17135,7 +17099,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-21",
+      "seatId": "UB1-15",
       "notes": "Mother of ARMAN ANSARI | Assigned Seat: UB1-21"
     },
     {
@@ -17147,7 +17111,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-20",
+      "seatId": "UB1-14",
       "notes": "Father of ARMAN ANSARI | Assigned Seat: UB1-20"
     },
     {
@@ -17159,7 +17123,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-19",
+      "seatId": "UB1-13",
       "notes": "Father of ASHISH GAURAV | Assigned Seat: UB1-19"
     },
     {
@@ -17171,7 +17135,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-18",
+      "seatId": "UB1-12",
       "notes": "Mother of ASHISH GAURAV | Assigned Seat: UB1-18"
     },
     {
@@ -17183,7 +17147,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-17",
+      "seatId": "UB1-11",
       "notes": "Brother of ASHOK KUMAR | Assigned Seat: UB1-17"
     },
     {
@@ -17195,7 +17159,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-16",
+      "seatId": "UB1-10",
       "notes": "Mother of BHARATH KRISHNA | Assigned Seat: UB1-16"
     },
     {
@@ -17207,7 +17171,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-15",
+      "seatId": "UB1-9",
       "notes": "Father of BIJIT SARKAR | Assigned Seat: UB1-15"
     },
     {
@@ -17219,7 +17183,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-14",
+      "seatId": "UB1-8",
       "notes": "Mother of BIJIT SARKAR | Assigned Seat: UB1-14"
     },
     {
@@ -17231,7 +17195,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-13",
+      "seatId": "UB1-7",
       "notes": "Father of CHONGTHAM PARITIYA SINGH | Assigned Seat: UB1-13"
     },
     {
@@ -17243,7 +17207,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-12",
+      "seatId": "UB1-6",
       "notes": "Cousin of CHONGTHAM PARITIYA SINGH | Assigned Seat: UB1-12"
     },
     {
@@ -17255,7 +17219,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-11",
+      "seatId": "UB1-5",
       "notes": "Father of DANNANA GAYATHRI | Assigned Seat: UB1-11"
     },
     {
@@ -17267,7 +17231,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-10",
+      "seatId": "UB1-4",
       "notes": "Brother of DANNANA GAYATHRI | Assigned Seat: UB1-10"
     },
     {
@@ -17279,7 +17243,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-9",
+      "seatId": "UB1-3",
       "notes": "Grandmother of DEBBANI BOSE | Assigned Seat: UB1-9"
     },
     {
@@ -17291,7 +17255,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-8",
+      "seatId": "UB1-2",
       "notes": "Grandmother of DEBBANI BOSE | Assigned Seat: UB1-8"
     },
     {
@@ -17303,7 +17267,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-7",
+      "seatId": "UB1-1",
       "notes": "MOTHER of DEVI NAMBIAR | Assigned Seat: UB1-7"
     },
     {
@@ -17315,7 +17279,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-6",
+      "seatId": "UB2-27",
       "notes": "FATHER of DEVI NAMBIAR | Assigned Seat: UB1-6"
     },
     {
@@ -17327,7 +17291,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-5",
+      "seatId": "UB2-26",
       "notes": "Father of DILSHANA | Assigned Seat: UB1-5"
     },
     {
@@ -17339,7 +17303,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-4",
+      "seatId": "UB2-25",
       "notes": "Mother of DILSHANA | Assigned Seat: UB1-4"
     },
     {
@@ -17351,7 +17315,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-3",
+      "seatId": "UB2-24",
       "notes": "Father of DISHA MANDAL | Assigned Seat: UB1-3"
     },
     {
@@ -17363,7 +17327,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-2",
+      "seatId": "UB2-23",
       "notes": "Mother of DISHA MANDAL | Assigned Seat: UB1-2"
     },
     {
@@ -17375,7 +17339,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB1-1",
+      "seatId": "UB2-22",
       "notes": "Father of DRUVAN J | Assigned Seat: UB1-1"
     },
     {
@@ -17387,7 +17351,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-27",
+      "seatId": "UB2-21",
       "notes": "Mother of DRUVAN J | Assigned Seat: UB2-27"
     },
     {
@@ -17399,7 +17363,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-26",
+      "seatId": "UB2-20",
       "notes": "Father of GOWTHAM S | Assigned Seat: UB2-26"
     },
     {
@@ -17411,7 +17375,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-25",
+      "seatId": "UB2-19",
       "notes": "Mother of GOWTHAM S | Assigned Seat: UB2-25"
     },
     {
@@ -17423,7 +17387,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-24",
+      "seatId": "UB2-18",
       "notes": "Father of SAYAK SAHA | Assigned Seat: UB2-24"
     },
     {
@@ -17435,7 +17399,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-23",
+      "seatId": "UB2-17",
       "notes": "Mother of SAYAK SAHA | Assigned Seat: UB2-23"
     },
     {
@@ -17447,7 +17411,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-22",
+      "seatId": "UB2-16",
       "notes": "Father of Jajoo Raghav Bhushan | Assigned Seat: UB2-22"
     },
     {
@@ -17459,7 +17423,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-21",
+      "seatId": "UB2-15",
       "notes": "Mother of Jajoo Raghav Bhushan | Assigned Seat: UB2-21"
     },
     {
@@ -17471,7 +17435,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-20",
+      "seatId": "UB2-14",
       "notes": "Father of Krishnendu Mondal | Assigned Seat: UB2-20"
     },
     {
@@ -17483,7 +17447,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-19",
+      "seatId": "UB2-13",
       "notes": "Mother of Krishnendu Mondal | Assigned Seat: UB2-19"
     },
     {
@@ -17495,7 +17459,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-18",
+      "seatId": "UB2-12",
       "notes": "Mother of MANSI SUBBA | Assigned Seat: UB2-18"
     },
     {
@@ -17507,7 +17471,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-17",
+      "seatId": "UB2-11",
       "notes": "Sibling (Brother) of MANSI SUBBA | Assigned Seat: UB2-17"
     },
     {
@@ -17519,7 +17483,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-16",
+      "seatId": "UB2-10",
       "notes": "Father of MEENAKSHI MINA | Assigned Seat: UB2-16"
     },
     {
@@ -17531,7 +17495,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-15",
+      "seatId": "UB2-9",
       "notes": "Mother of MEENAKSHI MINA | Assigned Seat: UB2-15"
     },
     {
@@ -17543,7 +17507,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-14",
+      "seatId": "UB2-8",
       "notes": "Father of MEGHA HAZARIKA | Assigned Seat: UB2-14"
     },
     {
@@ -17555,7 +17519,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-13",
+      "seatId": "UB2-7",
       "notes": "Cousin of MEGHA HAZARIKA | Assigned Seat: UB2-13"
     },
     {
@@ -17567,7 +17531,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-12",
+      "seatId": "UB2-6",
       "notes": "Father of NILESH BHARTI | Assigned Seat: UB2-12"
     },
     {
@@ -17579,7 +17543,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-11",
+      "seatId": "UB2-5",
       "notes": "Mother of NILESH BHARTI | Assigned Seat: UB2-11"
     },
     {
@@ -17591,7 +17555,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-10",
+      "seatId": "UB2-4",
       "notes": "Mother of PATEL SHRUTI RUTANJU | Assigned Seat: UB2-10"
     },
     {
@@ -17603,7 +17567,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-9",
+      "seatId": "UB2-3",
       "notes": "Cousin of PATEL SHRUTI RUTANJU | Assigned Seat: UB2-9"
     },
     {
@@ -17615,7 +17579,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-8",
+      "seatId": "UB2-2",
       "notes": "Father of PUNYA PRAKASH k | Assigned Seat: UB2-8"
     },
     {
@@ -17627,7 +17591,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-7",
+      "seatId": "UB2-1",
       "notes": "Mother of PUNYA PRAKASH k | Assigned Seat: UB2-7"
     },
     {
@@ -17639,7 +17603,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-6",
+      "seatId": "UB3-27",
       "notes": "Father of RAJSHREE | Assigned Seat: UB2-6"
     },
     {
@@ -17651,7 +17615,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-5",
+      "seatId": "UB3-26",
       "notes": "Mother of RAJSHREE | Assigned Seat: UB2-5"
     },
     {
@@ -17663,7 +17627,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-4",
+      "seatId": "UB3-25",
       "notes": "Father of RITIK KOTHARI | Assigned Seat: UB2-4"
     },
     {
@@ -17675,7 +17639,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-3",
+      "seatId": "UB3-24",
       "notes": "Mother of RITIK KOTHARI | Assigned Seat: UB2-3"
     },
     {
@@ -17687,7 +17651,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-2",
+      "seatId": "UB3-23",
       "notes": "Father of RIYA BEN | Assigned Seat: UB2-2"
     },
     {
@@ -17699,7 +17663,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB2-1",
+      "seatId": "UB3-22",
       "notes": "Mother of RIYA BEN | Assigned Seat: UB2-1"
     },
     {
@@ -17711,7 +17675,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-27",
+      "seatId": "UB3-21",
       "notes": "Father of ROHIT KR SAHANI | Assigned Seat: UB3-27"
     },
     {
@@ -17723,7 +17687,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-26",
+      "seatId": "UB3-20",
       "notes": "Mother of ROHIT KR SAHANI | Assigned Seat: UB3-26"
     },
     {
@@ -17735,7 +17699,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-25",
+      "seatId": "UB3-19",
       "notes": "Mother of SABITA MEHER | Assigned Seat: UB3-25"
     },
     {
@@ -17747,7 +17711,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-24",
+      "seatId": "UB3-18",
       "notes": "Father of SABITA MEHER | Assigned Seat: UB3-24"
     },
     {
@@ -17759,7 +17723,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-23",
+      "seatId": "UB3-17",
       "notes": "Father of SANDEEP KUMAR | Assigned Seat: UB3-23"
     },
     {
@@ -17771,7 +17735,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-22",
+      "seatId": "UB3-16",
       "notes": "Mother of SANDEEP KUMAR | Assigned Seat: UB3-22"
     },
     {
@@ -17783,7 +17747,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-21",
+      "seatId": "UB3-15",
       "notes": "Father of SANDEEP KUMAR PATRO | Assigned Seat: UB3-21"
     },
     {
@@ -17795,7 +17759,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-20",
+      "seatId": "UB3-14",
       "notes": "Mother of SANDEEP KUMAR PATRO | Assigned Seat: UB3-20"
     },
     {
@@ -17807,7 +17771,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-19",
+      "seatId": "UB3-13",
       "notes": "Mother of SATYAJEET RAJ | Assigned Seat: UB3-19"
     },
     {
@@ -17819,7 +17783,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-18",
+      "seatId": "UB3-12",
       "notes": "Brother of SATYAJEET RAJ | Assigned Seat: UB3-18"
     },
     {
@@ -17831,7 +17795,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-17",
+      "seatId": "UB3-11",
       "notes": "Father of SHARMISTHA ROUT | Assigned Seat: UB3-17"
     },
     {
@@ -17843,7 +17807,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-16",
+      "seatId": "UB3-10",
       "notes": "Mother of SHARMISTHA ROUT | Assigned Seat: UB3-16"
     },
     {
@@ -17855,7 +17819,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-15",
+      "seatId": "UB3-9",
       "notes": "Mother of SHIFANA T | Assigned Seat: UB3-15"
     },
     {
@@ -17867,7 +17831,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-14",
+      "seatId": "UB3-8",
       "notes": "Brother of SHIFANA T | Assigned Seat: UB3-14"
     },
     {
@@ -17879,7 +17843,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-13",
+      "seatId": "UB3-7",
       "notes": "Father of SHIVAM RAJESH CHAUHAN | Assigned Seat: UB3-13"
     },
     {
@@ -17891,7 +17855,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-12",
+      "seatId": "UB3-6",
       "notes": "Mother of SHIVAM RAJESH CHAUHAN | Assigned Seat: UB3-12"
     },
     {
@@ -17903,7 +17867,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-11",
+      "seatId": "UB3-5",
       "notes": "Father of SHIVANI KUMARI | Assigned Seat: UB3-11"
     },
     {
@@ -17915,7 +17879,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-10",
+      "seatId": "UB3-4",
       "notes": "Mother of SHIVANI KUMARI | Assigned Seat: UB3-10"
     },
     {
@@ -17927,7 +17891,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-9",
+      "seatId": "UB3-3",
       "notes": "Father of SHUBHRAJIT SAHOO | Assigned Seat: UB3-9"
     },
     {
@@ -17939,7 +17903,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-8",
+      "seatId": "UB3-2",
       "notes": "Mother of SHUBHRAJIT SAHOO | Assigned Seat: UB3-8"
     },
     {
@@ -17951,7 +17915,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-7",
+      "seatId": "UB3-1",
       "notes": "Sister of SOUMYA PARIDA | Assigned Seat: UB3-7"
     },
     {
@@ -17963,7 +17927,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-6",
+      "seatId": "UB4-27",
       "notes": "Father of SOUMYA PARIDA | Assigned Seat: UB3-6"
     },
     {
@@ -17975,7 +17939,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-5",
+      "seatId": "UB4-26",
       "notes": "Mother of TIYASHA CHATTERJEE | Assigned Seat: UB3-5"
     },
     {
@@ -17987,7 +17951,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-4",
+      "seatId": "UB4-25",
       "notes": "Father of TIYASHA CHATTERJEE | Assigned Seat: UB3-4"
     },
     {
@@ -17999,7 +17963,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-3",
+      "seatId": "UB4-24",
       "notes": "Sister of VARUNA VINOD A | Assigned Seat: UB3-3"
     },
     {
@@ -18011,7 +17975,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-2",
+      "seatId": "UB4-23",
       "notes": "Sister of VARUNA VINOD A | Assigned Seat: UB3-2"
     },
     {
@@ -18023,7 +17987,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB3-1",
+      "seatId": "UB4-22",
       "notes": "Father of VINEETA MEENA | Assigned Seat: UB3-1"
     },
     {
@@ -18035,7 +17999,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-27",
+      "seatId": "UB4-21",
       "notes": "Sister of VINEETA MEENA | Assigned Seat: UB4-27"
     },
     {
@@ -18047,7 +18011,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-26",
+      "seatId": "UB4-20",
       "notes": "Father of VULASALA VENKATA SAI CHARAN | Assigned Seat: UB4-26"
     },
     {
@@ -18059,7 +18023,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-25",
+      "seatId": "UB4-19",
       "notes": "Mother of VULASALA VENKATA SAI CHARAN | Assigned Seat: UB4-25"
     },
     {
@@ -18071,7 +18035,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-24",
+      "seatId": "UB4-18",
       "notes": "Mother of DIVYANSH CHARAN | Assigned Seat: UB4-24"
     },
     {
@@ -18083,7 +18047,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-23",
+      "seatId": "UB4-17",
       "notes": "Father of DIVYANSH CHARAN | Assigned Seat: UB4-23"
     },
     {
@@ -18095,7 +18059,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-22",
+      "seatId": "UB4-16",
       "notes": "Father of LUCKY BANSAL | Assigned Seat: UB4-22"
     },
     {
@@ -18107,7 +18071,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-21",
+      "seatId": "UB4-15",
       "notes": "Mother of LUCKY BANSAL | Assigned Seat: UB4-21"
     },
     {
@@ -18119,7 +18083,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-20",
+      "seatId": "UB4-14",
       "notes": "Father of MANISHA KANWAR | Assigned Seat: UB4-20"
     },
     {
@@ -18131,7 +18095,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-19",
+      "seatId": "UB4-13",
       "notes": "Mother of MANISHA KANWAR | Assigned Seat: UB4-19"
     },
     {
@@ -18143,7 +18107,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-18",
+      "seatId": "UB4-12",
       "notes": "Friend of MURARI SHARMA | Assigned Seat: UB4-18"
     },
     {
@@ -18155,7 +18119,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-17",
+      "seatId": "UB4-11",
       "notes": "Father of AWANTIKA JHA | Assigned Seat: UB4-17"
     },
     {
@@ -18167,7 +18131,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-16",
+      "seatId": "UB4-10",
       "notes": "Mother of AWANTIKA JHA | Assigned Seat: UB4-16"
     },
     {
@@ -18179,7 +18143,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-15",
+      "seatId": "UB4-9",
       "notes": "FATHER of KINSHUK KHALUA | Assigned Seat: UB4-15"
     },
     {
@@ -18191,7 +18155,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-14",
+      "seatId": "UB4-8",
       "notes": "MOTHER of KINSHUK KHALUA | Assigned Seat: UB4-14"
     },
     {
@@ -18203,7 +18167,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-13",
+      "seatId": "UB4-7",
       "notes": "Father of MIHIR SUTRADHAR | Assigned Seat: UB4-13"
     },
     {
@@ -18215,7 +18179,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-12",
+      "seatId": "UB4-6",
       "notes": "Mother of MIHIR SUTRADHAR | Assigned Seat: UB4-12"
     },
     {
@@ -18227,7 +18191,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-11",
+      "seatId": "UB4-5",
       "notes": "Father of SHARAFUDHEEN EP | Assigned Seat: UB4-11"
     },
     {
@@ -18239,7 +18203,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-10",
+      "seatId": "UB4-4",
       "notes": "Mother of SHARAFUDHEEN EP | Assigned Seat: UB4-10"
     },
     {
@@ -18251,7 +18215,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-9",
+      "seatId": "UB4-3",
       "notes": "Father of ADITI MANDAL | Assigned Seat: UB4-9"
     },
     {
@@ -18263,7 +18227,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-8",
+      "seatId": "UB4-2",
       "notes": "Mother of ADITI MANDAL | Assigned Seat: UB4-8"
     },
     {
@@ -18275,7 +18239,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-7",
+      "seatId": "UB4-1",
       "notes": "Father of ADRITA MUKHERJEE | Assigned Seat: UB4-7"
     },
     {
@@ -18287,7 +18251,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-6",
+      "seatId": "UB5-24",
       "notes": "Mother of ADRITA MUKHERJEE | Assigned Seat: UB4-6"
     },
     {
@@ -18299,7 +18263,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-5",
+      "seatId": "UB5-23",
       "notes": "Father of AGNIBHA PAUL | Assigned Seat: UB4-5"
     },
     {
@@ -18311,7 +18275,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-4",
+      "seatId": "UB5-22",
       "notes": "Mother of AGNIBHA PAUL | Assigned Seat: UB4-4"
     },
     {
@@ -18323,7 +18287,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-3",
+      "seatId": "UB5-21",
       "notes": "Father of ANJALI KUMARI | Assigned Seat: UB4-3"
     },
     {
@@ -18335,7 +18299,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-2",
+      "seatId": "UB5-20",
       "notes": "Mother of ANJALI KUMARI | Assigned Seat: UB4-2"
     },
     {
@@ -18347,7 +18311,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB4-1",
+      "seatId": "UB5-19",
       "notes": "Father of ANKITA GHOSH | Assigned Seat: UB4-1"
     },
     {
@@ -18359,7 +18323,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-24",
+      "seatId": "UB5-18",
       "notes": "Mother of ANKITA GHOSH | Assigned Seat: UB5-24"
     },
     {
@@ -18371,7 +18335,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-23",
+      "seatId": "UB5-15",
       "notes": "Father of AYANTIKA HALDER | Assigned Seat: UB5-23"
     },
     {
@@ -18383,7 +18347,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-22",
+      "seatId": "UB5-14",
       "notes": "Mother of AYANTIKA HALDER | Assigned Seat: UB5-22"
     },
     {
@@ -18395,7 +18359,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-21",
+      "seatId": "UB5-13",
       "notes": "Father of BASIRA SULTANA | Assigned Seat: UB5-21"
     },
     {
@@ -18407,7 +18371,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-20",
+      "seatId": "UB5-12",
       "notes": "Mother of BASIRA SULTANA | Assigned Seat: UB5-20"
     },
     {
@@ -18419,7 +18383,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-19",
+      "seatId": "UB5-11",
       "notes": "Father of BIDISHA CHUNARI | Assigned Seat: UB5-19"
     },
     {
@@ -18431,7 +18395,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-18",
+      "seatId": "UB5-10",
       "notes": "Mother of BIDISHA CHUNARI | Assigned Seat: UB5-18"
     },
     {
@@ -18443,7 +18407,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-17",
+      "seatId": "UB5-7",
       "notes": "Mother of CHAYANIKA BHATTACHARYYA | Assigned Seat: UB5-17"
     },
     {
@@ -18455,7 +18419,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-16",
+      "seatId": "UB5-6",
       "notes": "Aunt of CHAYANIKA BHATTACHARYYA | Assigned Seat: UB5-16"
     },
     {
@@ -18467,7 +18431,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-15",
+      "seatId": "UB5-5",
       "notes": "Father of DIPANJANA DEY | Assigned Seat: UB5-15"
     },
     {
@@ -18479,7 +18443,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-14",
+      "seatId": "UB5-4",
       "notes": "Maternal Uncle of DIPANJANA DEY | Assigned Seat: UB5-14"
     },
     {
@@ -18491,7 +18455,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-13",
+      "seatId": "UB5-3",
       "notes": "Brother of KHUSHBOO KUMARI | Assigned Seat: UB5-13"
     },
     {
@@ -18503,7 +18467,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-12",
+      "seatId": "UB5-2",
       "notes": "Father of KOYEL BINDU | Assigned Seat: UB5-12"
     },
     {
@@ -18515,7 +18479,7 @@
       "email": "",
       "phone": "",
       "categoryId": "accompanying",
-      "seatId": "UB5-11",
+      "seatId": "UB5-1",
       "notes": "Mother of KOYEL BINDU | Assigned Seat: UB5-11"
     },
     {
@@ -18528,7 +18492,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of KRITI RANI | Assigned Seat: UB5-10",
-      "seatId": "UB5-10"
+      "seatId": "UB6-14"
     },
     {
       "id": "att-guest-om-prakash-sinha-238",
@@ -18540,7 +18504,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of KRITI RANI | Assigned Seat: UB5-9",
-      "seatId": "UB5-9"
+      "seatId": "UB6-13"
     },
     {
       "id": "att-guest-kartick-pal-239",
@@ -18552,7 +18516,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of MADHURIMA PAL | Assigned Seat: UB5-8",
-      "seatId": "UB5-8"
+      "seatId": "UB6-12"
     },
     {
       "id": "att-guest-rita-pal-240",
@@ -18564,7 +18528,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of MADHURIMA PAL | Assigned Seat: UB5-7",
-      "seatId": "UB5-7"
+      "seatId": "UB6-11"
     },
     {
       "id": "att-guest-susama-ghorai-241",
@@ -18576,7 +18540,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Sister of MEGHA MAITI | Assigned Seat: UB5-6",
-      "seatId": "UB5-6"
+      "seatId": "EH-A1"
     },
     {
       "id": "att-guest-sourya-maiti-242",
@@ -18588,7 +18552,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Brother of MEGHA MAITI | Assigned Seat: UB5-5",
-      "seatId": "UB5-5"
+      "seatId": "EH-A2"
     },
     {
       "id": "att-guest-raman-kumar-shaw-243",
@@ -18600,7 +18564,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of MEGHA SHAW | Assigned Seat: UB5-4",
-      "seatId": "UB5-4"
+      "seatId": "EH-A3"
     },
     {
       "id": "att-guest-jyoti-shaw-244",
@@ -18612,7 +18576,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of MEGHA SHAW | Assigned Seat: UB5-3",
-      "seatId": "UB5-3"
+      "seatId": "EH-A4"
     },
     {
       "id": "att-guest-sk-mahammad-ali-245",
@@ -18624,7 +18588,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of MOBINA PARVEEN | Assigned Seat: UB5-2",
-      "seatId": "UB5-2"
+      "seatId": "EH-A5"
     },
     {
       "id": "att-guest-mobina-parveen-246",
@@ -18636,7 +18600,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of MOBINA PARVEEN | Assigned Seat: UB5-1",
-      "seatId": "UB5-1"
+      "seatId": "EH-A6"
     },
     {
       "id": "att-guest-abeda-begam-247",
@@ -18648,7 +18612,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of MOHUA KHATUN | Assigned Seat: none (section full)",
-      "seatId": "EH-A1"
+      "seatId": "EH-A7"
     },
     {
       "id": "att-guest-mabuda-begam-248",
@@ -18660,7 +18624,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Aunty of MOHUA KHATUN | Assigned Seat: none (section full)",
-      "seatId": "EH-A2"
+      "seatId": "EH-A8"
     },
     {
       "id": "att-guest-nasim-akhter-249",
@@ -18672,7 +18636,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of NARGIS BANU | Assigned Seat: none (section full)",
-      "seatId": "EH-A3"
+      "seatId": "EH-A9"
     },
     {
       "id": "att-guest-nasima-khatun-250",
@@ -18684,7 +18648,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Sister of NARGIS BANU | Assigned Seat: none (section full)",
-      "seatId": "EH-A4"
+      "seatId": "EH-A10"
     },
     {
       "id": "att-guest-prabir-kumar-ghoshal-251",
@@ -18696,7 +18660,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of PAROMITA GHOSHAL | Assigned Seat: none (section full)",
-      "seatId": "EH-A5"
+      "seatId": "EH-B1"
     },
     {
       "id": "att-guest-purnima-ghoshal-252",
@@ -18708,7 +18672,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of PAROMITA GHOSHAL | Assigned Seat: none (section full)",
-      "seatId": "EH-A6"
+      "seatId": "EH-B2"
     },
     {
       "id": "att-guest-ms-babita-253",
@@ -18720,7 +18684,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Sister of Pinki Sharma | Assigned Seat: none (section full)",
-      "seatId": "EH-A7"
+      "seatId": "EH-B3"
     },
     {
       "id": "att-guest-mr-birendra-sharma-254",
@@ -18732,7 +18696,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Uncle of Pinki Sharma | Assigned Seat: none (section full)",
-      "seatId": "EH-A8"
+      "seatId": "EH-B4"
     },
     {
       "id": "att-guest-satya-charan-dutta-255",
@@ -18744,7 +18708,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of PREETI DUTTA | Assigned Seat: none (section full)",
-      "seatId": "EH-A9"
+      "seatId": "EH-B5"
     },
     {
       "id": "att-guest-archana-dutta-256",
@@ -18756,7 +18720,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of PREETI DUTTA | Assigned Seat: none (section full)",
-      "seatId": "EH-A10"
+      "seatId": "EH-B6"
     },
     {
       "id": "att-guest-mr-dipak-kumar-roy-257",
@@ -18768,7 +18732,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of PRITHA ROY | Assigned Seat: none (section full)",
-      "seatId": "EH-B1"
+      "seatId": "EH-B7"
     },
     {
       "id": "att-guest-mrs-soma-roy-258",
@@ -18780,7 +18744,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of PRITHA ROY | Assigned Seat: none (section full)",
-      "seatId": "EH-B2"
+      "seatId": "EH-B8"
     },
     {
       "id": "att-guest-kakali-biswas-259",
@@ -18792,7 +18756,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of PUSPITA BISWAS | Assigned Seat: none (section full)",
-      "seatId": "EH-B3"
+      "seatId": "EH-B9"
     },
     {
       "id": "att-guest-pinaki-biswas-260",
@@ -18804,7 +18768,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of PUSPITA BISWAS | Assigned Seat: none (section full)",
-      "seatId": "EH-B4"
+      "seatId": "EH-B10"
     },
     {
       "id": "att-guest-md-islamuddin-261",
@@ -18816,7 +18780,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SAMINA YASMIN | Assigned Seat: none (section full)",
-      "seatId": "EH-B5"
+      "seatId": "EH-C1"
     },
     {
       "id": "att-guest-sushanta-das-262",
@@ -18828,7 +18792,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SANANDA DAS | Assigned Seat: none (section full)",
-      "seatId": "EH-B6"
+      "seatId": "EH-C2"
     },
     {
       "id": "att-guest-piyali-das-263",
@@ -18840,7 +18804,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SANANDA DAS | Assigned Seat: none (section full)",
-      "seatId": "EH-B7"
+      "seatId": "EH-C3"
     },
     {
       "id": "att-guest-bablu-mondal-264",
@@ -18852,7 +18816,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SARMIN SULTANA | Assigned Seat: none (section full)",
-      "seatId": "EH-B8"
+      "seatId": "EH-C4"
     },
     {
       "id": "att-guest-sayra-khatun-265",
@@ -18864,7 +18828,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SARMIN SULTANA | Assigned Seat: none (section full)",
-      "seatId": "EH-B9"
+      "seatId": "EH-C5"
     },
     {
       "id": "att-guest-idrish-ali-266",
@@ -18876,7 +18840,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SHABNAM PARVIN | Assigned Seat: none (section full)",
-      "seatId": "EH-B10"
+      "seatId": "EH-C6"
     },
     {
       "id": "att-guest-jesminnhar-begum-267",
@@ -18888,7 +18852,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SHABNAM PARVIN | Assigned Seat: none (section full)",
-      "seatId": "EH-C1"
+      "seatId": "EH-C7"
     },
     {
       "id": "att-guest-ranjan-kumar-268",
@@ -18900,7 +18864,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SONAM KUMARI | Assigned Seat: none (section full)",
-      "seatId": "EH-C2"
+      "seatId": "EH-C8"
     },
     {
       "id": "att-guest-rani-devi-269",
@@ -18912,7 +18876,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SONAM KUMARI | Assigned Seat: none (section full)",
-      "seatId": "EH-C3"
+      "seatId": "EH-C9"
     },
     {
       "id": "att-guest-ramesh-chandra-tikadar-270",
@@ -18924,7 +18888,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SUCHISMITA TIKADAR | Assigned Seat: none (section full)",
-      "seatId": "EH-C4"
+      "seatId": "EH-C10"
     },
     {
       "id": "att-guest-sima-tikadar-271",
@@ -18936,7 +18900,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SUCHISMITA TIKADAR | Assigned Seat: none (section full)",
-      "seatId": "EH-C5"
+      "seatId": "EH-D1"
     },
     {
       "id": "att-guest-tapas-banerjee-272",
@@ -18948,7 +18912,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SUKANYA BANERJEE | Assigned Seat: none (section full)",
-      "seatId": "EH-C6"
+      "seatId": "EH-D2"
     },
     {
       "id": "att-guest-sreerup-banerjee-273",
@@ -18960,7 +18924,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Brother of SUKANYA BANERJEE | Assigned Seat: none (section full)",
-      "seatId": "EH-C7"
+      "seatId": "EH-D3"
     },
     {
       "id": "att-guest-tapas-mondal-274",
@@ -18972,7 +18936,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SUSHMITA MONDAL | Assigned Seat: none (section full)",
-      "seatId": "EH-C8"
+      "seatId": "EH-D4"
     },
     {
       "id": "att-guest-namita-mondal-275",
@@ -18984,7 +18948,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SUSHMITA MONDAL | Assigned Seat: none (section full)",
-      "seatId": "EH-C9"
+      "seatId": "EH-D5"
     },
     {
       "id": "att-guest-supriya-biswas-276",
@@ -18996,7 +18960,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of TANISHA BISWAS | Assigned Seat: none (section full)",
-      "seatId": "EH-C10"
+      "seatId": "EH-D6"
     },
     {
       "id": "att-guest-tapan-kumar-biswas-277",
@@ -19008,7 +18972,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of TANISHA BISWAS | Assigned Seat: none (section full)",
-      "seatId": "EH-D1"
+      "seatId": "EH-D7"
     },
     {
       "id": "att-guest-nirapada-de-278",
@@ -19020,7 +18984,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of NABANITA DE | Assigned Seat: none (section full)",
-      "seatId": "EH-D2"
+      "seatId": "EH-D8"
     },
     {
       "id": "att-guest-sulekha-de-279",
@@ -19032,7 +18996,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of NABANITA DE | Assigned Seat: none (section full)",
-      "seatId": "EH-D3"
+      "seatId": "EH-D9"
     },
     {
       "id": "att-guest-subrata-hati-280",
@@ -19044,7 +19008,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of Shreyasi Hati | Assigned Seat: none (section full)",
-      "seatId": "EH-D4"
+      "seatId": "EH-D10"
     },
     {
       "id": "att-guest-ivi-hati-281",
@@ -19056,7 +19020,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of Shreyasi Hati | Assigned Seat: none (section full)",
-      "seatId": "EH-D5"
+      "seatId": "EH-E1"
     },
     {
       "id": "att-guest-subodh-kumar-pal-282",
@@ -19068,7 +19032,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of Aprajita Pal | Assigned Seat: none (section full)",
-      "seatId": "EH-D6"
+      "seatId": "EH-E2"
     },
     {
       "id": "att-guest-pushpa-rajpali-283",
@@ -19080,7 +19044,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of Aprajita Pal | Assigned Seat: none (section full)",
-      "seatId": "EH-D7"
+      "seatId": "EH-E3"
     },
     {
       "id": "att-guest-narsing-bag-284",
@@ -19092,7 +19056,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of SASHI BAG | Assigned Seat: none (section full)",
-      "seatId": "EH-D8"
+      "seatId": "EH-E4"
     },
     {
       "id": "att-guest-shakuntala-bag-285",
@@ -19104,7 +19068,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of SASHI BAG | Assigned Seat: none (section full)",
-      "seatId": "EH-D9"
+      "seatId": "EH-E5"
     },
     {
       "id": "att-guest-milan-maji-286",
@@ -19116,7 +19080,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of MOUMITA MAJI | Assigned Seat: none (section full)",
-      "seatId": "EH-D10"
+      "seatId": "EH-E6"
     },
     {
       "id": "att-guest-dipali-maji-287",
@@ -19128,7 +19092,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of MOUMITA MAJI | Assigned Seat: none (section full)",
-      "seatId": "EH-E1"
+      "seatId": "EH-E7"
     },
     {
       "id": "att-guest-tarun-kumar-chatterjee-288",
@@ -19140,7 +19104,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "FATHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)",
-      "seatId": "EH-E2"
+      "seatId": "EH-E8"
     },
     {
       "id": "att-guest-sampa-chatterjee-289",
@@ -19152,7 +19116,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "MOTHER of PRAMA CHATTERJEE | Assigned Seat: none (section full)",
-      "seatId": "EH-E3"
+      "seatId": "EH-E9"
     },
     {
       "id": "att-guest-ranjit-kumar-mandal-290",
@@ -19164,7 +19128,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of Roji Mandal | Assigned Seat: none (section full)",
-      "seatId": "EH-E4"
+      "seatId": "EH-E10"
     },
     {
       "id": "att-guest-sheli-mandal-291",
@@ -19176,7 +19140,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of Roji Mandal | Assigned Seat: none (section full)",
-      "seatId": "EH-E5"
+      "seatId": "EH-F1"
     },
     {
       "id": "att-guest-pramod-kumar-292",
@@ -19188,7 +19152,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Father of Swati Sonam | Assigned Seat: none (section full)",
-      "seatId": "EH-E6"
+      "seatId": "EH-F2"
     },
     {
       "id": "att-guest-kumari-raushan-293",
@@ -19200,7 +19164,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Mother of Swati Sonam | Assigned Seat: none (section full)",
-      "seatId": "EH-E7"
+      "seatId": "EH-F3"
     },
     {
       "id": "att-guest-barkha-294",
@@ -19212,7 +19176,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Sister of Nidhi | Assigned Seat: none (section full)",
-      "seatId": "EH-E8"
+      "seatId": "EH-F4"
     },
     {
       "id": "att-guest-sneha-295",
@@ -19224,7 +19188,7 @@
       "phone": "",
       "categoryId": "accompanying",
       "notes": "Sister of Nidhi | Assigned Seat: none (section full)",
-      "seatId": "EH-E9"
+      "seatId": "EH-F5"
     }
   ],
   "volunteers": [
@@ -19383,6 +19347,19 @@
       "recommendedGate": "Gate-1 or Gate-2",
       "isCustom": false
     },
+    "awardees": {
+      "id": "awardees",
+      "name": "Rank Holders & Awardees",
+      "shortName": "Awardees",
+      "color": "#e879f9",
+      "textColor": "#701a75",
+      "borderColor": "#c026d3",
+      "description": "MBBS & B.Sc Nursing rank holders and best outgoing students (Left Wing Row B, 7 seats)",
+      "defaultCount": 7,
+      "priority": 2,
+      "recommendedGate": "Gate-2",
+      "isCustom": false
+    },
     "reporters": {
       "id": "reporters",
       "name": "Media & Press Reporters",
@@ -19392,7 +19369,7 @@
       "borderColor": "#dc2626",
       "description": "Journalists, press photographers and videographers (Right Wing Rows B–D, 21 seats)",
       "defaultCount": 21,
-      "priority": 2,
+      "priority": 3,
       "recommendedGate": "Gate-1",
       "isCustom": false
     },
@@ -19405,7 +19382,7 @@
       "borderColor": "#2563eb",
       "description": "MBBS graduates (Left Wing Rows B–H and L–T, 108 seats)",
       "defaultCount": 108,
-      "priority": 3,
+      "priority": 4,
       "recommendedGate": "Gate-2",
       "isCustom": false
     },
@@ -19418,7 +19395,7 @@
       "borderColor": "#db2777",
       "description": "B.Sc (Hons) and M.Sc Nursing graduates (Left Wing Rows T–X and Middle Row W, 45 seats)",
       "defaultCount": 45,
-      "priority": 4,
+      "priority": 5,
       "recommendedGate": "Gate-2 or Balcony Gate",
       "isCustom": false
     },
@@ -19431,7 +19408,7 @@
       "borderColor": "#7c3aed",
       "description": "MD / MS / MDS residents (Middle Rows T–U, 15 seats)",
       "defaultCount": 15,
-      "priority": 5,
+      "priority": 6,
       "recommendedGate": "Gate-2",
       "isCustom": false
     },
@@ -19444,7 +19421,7 @@
       "borderColor": "#4f46e5",
       "description": "Parents and guardians (whole Balcony, Right Wing Row A and Rows I–X, 247 seats)",
       "defaultCount": 247,
-      "priority": 6,
+      "priority": 7,
       "recommendedGate": "Gate-1",
       "isCustom": false
     },
@@ -19457,7 +19434,7 @@
       "borderColor": "#d97706",
       "description": "Professors, Additional/Associate/Assistant Professors (Middle Rows E–R, 175 seats)",
       "defaultCount": 175,
-      "priority": 7,
+      "priority": 8,
       "recommendedGate": "Gate-1 or Gate-2",
       "isCustom": false
     },
@@ -19470,7 +19447,7 @@
       "borderColor": "#ea580c",
       "description": "Administrative officers and staff (Right Wing Rows E–I, 30 seats)",
       "defaultCount": 30,
-      "priority": 8,
+      "priority": 9,
       "recommendedGate": "Gate-1",
       "isCustom": false
     },
@@ -19483,7 +19460,7 @@
       "borderColor": "#0d9488",
       "description": "IT department staff (Left Wing Rows I–K, 21 seats)",
       "defaultCount": 21,
-      "priority": 9,
+      "priority": 10,
       "recommendedGate": "Gate-2",
       "isCustom": false
     },
@@ -19496,8 +19473,21 @@
       "borderColor": "#65a30d",
       "description": "Event guides, ushers and coordinators (Left Wing Row A, 5 seats)",
       "defaultCount": 5,
-      "priority": 10,
+      "priority": 11,
       "recommendedGate": "Gate-2",
+      "isCustom": false
+    },
+    "accessible": {
+      "id": "accessible",
+      "name": "Wheelchair / Accessible Seating",
+      "shortName": "Wheelchair",
+      "color": "#22d3ee",
+      "textColor": "#164e63",
+      "borderColor": "#0891b2",
+      "description": "Wheelchair users and assisted guests (Right Wing Row A corner, 5 seats)",
+      "defaultCount": 5,
+      "priority": 12,
+      "recommendedGate": "Gate-1",
       "isCustom": false
     },
     "available": {
@@ -19507,13 +19497,13 @@
       "color": "#e2e8f0",
       "textColor": "#475569",
       "borderColor": "#94a3b8",
-      "description": "Seats kept blank (Middle Rows B, R–S and U–V, 57 seats)",
-      "defaultCount": 57,
-      "priority": 11,
+      "description": "Seats kept blank (Middle Rows Q–U, 60 seats)",
+      "defaultCount": 60,
+      "priority": 13,
       "recommendedGate": "Gate-1 or Gate-2",
       "isCustom": false
     }
   },
-  "layoutVersion": "convocation-2026-09-13-exam-hall-100",
-  "_publishedAt": "2026-09-13T06:32:07.889Z"
+  "layoutVersion": "convocation-2026-09-13-committee-chart",
+  "_publishedAt": "2026-09-13T09:31:28.738Z"
 }
