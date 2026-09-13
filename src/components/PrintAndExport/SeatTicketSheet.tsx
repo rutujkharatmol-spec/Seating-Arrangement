@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import QRCode from 'qrcode';
 import { Seat, CategoryInfo, BlockType } from '../../types/seating';
 import { CATEGORIES } from '../../data/categories';
 import {
@@ -21,6 +22,9 @@ import {
   Compass,
   Sliders,
   Armchair,
+  Building2,
+  MapPin,
+  QrCode,
   LucideIcon,
 } from 'lucide-react';
 
@@ -393,9 +397,33 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
   );
 };
 
-import QRCode from 'qrcode';
+const TicketBarcode: React.FC<{ code: string }> = ({ code }) => {
+  const bars = useMemo(() => {
+    let seed = 0;
+    for (let i = 0; i < code.length; i++) {
+      seed = (seed * 31 + code.charCodeAt(i)) & 0xffffffff;
+    }
+    const widths = [1, 2, 1, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 2, 1, 1, 2, 3, 1, 2];
+    return widths.map((w, idx) => ({
+      width: w * 0.32,
+      isSpace: idx % 2 === 1,
+    }));
+  }, [code]);
 
-const TicketQrCode: React.FC<{ value: string; sizeMm?: number }> = ({ value, sizeMm = 15.5 }) => {
+  return (
+    <div className="flex items-center justify-center h-[2.6mm] overflow-hidden my-[0.3mm]">
+      {bars.map((b, i) => (
+        <span
+          key={i}
+          className={`h-full inline-block ${b.isSpace ? 'bg-transparent' : 'bg-slate-800'}`}
+          style={{ width: `${b.width}mm` }}
+        />
+      ))}
+    </div>
+  );
+};
+
+const TicketQrCode: React.FC<{ value: string; sizeMm?: number }> = ({ value, sizeMm = 15 }) => {
   const qr = useMemo(() => {
     try {
       const q = QRCode.create(value, { errorCorrectionLevel: 'M' });
@@ -437,8 +465,10 @@ const SeatTicket: React.FC<{
   const cat = categories[seat.categoryId];
   const guest = seat.attendee;
 
-  const accent = cat?.borderColor || '#475569';
-  const tint = cat?.color || '#e2e8f0';
+  // Use a rich dark executive tone for unassigned seats so they never look dull
+  const isUnassigned = !cat || seat.categoryId === 'unassigned';
+  const accent = isUnassigned ? '#1e293b' : cat?.borderColor || '#475569';
+  const tint = isUnassigned ? '#f1f5f9' : cat?.color || '#e2e8f0';
   const onAccent = readableOn(accent);
   const Icon = SECTION_ICON[seat.categoryId] ?? Armchair;
 
@@ -448,99 +478,213 @@ const SeatTicket: React.FC<{
     return `${base}/#seattracker?seat=${encodeURIComponent(seat.id)}`;
   }, [seat.id]);
 
+  const guestRoleLabel = guest
+    ? seat.categoryId === 'vip'
+      ? 'Honourable Dignitary'
+      : seat.categoryId === 'faculty'
+      ? 'Distinguished Faculty'
+      : seat.categoryId.startsWith('mbbs') || seat.categoryId === 'nursing' || seat.categoryId === 'pg'
+      ? 'Graduating Scholar'
+      : 'Honoured Guest'
+    : 'Auditorium Seat Pass';
+
+  const categoryDisplayName = isUnassigned
+    ? 'Standard Admission'
+    : cat?.shortName ?? cat?.name ?? seat.categoryId;
+
   return (
-    <div className="seat-ticket relative w-full h-[65mm] flex border border-dashed border-slate-400 overflow-hidden bg-white">
-      {/* Colour stub — torn off at the door */}
+    <div className="seat-ticket relative w-full h-[65mm] flex border border-slate-300 rounded-xl overflow-hidden bg-white shadow-2xs print:border-slate-400 print:shadow-none transition-shadow hover:shadow-md">
+      {/* -------------------- Left Coupon Stub (Torn off at door) -------------------- */}
       <div
-        className="w-[27mm] shrink-0 flex flex-col items-center justify-center text-center px-[2mm]"
-        style={{ backgroundColor: accent, color: onAccent }}
+        className="w-[24mm] shrink-0 relative flex flex-col items-center justify-between text-center p-[1.5mm] overflow-hidden"
+        style={{
+          background: `linear-gradient(175deg, ${accent} 0%, ${accent}ee 60%, ${accent}dd 100%)`,
+          color: onAccent,
+        }}
       >
-        <Icon className="w-[5mm] h-[5mm] opacity-90" />
-        <div className="text-[5.5pt] font-bold uppercase tracking-[0.18em] mt-[1mm] opacity-90">Seat</div>
-        <div className="font-ticket-seat text-[19pt] font-extrabold leading-none tracking-tight">
-          {seat.id}
+        {/* Subtle decorative inner border */}
+        <div className="absolute inset-[1mm] border border-white/25 rounded-md pointer-events-none" />
+
+        {/* Top: Category Icon Emblem & Brand */}
+        <div className="relative z-1 flex flex-col items-center w-full">
+          <div className="w-[5.8mm] h-[5.8mm] rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/35 shadow-2xs">
+            <Icon className="w-[3.2mm] h-[3.2mm] opacity-95" />
+          </div>
+          <span className="text-[4.2pt] font-black uppercase tracking-[0.2em] mt-[0.8mm] opacity-90 leading-none">
+            AIIMS KALYANI
+          </span>
+          <span className="text-[3.6pt] font-extrabold uppercase tracking-widest opacity-70 leading-none mt-[0.3mm]">
+            Entry Stub
+          </span>
         </div>
-        <div className="text-[6pt] font-semibold opacity-90 mt-[0.5mm]">
-          Row {seat.row} · No. {seat.col}
+
+        {/* Center: Large Bold Seat ID */}
+        <div className="relative z-1 my-auto flex flex-col items-center">
+          <span className="text-[4.2pt] font-black uppercase tracking-widest opacity-75 leading-none">
+            SEAT
+          </span>
+          <div className="font-ticket-seat text-[19pt] font-black tracking-tight leading-none drop-shadow-xs my-[0.4mm]">
+            {seat.id}
+          </div>
+          <div className="text-[5pt] font-extrabold tracking-wider opacity-90 uppercase leading-none bg-black/15 px-[1.5mm] py-[0.4mm] rounded">
+            Row {seat.row} · #{seat.col}
+          </div>
         </div>
-        <div className="w-[14mm] h-px my-[1.5mm] opacity-40" style={{ backgroundColor: onAccent }} />
-        <div className="text-[5.5pt] uppercase tracking-[0.14em] opacity-90">Enter by</div>
-        <div className="text-[8pt] font-extrabold leading-tight">{seat.gateRecommendation}</div>
+
+        {/* Bottom: Enter Via Gate Card */}
+        <div className="relative z-1 flex flex-col items-center w-full">
+          <div className="w-full bg-white/95 text-slate-900 rounded py-[0.8mm] px-[1mm] shadow-2xs border border-black/10">
+            <div className="text-[3.8pt] font-black uppercase tracking-widest text-slate-500 leading-none">
+              GATE
+            </div>
+            <div className="text-[7pt] font-black text-slate-950 tracking-tight leading-tight mt-[0.2mm] truncate">
+              {seat.gateRecommendation}
+            </div>
+          </div>
+          <span className="text-[3.6pt] font-extrabold tracking-wider uppercase opacity-75 mt-[0.8mm] leading-none">
+            Retain At Door
+          </span>
+        </div>
       </div>
 
-      {/* Perforation, so it reads as a real tear-off ticket */}
-      <div className="absolute left-[27mm] top-0 h-full border-l border-dashed border-slate-400" />
-      <div className="absolute left-[27mm] -top-[1.6mm] w-[3.2mm] h-[3.2mm] -translate-x-1/2 rounded-full bg-white border border-slate-300" />
-      <div className="absolute left-[27mm] -bottom-[1.6mm] w-[3.2mm] h-[3.2mm] -translate-x-1/2 rounded-full bg-white border border-slate-300" />
+      {/* -------------------- Perforation Divider -------------------- */}
+      <div className="absolute left-[24mm] top-0 h-full border-l-2 border-dashed border-slate-300 pointer-events-none z-10" />
+      {/* Top die-cut semi-circular notch */}
+      <div className="absolute left-[24mm] top-0 w-[4.8mm] h-[2.6mm] -translate-x-1/2 rounded-b-full bg-slate-100 border-b border-x border-slate-300/80 z-20" />
+      {/* Bottom die-cut semi-circular notch */}
+      <div className="absolute left-[24mm] bottom-0 w-[4.8mm] h-[2.6mm] -translate-x-1/2 rounded-t-full bg-slate-100 border-t border-x border-slate-300/80 z-20" />
+      {/* Center scissors symbol */}
+      <div className="absolute left-[24mm] top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white px-0.5 z-20 text-[5pt] text-slate-400 font-mono select-none">
+        ✂
+      </div>
 
-      {/* Main body */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <div className="h-[2mm] shrink-0" style={{ backgroundColor: tint }} />
-
-        <div className="flex-1 min-w-0 px-[3.5mm] py-[2.5mm] flex items-stretch gap-[2.5mm]">
-          {/* Left info column */}
-          <div className="flex-1 min-w-0 flex flex-col justify-between">
-            <div className="min-w-0">
-              <div className="flex items-baseline justify-between gap-1.5">
-                <span className="text-[6.5pt] font-black tracking-[0.16em] text-blue-950 uppercase truncate">
-                  AIIMS Kalyani
-                </span>
-                <span className="text-[5.5pt] text-slate-400 uppercase tracking-wider shrink-0">
-                  Admit one
-                </span>
-              </div>
-              <div className="font-ticket-name text-[7.5pt] italic text-slate-600 truncate leading-tight mt-[0.3mm]">
-                {eventTitle}
-              </div>
+      {/* -------------------- Main Ticket Body -------------------- */}
+      <div className="flex-1 min-w-0 flex flex-col relative bg-white">
+        {/* Top Luxury Banner Ribbon */}
+        <div className="h-[6mm] shrink-0 bg-gradient-to-r from-slate-950 via-blue-950 to-indigo-950 border-b-2 border-amber-400/80 px-[2.8mm] flex items-center justify-between text-white shadow-2xs">
+          <div className="flex items-center gap-[1.5mm]">
+            <div className="w-[3.4mm] h-[3.4mm] rounded-sm bg-amber-400 text-slate-950 flex items-center justify-center shadow-2xs shrink-0 font-bold text-[3.5pt]">
+              AK
             </div>
-
-            {/* Who the ticket belongs to */}
-            <div className="min-w-0 my-auto py-[1mm]">
-              {guest ? (
-                <>
-                  <div className="font-ticket-name text-[12pt] font-bold text-slate-900 leading-tight truncate">
-                    {guest.name}
-                  </div>
-                  {(guest.designation || guest.department) && (
-                    <div className="text-[6.5pt] text-slate-500 truncate leading-tight mt-[0.3mm]">
-                      {[guest.designation, guest.department].filter(Boolean).join(' · ')}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <div className="text-[6pt] uppercase tracking-wider text-slate-400">Name</div>
-                  <div className="border-b border-dotted border-slate-400 h-[4.5mm]" />
-                </>
-              )}
-            </div>
-
-            {/* Group badge and block area */}
-            <div className="flex items-end justify-between gap-1.5 min-w-0">
-              <span
-                className="inline-flex items-center gap-[1.5mm] max-w-[32mm] whitespace-nowrap text-[7.5pt] font-black uppercase tracking-wide px-[2.5mm] py-[1mm] rounded-full border shrink-0"
-                style={{ backgroundColor: tint, color: cat?.textColor ?? '#0f172a', borderColor: accent }}
-              >
-                <Icon className="w-[3mm] h-[3mm] shrink-0" />
-                <span className="truncate">{cat?.shortName ?? cat?.name ?? seat.categoryId}</span>
+            <div className="flex items-center gap-[1.2mm] leading-none">
+              <span className="text-[5.8pt] font-black tracking-[0.16em] text-white uppercase whitespace-nowrap">
+                AIIMS KALYANI
               </span>
-              <span className="text-[5.5pt] text-slate-400 text-right leading-tight truncate">
-                {AREA_LABEL[seat.block]}
+              <span className="text-amber-400/80 font-bold text-[5pt]">·</span>
+              <span className="text-[5pt] font-extrabold tracking-wider text-amber-300 uppercase whitespace-nowrap">
+                CONVOCATION 2026
               </span>
             </div>
           </div>
 
-          {/* Right QR Code column: Seat Tracker */}
-          <div className="w-[20mm] shrink-0 border-l border-dashed border-slate-200 pl-[2mm] flex flex-col items-center justify-between py-[0.5mm] text-center">
-            <span className="text-[4.5pt] font-extrabold uppercase tracking-wider text-slate-500 leading-none">
-              Seat Tracker
+          <div className="flex items-center gap-[1.5mm]">
+            <span className="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-mono text-[4.6pt] font-black uppercase tracking-wider px-[1.8mm] py-[0.4mm] rounded-xs shadow-2xs whitespace-nowrap">
+              ADMIT ONE
             </span>
-            <div className="p-[0.5mm] bg-white rounded border border-slate-300 shadow-2xs">
-              <TicketQrCode value={trackerUrl} sizeMm={15.5} />
+            <span className="text-[4.2pt] font-mono text-slate-300 font-bold uppercase tracking-wide whitespace-nowrap">
+              #{seat.id}
+            </span>
+          </div>
+        </div>
+
+        {/* Ultra-subtle Watermark Behind Body */}
+        <div className="absolute inset-0 top-[6mm] pointer-events-none flex items-center justify-center opacity-[0.018] overflow-hidden select-none">
+          <Building2 className="w-[45mm] h-[45mm] text-slate-950" />
+        </div>
+
+        {/* Ticket Content: Center Info Column + Right Smart QR Bar */}
+        <div className="flex-1 min-w-0 flex items-stretch relative z-1">
+          {/* Left / Center Info Column */}
+          <div className="flex-1 min-w-0 p-[2.2mm] flex flex-col justify-between">
+            {/* Header Subtitle */}
+            <div className="min-w-0 flex items-center justify-between">
+              <span className="text-[4.6pt] font-extrabold text-slate-400 uppercase tracking-widest">
+                AUDITORIUM CEREMONIAL PASS
+              </span>
+              <span className="text-[4.6pt] font-bold text-slate-400 uppercase tracking-wider">
+                MAIN AUDITORIUM
+              </span>
             </div>
-            <div className="flex flex-col items-center leading-none">
-              <span className="text-[4pt] font-black text-slate-800 tracking-tight">SCAN FOR SEAT</span>
-              <span className="text-[3.5pt] text-slate-400 mt-[0.3mm]">Live Floor Map</span>
+
+            {/* Centerpiece: Prestigious Guest Certificate Plaque */}
+            <div className="min-w-0 my-auto p-[1.8mm] rounded-lg bg-gradient-to-r from-amber-50/40 via-slate-50/60 to-white border border-slate-200 shadow-2xs relative">
+              <div
+                className="absolute left-0 top-0 bottom-0 w-[1.5mm] rounded-l-lg"
+                style={{ backgroundColor: accent }}
+              />
+              <div className="pl-[1.2mm] min-w-0">
+                <div className="text-[4.2pt] font-black uppercase tracking-widest text-amber-800 leading-none mb-[0.6mm]">
+                  {guestRoleLabel}
+                </div>
+                {guest ? (
+                  <>
+                    <div className="font-ticket-name text-[12.5pt] font-black text-slate-900 leading-tight truncate tracking-tight drop-shadow-2xs">
+                      {guest.name}
+                    </div>
+                    {(guest.designation || guest.department) && (
+                      <div className="text-[6.2pt] font-semibold text-slate-600 truncate leading-tight mt-[0.4mm]">
+                        {[guest.designation, guest.department].filter(Boolean).join(' · ')}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="font-ticket-name text-[11pt] font-bold text-slate-400 italic leading-tight">
+                      [ Reserved Auditorium Seat ]
+                    </div>
+                    <div className="text-[6pt] text-slate-400 mt-[0.3mm]">
+                      Row {seat.row} · Seat No. {seat.col}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Bottom Row: Category Badge + Area Location Pill */}
+            <div className="flex items-center justify-between gap-1 min-w-0 pt-[0.6mm] border-t border-slate-100">
+              {/* Category Badge */}
+              <span
+                className="inline-flex items-center gap-[1.2mm] whitespace-nowrap text-[6.2pt] font-black uppercase tracking-wide px-[2mm] py-[0.6mm] rounded-md border shadow-2xs shrink-0"
+                style={{ backgroundColor: tint, color: cat?.textColor ?? '#0f172a', borderColor: accent }}
+              >
+                <Icon className="w-[2.6mm] h-[2.6mm] shrink-0" />
+                <span className="truncate max-w-[26mm]">{categoryDisplayName}</span>
+              </span>
+
+              {/* Area location with MapPin */}
+              <div className="inline-flex items-center gap-[0.8mm] text-[6pt] font-extrabold text-slate-800 bg-slate-100 border border-slate-200 px-[2mm] py-[0.6mm] rounded-md shadow-2xs shrink-0">
+                <MapPin className="w-[2.4mm] h-[2.4mm] text-rose-600 shrink-0" />
+                <span>{AREA_LABEL[seat.block]} · Row {seat.row}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Smart QR Bar (Boarding Pass Style) */}
+          <div className="w-[21mm] shrink-0 border-l border-dashed border-slate-300 bg-slate-50/70 p-[1.5mm] flex flex-col items-center justify-between text-center">
+            {/* Header Badge */}
+            <div className="flex items-center gap-[0.8mm] bg-indigo-600 text-white px-[1.6mm] py-[0.4mm] rounded-full shadow-2xs">
+              <QrCode className="w-[2.2mm] h-[2.2mm] shrink-0" />
+              <span className="text-[3.8pt] font-black uppercase tracking-widest leading-none">
+                3D LOCATOR
+              </span>
+            </div>
+
+            {/* QR Code Container with Precision Camera Reticle Brackets */}
+            <div className="relative p-[0.6mm] bg-white rounded-md border border-slate-200 shadow-2xs my-[0.3mm]">
+              <div className="absolute -top-[1px] -left-[1px] w-[1.8mm] h-[1.8mm] border-t-2 border-l-2 border-indigo-600 rounded-tl-[2px]" />
+              <div className="absolute -top-[1px] -right-[1px] w-[1.8mm] h-[1.8mm] border-t-2 border-r-2 border-indigo-600 rounded-tr-[2px]" />
+              <div className="absolute -bottom-[1px] -left-[1px] w-[1.8mm] h-[1.8mm] border-b-2 border-l-2 border-indigo-600 rounded-bl-[2px]" />
+              <div className="absolute -bottom-[1px] -right-[1px] w-[1.8mm] h-[1.8mm] border-b-2 border-r-2 border-indigo-600 rounded-br-[2px]" />
+              <TicketQrCode value={trackerUrl} sizeMm={14.8} />
+            </div>
+
+            {/* Scan Guidance & Realistic Barcode Strip */}
+            <div className="flex flex-col items-center leading-tight w-full">
+              <span className="text-[3.8pt] font-black text-slate-800 tracking-tight">SCAN FOR MAP</span>
+              <TicketBarcode code={seat.id} />
+              <span className="text-[3.6pt] font-mono font-bold text-slate-500 tracking-wide">
+                AK26-{seat.id}
+              </span>
             </div>
           </div>
         </div>
