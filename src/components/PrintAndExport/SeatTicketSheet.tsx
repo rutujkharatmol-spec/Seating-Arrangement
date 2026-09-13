@@ -457,6 +457,16 @@ const TicketQrCode: React.FC<{ value: string; sizeMm?: number }> = ({ value, siz
   );
 };
 
+function splitName(fullName: string): { givenName: string; surname: string } {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length <= 1) {
+    return { givenName: fullName, surname: '' };
+  }
+  const surname = parts[parts.length - 1];
+  const givenName = parts.slice(0, parts.length - 1).join(' ');
+  return { givenName, surname };
+}
+
 const SeatTicket: React.FC<{
   seat: Seat;
   eventTitle: string;
@@ -477,6 +487,10 @@ const SeatTicket: React.FC<{
     const base = window.location.origin + window.location.pathname.replace(/\/$/, '');
     return `${base}/#seattracker?seat=${encodeURIComponent(seat.id)}`;
   }, [seat.id]);
+
+  const nameParts = useMemo(() => {
+    return guest?.name ? splitName(guest.name) : null;
+  }, [guest?.name]);
 
   const guestRoleLabel = guest
     ? seat.categoryId === 'vip'
@@ -548,41 +562,25 @@ const SeatTicket: React.FC<{
       </div>
 
       {/* -------------------- Perforation Divider -------------------- */}
-      <div className="absolute left-[24mm] top-0 h-full border-l-2 border-dashed border-slate-300 pointer-events-none z-10" />
-      {/* Top die-cut semi-circular notch */}
-      <div className="absolute left-[24mm] top-0 w-[4.8mm] h-[2.6mm] -translate-x-1/2 rounded-b-full bg-slate-100 border-b border-x border-slate-300/80 z-20" />
-      {/* Bottom die-cut semi-circular notch */}
-      <div className="absolute left-[24mm] bottom-0 w-[4.8mm] h-[2.6mm] -translate-x-1/2 rounded-t-full bg-slate-100 border-t border-x border-slate-300/80 z-20" />
-      {/* Center scissors symbol */}
-      <div className="absolute left-[24mm] top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white px-0.5 z-20 text-[5pt] text-slate-400 font-mono select-none">
-        ✂
-      </div>
+      <div className="absolute left-[24mm] top-0 h-full border-l border-dashed border-slate-300 pointer-events-none z-10" />
 
       {/* -------------------- Main Ticket Body -------------------- */}
       <div className="flex-1 min-w-0 flex flex-col relative bg-white">
         {/* Top Luxury Banner Ribbon */}
         <div className="h-[6mm] shrink-0 bg-gradient-to-r from-slate-950 via-blue-950 to-indigo-950 border-b-2 border-amber-400/80 px-[2.8mm] flex items-center justify-between text-white shadow-2xs">
-          <div className="flex items-center gap-[1.5mm]">
-            <div className="w-[3.4mm] h-[3.4mm] rounded-sm bg-amber-400 text-slate-950 flex items-center justify-center shadow-2xs shrink-0 font-bold text-[3.5pt]">
-              AK
-            </div>
-            <div className="flex items-center gap-[1.2mm] leading-none">
-              <span className="text-[5.8pt] font-black tracking-[0.16em] text-white uppercase whitespace-nowrap">
-                AIIMS KALYANI
-              </span>
-              <span className="text-amber-400/80 font-bold text-[5pt]">·</span>
-              <span className="text-[5pt] font-extrabold tracking-wider text-amber-300 uppercase whitespace-nowrap">
-                CONVOCATION 2026
-              </span>
-            </div>
+          <div className="flex items-center gap-[1.2mm] leading-none">
+            <span className="text-[6pt] font-black tracking-[0.16em] text-white uppercase whitespace-nowrap">
+              AIIMS KALYANI
+            </span>
+            <span className="text-amber-400/80 font-bold text-[5pt]">·</span>
+            <span className="text-[5pt] font-extrabold tracking-wider text-amber-300 uppercase whitespace-nowrap">
+              CONVOCATION 2026
+            </span>
           </div>
 
-          <div className="flex items-center gap-[1.5mm]">
-            <span className="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-mono text-[4.6pt] font-black uppercase tracking-wider px-[1.8mm] py-[0.4mm] rounded-xs shadow-2xs whitespace-nowrap">
-              ADMIT ONE
-            </span>
-            <span className="text-[4.2pt] font-mono text-slate-300 font-bold uppercase tracking-wide whitespace-nowrap">
-              #{seat.id}
+          <div className="flex items-center">
+            <span className="text-[4.8pt] font-mono font-bold text-amber-300 bg-amber-400/20 border border-amber-400/40 uppercase tracking-wide px-[2mm] py-[0.5mm] rounded whitespace-nowrap">
+              PASS #{seat.id}
             </span>
           </div>
         </div>
@@ -616,13 +614,16 @@ const SeatTicket: React.FC<{
                 <div className="text-[4.2pt] font-black uppercase tracking-widest text-amber-800 leading-none mb-[0.6mm]">
                   {guestRoleLabel}
                 </div>
-                {guest ? (
+                {guest && nameParts ? (
                   <>
-                    <div className="font-ticket-name text-[12.5pt] font-black text-slate-900 leading-tight truncate tracking-tight drop-shadow-2xs">
-                      {guest.name}
+                    <div className="font-ticket-name font-black text-slate-900 leading-[1.12] tracking-tight drop-shadow-2xs">
+                      <div className="text-[10.5pt] truncate">{nameParts.givenName}</div>
+                      {nameParts.surname && (
+                        <div className="text-[10.5pt] truncate">{nameParts.surname}</div>
+                      )}
                     </div>
                     {(guest.designation || guest.department) && (
-                      <div className="text-[6.2pt] font-semibold text-slate-600 truncate leading-tight mt-[0.4mm]">
+                      <div className="text-[5.8pt] font-semibold text-slate-600 truncate leading-tight mt-[0.5mm]">
                         {[guest.designation, guest.department].filter(Boolean).join(' · ')}
                       </div>
                     )}
