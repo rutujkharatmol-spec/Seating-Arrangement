@@ -20,29 +20,57 @@ export const DEFAULT_ACADEMIC_RANKS: { pattern: RegExp; canonical: string; rank:
 ];
 
 /**
+ * Raw designation -> canonical name. Classifying one title runs up to 13
+ * regexes, and a roster has only a few dozen distinct titles across hundreds
+ * of people, so the same answer was being recomputed thousands of times.
+ */
+const canonicalCache = new Map<string, string>();
+
+/** Canonical name (lowercased) -> rank, so the rank lookup is a hash hit. */
+const RANK_BY_CANONICAL = new Map<string, number>(
+  DEFAULT_ACADEMIC_RANKS.map((r) => [r.canonical.toLowerCase(), r.rank])
+);
+
+/**
  * Maps any raw designation string to a clean, canonical grouping name
  */
 export function getCanonicalDesignation(rawTitle: string | undefined): string {
-  if (!rawTitle || !rawTitle.trim()) return 'Unspecified';
-  const clean = rawTitle.trim();
+  if (!rawTitle) return 'Unspecified';
 
-  for (const rule of DEFAULT_ACADEMIC_RANKS) {
-    if (rule.pattern.test(clean)) {
-      return rule.canonical;
+  const cached = canonicalCache.get(rawTitle);
+  if (cached !== undefined) return cached;
+
+  const clean = rawTitle.trim();
+  let result: string;
+
+  if (!clean) {
+    result = 'Unspecified';
+  } else {
+    result = clean.charAt(0).toUpperCase() + clean.slice(1);
+    for (const rule of DEFAULT_ACADEMIC_RANKS) {
+      if (rule.pattern.test(clean)) {
+        result = rule.canonical;
+        break;
+      }
     }
   }
 
-  // Capitalize custom designations
-  return clean.charAt(0).toUpperCase() + clean.slice(1);
+  canonicalCache.set(rawTitle, result);
+  return result;
 }
 
 /**
  * Gets the default priority rank for a canonical designation (lower number = sits closer to front)
  */
 export function getDesignationRank(canonical: string): number {
-  const match = DEFAULT_ACADEMIC_RANKS.find((r) => r.canonical.toLowerCase() === canonical.toLowerCase());
-  return match ? match.rank : 50;
+  return RANK_BY_CANONICAL.get(canonical.toLowerCase()) ?? 50;
 }
+
+/**
+ * Shared collator. Matches bare `a.localeCompare(b)` (default locale, default
+ * options) exactly, but builds the collator once instead of once per call.
+ */
+const NAME_COLLATOR = new Intl.Collator();
 
 export interface DesignationGroupInfo {
   designation: string;
@@ -96,6 +124,11 @@ const LOWER_ROW_ORDER = [
 // Upper balcony front railing to back row
 const UPPER_ROW_ORDER = ['UB1', 'UB2', 'UB3', 'UB4', 'UB5'];
 
+// Row -> position, built once. A sort comparator runs O(n log n) times, so an
+// Array.indexOf scan in there costs a linear factor for nothing.
+const LOWER_ROW_RANK = new Map(LOWER_ROW_ORDER.map((r, i) => [r, i]));
+const UPPER_ROW_RANK = new Map(UPPER_ROW_ORDER.map((r, i) => [r, i]));
+
 /**
  * Sorts seats strictly from Front (closest to stage) to Back (furthest).
  * 
@@ -114,11 +147,9 @@ export function sortSeatsFrontToBack(
     }
 
     // 2. Front rows before Back rows
-    const rowList = a.tier === 'UPPER' ? UPPER_ROW_ORDER : LOWER_ROW_ORDER;
-    const rowIdxA = rowList.indexOf(a.row);
-    const rowIdxB = rowList.indexOf(b.row);
-    const rA = rowIdxA === -1 ? 999 : rowIdxA;
-    const rB = rowIdxB === -1 ? 999 : rowIdxB;
+    const rowRanks = a.tier === 'UPPER' ? UPPER_ROW_RANK : LOWER_ROW_RANK;
+    const rA = rowRanks.get(a.row) ?? 999;
+    const rB = rowRanks.get(b.row) ?? 999;
     if (rA !== rB) return rA - rB;
 
     // 3. Within the same row: column order
@@ -190,16 +221,35 @@ export function assignSeatsByDesignationOrder(
     onlyUnseated = false,
   } = params;
 
-  // 1. Identify which attendees to seat
-  const attendeesToSeat = onlyUnseated ? attendees.filter((a) => !a.seatId) : [...attendees];
-  const alreadySeated = onlyUnseated ? attendees.filter((a) => Boolean(a.seatId)) : [];
-  const takenSeatIds = new Set(alreadySeated.map((a) => a.seatId).filter(Boolean) as string[]);
+  // 1. Identify which attendees to seat. One partitioning pass rather than two
+  //    filters plus a map plus a filter over the same roster.
+  const attendeesToSeat: Attendee[] = [];
+  const alreadySeated: Attendee[] = [];
+  const takenSeatIds = new Set<string>();
 
-  // 2. Identify and sort eligible empty seats from Front to Back
-  let candidateSeats = seats.filter((s) => !s.isBlocked && s.categoryId !== 'blocked' && !takenSeatIds.has(s.id));
-  if (targetCategory && targetCategory !== 'ALL') {
-    candidateSeats = candidateSeats.filter((s) => s.categoryId === targetCategory);
+  if (onlyUnseated) {
+    for (const a of attendees) {
+      if (a.seatId) {
+        alreadySeated.push(a);
+        takenSeatIds.add(a.seatId);
+      } else {
+        attendeesToSeat.push(a);
+      }
+    }
+  } else {
+    attendeesToSeat.push(...attendees);
   }
+
+  // 2. Identify and sort eligible empty seats from Front to Back. Both
+  //    conditions are applied in a single pass instead of two filtered copies.
+  const scopedCategory = targetCategory && targetCategory !== 'ALL' ? targetCategory : null;
+  const candidateSeats = seats.filter(
+    (s) =>
+      !s.isBlocked &&
+      s.categoryId !== 'blocked' &&
+      !takenSeatIds.has(s.id) &&
+      (scopedCategory === null || s.categoryId === scopedCategory)
+  );
 
   const sortedSeats = sortSeatsFrontToBack(candidateSeats, seatPattern);
 
@@ -214,27 +264,36 @@ export function assignSeatsByDesignationOrder(
     priorityMap.set(d.toLowerCase(), idx);
   });
 
-  const sortedAttendees = [...attendeesToSeat].sort((a, b) => {
-    const desigA = getCanonicalDesignation(a.designation).toLowerCase();
-    const desigB = getCanonicalDesignation(b.designation).toLowerCase();
+  // Decorate-sort-undecorate: classify each attendee's designation exactly once
+  // (up to 13 regexes plus a lowercase allocation) instead of twice per
+  // comparison. For a 900-person roster that is ~900 classifications rather
+  // than ~18,000, and it also makes the sort stable on `original` order.
+  const decorated = attendeesToSeat.map((attendee, index) => {
+    const canonical = getCanonicalDesignation(attendee.designation);
+    return {
+      attendee,
+      index,
+      canonical,
+      rank: priorityMap.get(canonical.toLowerCase()) ?? 999,
+    };
+  });
 
-    const rankA = priorityMap.has(desigA) ? priorityMap.get(desigA)! : 999;
-    const rankB = priorityMap.has(desigB) ? priorityMap.get(desigB)! : 999;
-
-    if (rankA !== rankB) return rankA - rankB;
+  decorated.sort((a, b) => {
+    if (a.rank !== b.rank) return a.rank - b.rank;
 
     // Secondary sorting within the same designation
     if (withinSort === 'alphabetical') {
-      return a.name.localeCompare(b.name);
-    } else if (withinSort === 'department') {
-      const deptA = a.department || '';
-      const deptB = b.department || '';
-      if (deptA !== deptB) return deptA.localeCompare(deptB);
-      return a.name.localeCompare(b.name);
+      return NAME_COLLATOR.compare(a.attendee.name, b.attendee.name);
+    }
+    if (withinSort === 'department') {
+      const deptA = a.attendee.department || '';
+      const deptB = b.attendee.department || '';
+      if (deptA !== deptB) return NAME_COLLATOR.compare(deptA, deptB);
+      return NAME_COLLATOR.compare(a.attendee.name, b.attendee.name);
     }
 
     // Default: original file order
-    return 0;
+    return a.index - b.index;
   });
 
   // 4. Assign seats from front to back
@@ -244,28 +303,23 @@ export function assignSeatsByDesignationOrder(
 
   const allocationSummaryMap = new Map<string, { count: number; seats: Seat[] }>();
 
-  const assignedAttendees = sortedAttendees.map((a) => {
-    const canonical = getCanonicalDesignation(a.designation);
-    if (!allocationSummaryMap.has(canonical)) {
-      allocationSummaryMap.set(canonical, { count: 0, seats: [] });
+  const assignedAttendees = decorated.map(({ attendee, canonical }) => {
+    let bucket = allocationSummaryMap.get(canonical);
+    if (!bucket) {
+      bucket = { count: 0, seats: [] };
+      allocationSummaryMap.set(canonical, bucket);
     }
 
     if (seatIdx < sortedSeats.length) {
       const seat = sortedSeats[seatIdx++];
       seatedCount++;
-      allocationSummaryMap.get(canonical)!.count++;
-      allocationSummaryMap.get(canonical)!.seats.push(seat);
-      return {
-        ...a,
-        seatId: seat.id,
-      };
-    } else {
-      unseatedCount++;
-      return {
-        ...a,
-        seatId: undefined,
-      };
+      bucket.count++;
+      bucket.seats.push(seat);
+      return { ...attendee, seatId: seat.id };
     }
+
+    unseatedCount++;
+    return { ...attendee, seatId: undefined };
   });
 
   // Combine already seated (if onlyUnseated) with newly assigned

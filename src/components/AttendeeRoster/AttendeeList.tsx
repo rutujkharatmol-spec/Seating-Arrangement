@@ -22,6 +22,21 @@ import { exportSeatingToCsv } from '../../utils/exportHelpers';
 import { exportRosterToExcel, exportStudentsAndParentsExcel } from '../../utils/excelHelpers';
 import { PlanIssue } from '../../utils/autoSeat';
 
+/**
+ * The zone <select> lists the same fixed set of built-in sections on every row.
+ * Built once at module load instead of filtering CATEGORIES and constructing
+ * ~15 <option> elements per row — roughly 13,500 throwaway elements each time
+ * a 900-name roster rendered. React elements are immutable, so one array is
+ * safely shared by every row.
+ */
+const ZONE_OPTIONS = Object.values(CATEGORIES)
+  .filter((c) => c.id !== 'available' && c.id !== 'blocked')
+  .map((c) => (
+    <option key={c.id} value={c.id}>
+      {c.name}
+    </option>
+  ));
+
 interface AttendeeListProps {
   attendees: Attendee[];
   seats: Seat[];
@@ -65,28 +80,50 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const filteredAttendees = useMemo(() => {
-    return attendees.filter((a) => {
-      const matchSearch =
-        !searchTerm.trim() ||
-        a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (a.designation && a.designation.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (a.department && a.department.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (a.seatId && a.seatId.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (a.notes && a.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (a.email && a.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (a.phone && a.phone.includes(searchTerm));
+    // Lower-cased once per keystroke rather than seven times per guest: on a
+    // 900-name roster that was ~6,300 redundant string allocations per key.
+    const query = searchTerm.trim().toLowerCase();
 
+    return attendees.filter((a) => {
       const matchCat = selectedCategoryFilter === 'ALL' || a.categoryId === selectedCategoryFilter;
+      if (!matchCat) return false;
+
       const matchStatus =
         selectedStatusFilter === 'ALL' ||
         (selectedStatusFilter === 'ASSIGNED' && Boolean(a.seatId)) ||
         (selectedStatusFilter === 'UNASSIGNED' && !a.seatId);
+      if (!matchStatus) return false;
 
-      return matchSearch && matchCat && matchStatus;
+      // Cheap filters first, so the string scans only run on survivors.
+      return (
+        !query ||
+        a.name.toLowerCase().includes(query) ||
+        Boolean(a.designation && a.designation.toLowerCase().includes(query)) ||
+        Boolean(a.department && a.department.toLowerCase().includes(query)) ||
+        Boolean(a.seatId && a.seatId.toLowerCase().includes(query)) ||
+        Boolean(a.notes && a.notes.toLowerCase().includes(query)) ||
+        Boolean(a.email && a.email.toLowerCase().includes(query)) ||
+        Boolean(a.phone && a.phone.includes(searchTerm))
+      );
     });
   }, [attendees, searchTerm, selectedCategoryFilter, selectedStatusFilter]);
 
-  const seatedCount = useMemo(() => attendees.filter((a) => a.seatId).length, [attendees]);
+  /**
+   * Seat id -> seat. Each table row used to run `seats.find(...)` just to show
+   * an entry gate: ~900 rows x ~830 seats is three-quarters of a million
+   * comparisons per render of this tab.
+   */
+  const seatById = useMemo(() => {
+    const map = new Map<string, Seat>();
+    seats.forEach((s) => map.set(s.id, s));
+    return map;
+  }, [seats]);
+
+  const seatedCount = useMemo(() => {
+    let n = 0;
+    for (const a of attendees) if (a.seatId) n++;
+    return n;
+  }, [attendees]);
   const unseatedCount = attendees.length - seatedCount;
 
   const toggleSelectAll = () => {
@@ -411,7 +448,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
                     priority: 99,
                     recommendedGate: 'Gate-1 or Gate-2',
                   };
-                  const seat = att.seatId ? seats.find((s) => s.id === att.seatId) : null;
+                  const seat = att.seatId ? seatById.get(att.seatId) : null;
 
                   return (
                     <tr key={att.id} className="hover:bg-slate-50 transition">
@@ -478,11 +515,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
                             borderColor: cat.borderColor,
                           }}
                         >
-                          {Object.values(CATEGORIES)
-                            .filter((c) => c.id !== 'available' && c.id !== 'blocked')
-                            .map((c) => (
-                              <option key={c.id} value={c.id}>{c.name}</option>
-                            ))}
+                          {ZONE_OPTIONS}
                         </select>
                       </td>
 

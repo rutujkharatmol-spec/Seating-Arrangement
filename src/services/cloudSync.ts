@@ -70,17 +70,35 @@ export async function publishPlanToCloud(plan: PlanState): Promise<{ success: bo
   }
 
   // 3. Cache locally in current browser
-  if (typeof window !== 'undefined' && window.localStorage) {
-    try {
-      localStorage.setItem('aiims_seating_plan_v14', jsonStr);
-      localStorage.setItem('aiims_kalyani_mobile_cached_plan_v14', jsonStr);
-      localStorage.setItem('aiims_last_cloud_publish', new Date().toISOString());
-    } catch (e) {
-      console.warn('[CloudSync] Local cache write error:', e);
-    }
-  }
+  writeCloudCache(jsonStr, 'aiims_last_cloud_publish');
 
   return { success, error: success ? undefined : lastError };
+}
+
+/** Primary browser cache of the last known cloud plan. */
+const CLOUD_CACHE_KEY = 'aiims_seating_plan_v14';
+/** Older mirror of the same payload, still read so existing phones keep working. */
+const LEGACY_CLOUD_CACHE_KEY = 'aiims_kalyani_mobile_cached_plan_v14';
+
+/**
+ * Caches the serialised plan for offline/next-load use.
+ *
+ * The payload is a couple of megabytes and localStorage.setItem is synchronous,
+ * so this used to stall the main thread twice per save writing byte-identical
+ * copies under two keys — and two copies of every plan is also what pushed the
+ * origin towards its storage quota, at which point the cache silently stops
+ * working. One copy is written and the superseded mirror is dropped; readers
+ * still fall back to the old key for devices that have not published yet.
+ */
+function writeCloudCache(jsonStr: string, stampKey: string) {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    localStorage.setItem(CLOUD_CACHE_KEY, jsonStr);
+    localStorage.removeItem(LEGACY_CLOUD_CACHE_KEY);
+    localStorage.setItem(stampKey, new Date().toISOString());
+  } catch (e) {
+    console.warn('[CloudSync] Local cache write error:', e);
+  }
 }
 
 /**
@@ -110,14 +128,7 @@ export async function fetchLiveCloudPlan(): Promise<{
       if (isValidSeatedPlan(rawData)) {
         const normalised = migratePlanLayout(normalisePlan(rawData));
         // Update local browser cache so subsequent loads are instant
-        if (typeof window !== 'undefined' && window.localStorage) {
-          try {
-            const cacheStr = JSON.stringify(normalised);
-            localStorage.setItem('aiims_seating_plan_v14', cacheStr);
-            localStorage.setItem('aiims_kalyani_mobile_cached_plan_v14', cacheStr);
-            localStorage.setItem('aiims_last_cloud_fetch', new Date().toISOString());
-          } catch {}
-        }
+        writeCloudCache(JSON.stringify(normalised), 'aiims_last_cloud_fetch');
 
         return {
           plan: normalised,
@@ -166,8 +177,7 @@ export async function fetchLiveCloudPlan(): Promise<{
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const cached =
-        localStorage.getItem('aiims_seating_plan_v14') ||
-        localStorage.getItem('aiims_kalyani_mobile_cached_plan_v14');
+        localStorage.getItem(CLOUD_CACHE_KEY) || localStorage.getItem(LEGACY_CLOUD_CACHE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
         if (isValidSeatedPlan(parsed)) {

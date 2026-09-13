@@ -45,6 +45,12 @@ import { publishPlanToCloud, fetchLiveCloudPlan } from './services/cloudSync';
 
 type TabId = 'map' | 'editor' | 'roster' | 'print';
 
+/**
+ * Joins the searchable fields of a seat. A typed query can never contain NUL,
+ * so a match can never straddle two fields the way a space-joined blob would.
+ */
+const SEARCH_FIELD_SEPARATOR = '\u0000';
+
 export function App() {
   const plan = useHistory<PlanState>(loadPlan);
   const { seats, attendees, volunteers, answers, categories: planCategories } = plan.present;
@@ -138,25 +144,58 @@ export function App() {
     return counts;
   }, [seats]);
 
+  /**
+   * One pre-lowercased haystack per seat, rebuilt only when the plan changes.
+   *
+   * Searching used to lower-case up to ten fields of every one of ~830 seats on
+   * each keystroke — thousands of throwaway strings per character typed, on the
+   * main thread, while the map redrew. Now a keystroke is a plain substring
+   * scan. Fields are joined with NUL, which a typed query can never contain, so
+   * a match can never straddle two fields the way a space-joined blob would.
+   *
+   * Phone is held separately and matched case-sensitively against the raw
+   * value, because that is what the original did — folding it into the
+   * lowercased blob would start matching phone fields that carry text, such as
+   * "9774506054 (whatsApp)".
+   */
+  const seatSearchIndex = useMemo(() => {
+    const haystacks: string[] = new Array(seatsWithPeople.length);
+    const phones: string[] = new Array(seatsWithPeople.length);
+
+    for (let i = 0; i < seatsWithPeople.length; i++) {
+      const s = seatsWithPeople[i];
+      const a = s.attendee;
+      haystacks[i] = [
+        s.id,
+        s.seatNumber,
+        s.blockName,
+        s.categoryId,
+        a?.name ?? '',
+        a?.designation ?? '',
+        a?.department ?? '',
+        a?.notes ?? '',
+        a?.email ?? '',
+      ]
+        .join(SEARCH_FIELD_SEPARATOR)
+        .toLowerCase();
+      phones[i] = a?.phone ?? '';
+    }
+
+    return { haystacks, phones };
+  }, [seatsWithPeople]);
+
   const matchingSeatIds = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return [];
-    return seatsWithPeople
-      .filter(
-        (s) =>
-          s.id.toLowerCase().includes(q) ||
-          s.seatNumber.toLowerCase().includes(q) ||
-          s.blockName.toLowerCase().includes(q) ||
-          s.categoryId.toLowerCase().includes(q) ||
-          s.attendee?.name?.toLowerCase().includes(q) ||
-          (s.attendee?.designation && s.attendee.designation.toLowerCase().includes(q)) ||
-          (s.attendee?.department && s.attendee.department.toLowerCase().includes(q)) ||
-          (s.attendee?.notes && s.attendee.notes.toLowerCase().includes(q)) ||
-          (s.attendee?.email && s.attendee.email.toLowerCase().includes(q)) ||
-          (s.attendee?.phone && s.attendee.phone.includes(q))
-      )
-      .map((s) => s.id);
-  }, [seatsWithPeople, searchQuery]);
+    const { haystacks, phones } = seatSearchIndex;
+    const ids: string[] = [];
+    for (let i = 0; i < haystacks.length; i++) {
+      if (haystacks[i].includes(q) || (phones[i] !== '' && phones[i].includes(q))) {
+        ids.push(seatsWithPeople[i].id);
+      }
+    }
+    return ids;
+  }, [seatsWithPeople, seatSearchIndex, searchQuery]);
 
   // These small aggregates were recomputed on every render (including each
   // keystroke in search). Memoize them so they only recompute when their
@@ -345,7 +384,41 @@ export function App() {
   // Seat & Attendee Handlers
   // ---------------------------------------------------------------------
 
-  const handleToggleSelectSeat = (seat: Seat, multi: boolean) => {
+  const handleSwapSeats = useCallback((seatIdA: string, seatIdB: string) => {
+    const attA = attendees.find((a) => a.seatId === seatIdA);
+    const attB = attendees.find((a) => a.seatId === seatIdB);
+
+    if (!attA && !attB) {
+      showToast(`Both ${seatIdA} and ${seatIdB} are empty seats.`, 'info');
+      return;
+    }
+
+    plan.commit((p) => {
+      const pAttA = p.attendees.find((a) => a.seatId === seatIdA);
+      const pAttB = p.attendees.find((a) => a.seatId === seatIdB);
+
+      const nextAttendees = p.attendees.map((a) => {
+        if (pAttA && a.id === pAttA.id) {
+          return { ...a, seatId: seatIdB };
+        }
+        if (pAttB && a.id === pAttB.id) {
+          return { ...a, seatId: seatIdA };
+        }
+        return a;
+      });
+
+      return {
+        ...p,
+        attendees: nextAttendees,
+      };
+    }, `Swap seats ${seatIdA} ⇄ ${seatIdB}`);
+
+    const nameA = attA?.name || `Seat ${seatIdA}`;
+    const nameB = attB?.name || `Seat ${seatIdB}`;
+    showToast(`Swapped positions: ${nameA} ⇄ ${nameB}`);
+  }, [attendees, plan, showToast]);
+
+  const handleToggleSelectSeat = useCallback((seat: Seat, multi: boolean) => {
     // If we're in swap mode, handle swapping instead of normal selection
     if (swapSourceSeatId) {
       if (swapSourceSeatId === seat.id) {
@@ -367,7 +440,7 @@ export function App() {
       }
       return prev.includes(seat.id) ? prev.filter((id) => id !== seat.id) : [...prev, seat.id];
     });
-  };
+  }, [swapSourceSeatId, handleSwapSeats, showToast]);
 
   const handleSelectSeatIds = (ids: string[], additive: boolean) => {
     setSelectedSeatIds((prev) => (additive ? Array.from(new Set([...prev, ...ids])) : ids));
@@ -385,7 +458,7 @@ export function App() {
     setSelectedSeatIds(zoneSeats.map((s) => s.id));
   };
 
-  const handleUpdateSeatsCategory = (seatIds: string[], categoryId: CategoryId) => {
+  const handleUpdateSeatsCategory = useCallback((seatIds: string[], categoryId: CategoryId) => {
     if (seatIds.length === 0) return;
     const targetSet = new Set(seatIds);
     const catName = categories[categoryId]?.shortName || categoryId;
@@ -405,7 +478,7 @@ export function App() {
       seatIds.length === 1 ? `Change seat ${seatIds[0]} to ${catName}` : `Set ${seatIds.length} seats to ${catName}`
     );
     showToast(`Updated ${seatIds.length} seat(s) to ${catName}`);
-  };
+  }, [categories, plan, showToast]);
 
   const handleRemoveAllSeatColors = useCallback(() => {
     if (
@@ -525,39 +598,6 @@ export function App() {
     showToast(`Emptied seat ${seatId}`);
   };
 
-  const handleSwapSeats = (seatIdA: string, seatIdB: string) => {
-    const attA = attendees.find((a) => a.seatId === seatIdA);
-    const attB = attendees.find((a) => a.seatId === seatIdB);
-
-    if (!attA && !attB) {
-      showToast(`Both ${seatIdA} and ${seatIdB} are empty seats.`, 'info');
-      return;
-    }
-
-    plan.commit((p) => {
-      const pAttA = p.attendees.find((a) => a.seatId === seatIdA);
-      const pAttB = p.attendees.find((a) => a.seatId === seatIdB);
-
-      const nextAttendees = p.attendees.map((a) => {
-        if (pAttA && a.id === pAttA.id) {
-          return { ...a, seatId: seatIdB };
-        }
-        if (pAttB && a.id === pAttB.id) {
-          return { ...a, seatId: seatIdA };
-        }
-        return a;
-      });
-
-      return {
-        ...p,
-        attendees: nextAttendees,
-      };
-    }, `Swap seats ${seatIdA} ⇄ ${seatIdB}`);
-
-    const nameA = attA?.name || `Seat ${seatIdA}`;
-    const nameB = attB?.name || `Seat ${seatIdB}`;
-    showToast(`Swapped positions: ${nameA} ⇄ ${nameB}`);
-  };
 
   const handleApplyQuestionnaireAnswers = (newAnswers: QuestionnaireAnswers) => {
     plan.commit((p) => {

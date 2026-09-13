@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useMemo, useState } from 'react';
 import { Seat, Attendee, Volunteer, CategoryInfo } from '../../types/seating';
 import { PrintableChart } from './PrintableChart';
 import { SeatPassBadge } from './SeatPassBadge';
-import { SeatTicketSheet } from './SeatTicketSheet';
+/**
+ * The ticket sheet pulls in the QR-code encoder, which nothing else needs.
+ * Loading it on demand keeps that code out of the initial download for every
+ * user who never prints tickets.
+ */
+const SeatTicketSheet = lazy(() =>
+  import('./SeatTicketSheet').then((m) => ({ default: m.SeatTicketSheet }))
+);
 import { MasterAttendeeList } from './MasterAttendeeList';
-import { Printer, Map, DoorOpen, Ticket, Scissors, ListOrdered } from 'lucide-react';
+import { Printer, Map as MapIcon, DoorOpen, Ticket, Scissors, ListOrdered } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
 
 interface PrintLayoutModalProps {
@@ -28,31 +35,60 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
 }) => {
   const [printMode, setPrintMode] = useState<'chart' | 'master' | 'gate1' | 'gate2' | 'gateExam' | 'badges' | 'tickets'>('chart');
 
-  const ticketableSeats = seats.filter((s) => !s.isBlocked);
+  /**
+   * Seat id -> seat. The three usher sheets and the badge sheet each ran
+   * `seats.find(...)` per guest — four nested scans of ~900 guests over ~830
+   * seats, recomputed on every render, including simply clicking between the
+   * print-mode tabs. One shared map turns each lookup into a hash probe.
+   */
+  const seatById = useMemo(() => {
+    const map = new Map<string, Seat>();
+    seats.forEach((s) => map.set(s.id, s));
+    return map;
+  }, [seats]);
+
+  const ticketableSeats = useMemo(() => seats.filter((s) => !s.isBlocked), [seats]);
 
   const handleTriggerPrint = () => {
     window.print();
   };
 
-  const gate1Attendees = attendees.filter((a) => {
-    const seat = seats.find((s) => s.id === a.seatId);
-    return seat?.gateRecommendation === 'Gate-1' || a.categoryId === 'awardees' || a.categoryId === 'accompanying' && seat?.tier !== 'EXAM_HALL';
-  });
+  // The three gate lists share one pass over the roster and are only rebuilt
+  // when the plan actually changes, not when the selected print mode does.
+  const { gate1Attendees, gate2Attendees, examGateAttendees } = useMemo(() => {
+    const gate1: Attendee[] = [];
+    const gate2: Attendee[] = [];
+    const exam: Attendee[] = [];
 
-  const gate2Attendees = attendees.filter((a) => {
-    const seat = seats.find((s) => s.id === a.seatId);
-    return seat?.gateRecommendation === 'Gate-2' || a.categoryId === 'senior_faculty' || a.categoryId === 'reporters';
-  });
+    for (const a of attendees) {
+      const seat = a.seatId ? seatById.get(a.seatId) : undefined;
 
-  const examGateAttendees = attendees.filter((a) => {
-    const seat = seats.find((s) => s.id === a.seatId);
-    return seat?.gateRecommendation === 'Exam Hall Gate' || seat?.tier === 'EXAM_HALL';
-  });
+      if (
+        seat?.gateRecommendation === 'Gate-1' ||
+        a.categoryId === 'awardees' ||
+        (a.categoryId === 'accompanying' && seat?.tier !== 'EXAM_HALL')
+      ) {
+        gate1.push(a);
+      }
+      if (
+        seat?.gateRecommendation === 'Gate-2' ||
+        a.categoryId === 'senior_faculty' ||
+        a.categoryId === 'reporters'
+      ) {
+        gate2.push(a);
+      }
+      if (seat?.gateRecommendation === 'Exam Hall Gate' || seat?.tier === 'EXAM_HALL') {
+        exam.push(a);
+      }
+    }
+
+    return { gate1Attendees: gate1, gate2Attendees: gate2, examGateAttendees: exam };
+  }, [attendees, seatById]);
 
   const printOptions = [
     {
       id: 'chart' as const,
-      icon: Map,
+      icon: MapIcon,
       title: '1. Full Seating Map',
       description: 'Auditorium & Exam Hall blueprint chart for notice boards & lobby entrance.',
       badge: 'Master Chart',
@@ -345,7 +381,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
         {printMode === 'badges' && (
           <div className="flex flex-wrap gap-4 justify-center">
             {attendees.map((att) => {
-              const seat = seats.find((s) => s.id === att.seatId);
+              const seat = att.seatId ? seatById.get(att.seatId) : undefined;
               return (
                 <SeatPassBadge
                   key={att.id}
@@ -362,12 +398,20 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
 
         {/* 5. SEAT TICKETS — one per seat, cut and distribute */}
         {printMode === 'tickets' && (
-          <SeatTicketSheet
-            seats={seats}
-            eventTitle={eventTitle}
-            departmentName={departmentName}
-            categories={categories}
-          />
+          <Suspense
+            fallback={
+              <p className="py-12 text-center text-sm font-semibold text-slate-500">
+                Preparing ticket sheet…
+              </p>
+            }
+          >
+            <SeatTicketSheet
+              seats={seats}
+              eventTitle={eventTitle}
+              departmentName={departmentName}
+              categories={categories}
+            />
+          </Suspense>
         )}
 
       </div>

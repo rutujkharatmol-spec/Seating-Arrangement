@@ -62,6 +62,77 @@ function getKioskSeatCoordinates(seat: Seat): { x: number; y: number } {
   return coords;
 }
 
+/**
+ * One chair on the kiosk map.
+ *
+ * Split out and memoised because the map draws every seat in the building.
+ * Inline in the parent's JSX, all ~830 of them were rebuilt and reconciled on
+ * every keystroke in the search box, every zoom button press and every tab
+ * switch — on the phones of guests standing in the lobby. Memoised, a tap that
+ * changes the selection re-renders two chairs instead of the whole hall.
+ */
+interface KioskSeatProps {
+  seat: Seat;
+  x: number;
+  y: number;
+  fill: string;
+  stroke: string;
+  isSelected: boolean;
+  isBlocked: boolean;
+  onSelect: (seat: Seat) => void;
+}
+
+const KioskSeat = React.memo<KioskSeatProps>(
+  ({ seat, x, y, fill, stroke, isSelected, isBlocked, onSelect }) => (
+    <g transform={`translate(${x}, ${y})`} onClick={() => onSelect(seat)} className="cursor-pointer group">
+      <rect
+        x="0"
+        y="0"
+        width={SEAT_SIZE}
+        height={SEAT_SIZE}
+        rx="3"
+        fill={fill}
+        stroke={stroke}
+        strokeWidth={isSelected ? '2.5' : '1'}
+      />
+
+      {/* Armchair silhouette */}
+      <g transform={`scale(${SEAT_SIZE / 24}) translate(2, 2)`}>
+        <path
+          d="M4 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3z"
+          fill={isSelected ? '#ffffff' : isBlocked ? '#e11d48' : '#1e293b'}
+          opacity={isSelected ? 1 : 0.85}
+        />
+      </g>
+
+      {/* Animated Spotlight Beacon Ring on target seat */}
+      {isSelected && (
+        <g>
+          <circle
+            cx={SEAT_SIZE / 2}
+            cy={SEAT_SIZE / 2}
+            r={SEAT_SIZE * 1.5}
+            fill="none"
+            stroke="#2563eb"
+            strokeWidth="2.5"
+            className="animate-ping opacity-75"
+          />
+          <circle
+            cx={SEAT_SIZE / 2}
+            cy={SEAT_SIZE / 2}
+            r={SEAT_SIZE * 2.2}
+            fill="none"
+            stroke="#60a5fa"
+            strokeWidth="1.5"
+            className="animate-pulse"
+          />
+        </g>
+      )}
+    </g>
+  )
+);
+KioskSeat.displayName = 'KioskSeat';
+
 export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
   seats: propSeats,
   attendees: propAttendees,
@@ -147,6 +218,27 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     return map;
   }, [liveSeats]);
 
+  /**
+   * Seat id -> seat, and seat id -> the guest sitting there. Every place that
+   * needed these used to run `liveSeats.find(...)` / `liveAttendees.find(...)`,
+   * a full scan of ~830 seats or ~900 guests. The results list did it once per
+   * visible row, so listing a whole category was ~330,000 comparisons for each
+   * render; these two maps make each lookup a single hash probe.
+   */
+  const seatById = useMemo(() => {
+    const map = new Map<string, Seat>();
+    liveSeats.forEach((s) => map.set(s.id, s));
+    return map;
+  }, [liveSeats]);
+
+  const attendeeBySeatId = useMemo(() => {
+    const map = new Map<string, Attendee>();
+    liveAttendees.forEach((a) => {
+      if (a.seatId && !map.has(a.seatId)) map.set(a.seatId, a);
+    });
+    return map;
+  }, [liveAttendees]);
+
   // Search filter
   const matchingResults = useMemo<{ attendees: Attendee[]; seats: Seat[] }>(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -192,22 +284,27 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     });
   }, []);
 
-  const handleSelectAttendee = (att: Attendee) => {
-    setSelectedAttendee(att);
-    const seat = att.seatId ? liveSeats.find((s) => s.id === att.seatId) : attendeeMap.get(att.id) || null;
-    setSelectedSeat(seat || null);
+  const handleSelectAttendee = useCallback(
+    (att: Attendee) => {
+      setSelectedAttendee(att);
+      const seat = (att.seatId ? seatById.get(att.seatId) : attendeeMap.get(att.id)) || null;
+      setSelectedSeat(seat);
 
-    if (seat) {
+      if (seat) {
+        centerOnSeat(seat);
+      }
+    },
+    [seatById, attendeeMap, centerOnSeat]
+  );
+
+  const handleSelectSeatOnly = useCallback(
+    (seat: Seat) => {
+      setSelectedSeat(seat);
+      setSelectedAttendee(attendeeBySeatId.get(seat.id) || null);
       centerOnSeat(seat);
-    }
-  };
-
-  const handleSelectSeatOnly = (seat: Seat) => {
-    setSelectedSeat(seat);
-    const att = liveAttendees.find((a) => a.seatId === seat.id);
-    setSelectedAttendee(att || null);
-    centerOnSeat(seat);
-  };
+    },
+    [attendeeBySeatId, centerOnSeat]
+  );
 
   // Auto-focus seat if specified in URL (e.g. scanned from Ticket QR code: /#seattracker?seat=B23)
   useEffect(() => {
@@ -219,13 +316,17 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
         const params = new URLSearchParams(queryStr);
         const seatParam = params.get('seat') || params.get('q');
         if (seatParam) {
-          const match = liveSeats.find(
-            (s) => s.id.toLowerCase() === seatParam.trim().toLowerCase()
-          );
+          const wanted = seatParam.trim().toLowerCase();
+          let match: Seat | undefined;
+          for (const s of liveSeats) {
+            if (s.id.toLowerCase() === wanted) {
+              match = s;
+              break;
+            }
+          }
           if (match) {
             setSelectedSeat(match);
-            const att = liveAttendees.find((a) => a.seatId === match.id);
-            setSelectedAttendee(att || null);
+            setSelectedAttendee(attendeeBySeatId.get(match.id) || null);
             centerOnSeat(match);
             setActiveMobileTab('pass');
           } else {
@@ -236,7 +337,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     } catch {
       // Ignore URL parsing errors
     }
-  }, [liveSeats, centerOnSeat]);
+  }, [liveSeats, attendeeBySeatId, centerOnSeat]);
 
   const handleResetZoom = () => {
     setView({ zoom: 1, x: 0, y: 0 });
@@ -272,6 +373,38 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     const text = `*AIIMS Kalyani Seating Pass*\n👤 *Guest:* ${selectedAttendee?.name || 'Guest'}\n🪑 *Seat:* ${selectedSeat.id} (${selectedSeat.blockName}, Row ${selectedSeat.row}, Seat ${selectedSeat.col})\n🚪 *Entry Gate:* ${selectedSeat.gateRecommendation}\n🏛️ *Event:* ${eventTitle}\n📍 *Find Seat on Map:* ${mapUrl}`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   };
+
+  /**
+   * The whole seat layer, built only when something that actually changes how a
+   * chair looks changes: the plan itself, the section colours, or which seat is
+   * selected. Panning, zooming, searching and switching tabs now reuse this
+   * exact element array, so React skips the entire subtree.
+   */
+  const selectedSeatId = selectedSeat?.id ?? null;
+  const seatNodes = useMemo(
+    () =>
+      liveSeats.map((seat) => {
+        const { x, y } = getKioskSeatCoordinates(seat);
+        const isSelected = selectedSeatId === seat.id;
+        const cat = categories[seat.categoryId];
+        const isBlocked = Boolean(seat.isBlocked) || seat.categoryId === 'blocked';
+
+        return (
+          <KioskSeat
+            key={seat.id}
+            seat={seat}
+            x={x}
+            y={y}
+            isSelected={isSelected}
+            isBlocked={isBlocked}
+            fill={isSelected ? '#3b82f6' : isBlocked ? '#fca5a5' : cat?.color ?? '#e2e8f0'}
+            stroke={isSelected ? '#1d4ed8' : isBlocked ? '#e11d48' : cat?.borderColor || '#64748b'}
+            onSelect={handleSelectSeatOnly}
+          />
+        );
+      }),
+    [liveSeats, categories, selectedSeatId, handleSelectSeatOnly]
+  );
 
   const selectedCat = selectedSeat ? categories[selectedSeat.categoryId] : null;
 
@@ -462,7 +595,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                 <span className="font-mono text-[10px] text-slate-400">Tap name to view pass</span>
               </div>
               {matchingResults.attendees.map((att) => {
-                const seat = att.seatId ? liveSeats.find((s) => s.id === att.seatId) : null;
+                const seat = att.seatId ? seatById.get(att.seatId) : null;
                 const cat = categories[att.categoryId] || { name: att.categoryId, shortName: att.categoryId, color: '#3b82f6', textColor: '#ffffff' };
 
                 return (
@@ -859,66 +992,7 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                 </g>
 
                 {/* Render All Seats */}
-                {liveSeats.map((seat) => {
-                  const { x, y } = getKioskSeatCoordinates(seat);
-                  const size = SEAT_SIZE;
-                  const isSelected = selectedSeat?.id === seat.id;
-                  const cat = categories[seat.categoryId] || { color: '#e2e8f0', borderColor: '#64748b' };
-                  const isBlocked = seat.isBlocked || seat.categoryId === 'blocked';
-
-                  return (
-                    <g
-                      key={seat.id}
-                      transform={`translate(${x}, ${y})`}
-                      onClick={() => handleSelectSeatOnly(seat)}
-                      className="cursor-pointer group"
-                    >
-                      <rect
-                        x="0"
-                        y="0"
-                        width={size}
-                        height={size}
-                        rx="3"
-                        fill={isSelected ? '#3b82f6' : isBlocked ? '#fca5a5' : cat.color}
-                        stroke={isSelected ? '#1d4ed8' : isBlocked ? '#e11d48' : cat.borderColor || '#64748b'}
-                        strokeWidth={isSelected ? '2.5' : '1'}
-                      />
-                      
-                      {/* Armchair silhouette */}
-                      <g transform={`scale(${size / 24}) translate(2, 2)`}>
-                        <path
-                          d="M4 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3z"
-                          fill={isSelected ? '#ffffff' : isBlocked ? '#e11d48' : '#1e293b'}
-                          opacity={isSelected ? 1 : 0.85}
-                        />
-                      </g>
-
-                      {/* Animated Spotlight Beacon Ring on target seat */}
-                      {isSelected && (
-                        <g>
-                          <circle
-                            cx={size / 2}
-                            cy={size / 2}
-                            r={size * 1.5}
-                            fill="none"
-                            stroke="#2563eb"
-                            strokeWidth="2.5"
-                            className="animate-ping opacity-75"
-                          />
-                          <circle
-                            cx={size / 2}
-                            cy={size / 2}
-                            r={size * 2.2}
-                            fill="none"
-                            stroke="#60a5fa"
-                            strokeWidth="1.5"
-                            className="animate-pulse"
-                          />
-                        </g>
-                      )}
-                    </g>
-                  );
-                })}
+                {seatNodes}
 
               </g>
             </svg>

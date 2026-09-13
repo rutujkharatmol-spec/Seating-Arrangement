@@ -144,10 +144,28 @@ export const AutoSeatByDesignationModal: React.FC<AutoSeatByDesignationModalProp
     onClose();
   };
 
+  /**
+   * Unblocked seats per zone, plus the grand total, from one pass over the
+   * seat list. The zone dropdown used to run a full `seats.filter(...)` inside
+   * the render of every single <option> — ~15 scans of ~830 seats on every
+   * keystroke or toggle anywhere in this modal.
+   */
+  const unblockedSeatCounts = useMemo(() => {
+    const byCategory = new Map<string, number>();
+    let total = 0;
+    for (const s of seats) {
+      if (s.isBlocked) continue;
+      total++;
+      byCategory.set(s.categoryId, (byCategory.get(s.categoryId) ?? 0) + 1);
+    }
+    return { byCategory, total };
+  }, [seats]);
+
   // Available seats count in selected zone
-  const availableSeatsCount = seats.filter(
-    (s) => !s.isBlocked && (targetCategory === 'ALL' || s.categoryId === targetCategory)
-  ).length;
+  const availableSeatsCount =
+    targetCategory === 'ALL'
+      ? unblockedSeatCounts.total
+      : unblockedSeatCounts.byCategory.get(targetCategory) ?? 0;
 
   return (
     <div
@@ -203,7 +221,7 @@ export const AutoSeatByDesignationModal: React.FC<AutoSeatByDesignationModalProp
                 <option value="ALL">All Categories & Zones</option>
                 {Object.values(categories).map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {cat.name} ({seats.filter((s) => s.categoryId === cat.id && !s.isBlocked).length} seats)
+                    {cat.name} ({unblockedSeatCounts.byCategory.get(cat.id) ?? 0} seats)
                   </option>
                 ))}
               </select>

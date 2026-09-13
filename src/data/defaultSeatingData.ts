@@ -33,6 +33,14 @@ UPPER_ROW_ORDER.forEach((r, i) => { UPPER_ROW_INDEX[r] = i; });
 /** Ground-floor rows from the stage backwards. */
 const FRONT_TO_BACK = [...LOWER_ROW_LIST].reverse();
 
+/**
+ * Row -> distance from the stage. LOWER_ROW_LIST runs back-to-front, so this is
+ * just its index mirrored. Used by the zone sort below, which would otherwise
+ * pay two Array.indexOf scans on every one of its O(n log n) comparisons.
+ */
+const FRONT_TO_BACK_INDEX: Record<string, number> = {};
+FRONT_TO_BACK.forEach((r, i) => { FRONT_TO_BACK_INDEX[r] = i; });
+
 const BLOCK_NAMES: Record<BlockType, string> = {
   UPPER_RIGHT: 'Upper Right Balcony',
   UPPER_CENTER: 'Upper Center Balcony',
@@ -227,13 +235,19 @@ const RIGHT_WING_PLAN: ZoneSegment[] = [
 export function assignConvocationZones(seats: Seat[], _counts: ZoneCounts = DEFAULT_ZONE_COUNTS): Seat[] {
   const zoneBySeat = new Map<string, CategoryId>();
 
+  // Group once instead of filtering the full seat list per block.
+  const seatsByBlock = new Map<BlockType, Seat[]>();
+  for (const s of seats) {
+    const list = seatsByBlock.get(s.block);
+    if (list) list.push(s);
+    else seatsByBlock.set(s.block, [s]);
+  }
+
   const fillBlock = (block: BlockType, plan: ZoneSegment[]) => {
-    const ordered = seats
-      .filter((s) => s.block === block)
-      .sort((a, b) => {
-        const rowDiff = FRONT_TO_BACK.indexOf(a.row) - FRONT_TO_BACK.indexOf(b.row);
-        return rowDiff !== 0 ? rowDiff : a.col - b.col;
-      });
+    const ordered = (seatsByBlock.get(block) ?? []).sort((a, b) => {
+      const rowDiff = (FRONT_TO_BACK_INDEX[a.row] ?? -1) - (FRONT_TO_BACK_INDEX[b.row] ?? -1);
+      return rowDiff !== 0 ? rowDiff : a.col - b.col;
+    });
 
     let i = 0;
     for (const segment of plan) {
