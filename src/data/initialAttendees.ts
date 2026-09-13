@@ -1472,9 +1472,9 @@ export const FACULTY_ATTENDEES: Attendee[] = [
     "email": "manjusha.physiol@aiimskalyani.edu.in",
     "phone": "9221232423",
     "categoryId": "faculty",
-    "seatId": "F8",
+    "seatId": "F7",
     "seatLock": true,
-    "notes": "Faculty | Assistant professor | Physiology | Convocation Organising Committee | Assigned Seat: F8"
+    "notes": "Faculty | Assistant professor | Physiology | Convocation Organising Committee | Assigned Seat: F7"
   },
   {
     "id": "att-fac-kalyan-kumar-saha",
@@ -7308,7 +7308,7 @@ export const AWARDEE_ATTENDEES: Attendee[] = [
  *   Centre Row B  B8–B17  deans and visiting Executive Directors
  *   Centre Row C  C8–C11  Registrar and Associate Deans
  *   Centre Row D  D8      Dr Mukesh          Centre Row E  E8  Dr Somya
- *   Centre Row F  F8      Dr Manjusha A Shinde (on the faculty list below)
+ *   Right Row F   F7      Dr Manjusha A Shinde (on the faculty list below)
  *   Left Row A    A10     Dr Tandra Ghosh (on the faculty list below), A9–A6 student guides
  *   Left Row A    A12–A11 wheelchair spaces (added at the corner)
  */
@@ -7503,7 +7503,7 @@ export const RESERVED_SEAT_ATTENDEES: Attendee[] = [
     "institution": "AIIMS Kalyani",
     "email": "",
     "phone": "",
-    "categoryId": "vip",
+    "categoryId": "faculty",
     "seatId": "D8",
     "seatLock": true,
     "notes": "Organising committee | Assigned Seat: D8"

@@ -59,7 +59,8 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
         const x = 809 - (seat.col - 1) * 26;
         return { x, y, size: seatSize };
       }
-      const x = 861 - (seat.col - 1) * 26;
+      // Row P is numbered P1–P6 but sits one seat in from the wall.
+      const x = seat.row === 'P' ? 861 - seat.col * 26 : 861 - (seat.col - 1) * 26;
       return { x, y, size: seatSize };
     }
     if (seat.block === 'LOWER_CENTER') {
@@ -93,6 +94,59 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
     [seats]
   );
 
+  /**
+   * The committee's named seat allotments, read straight off the plan so the
+   * printed notes can never drift from the chart above them. A group is only
+   * printed when somebody is actually sitting in it.
+   */
+  const namedGroups = React.useMemo(() => {
+    const seated = auditoriumSeats
+      .filter((s) => s.attendee)
+      .sort((a, b) => a.row.localeCompare(b.row) || a.col - b.col);
+
+    const pick = (fn: (s: Seat) => boolean) =>
+      seated.filter(fn).map((s) => ({
+        seatNumber: s.seatNumber,
+        name: s.attendee!.name,
+        detail: [s.attendee!.designation, s.attendee!.institution]
+          .filter(Boolean)
+          .join(' • '),
+      }));
+
+    return [
+      {
+        title: 'Dignitaries & Institute Officers',
+        subtitle: 'Centre Block, Rows B–C',
+        accent: categories.vip?.color || '#c084fc',
+        rows: pick((s) => Boolean(s.attendee?.seatLock) && s.categoryId === 'vip'),
+      },
+      {
+        title: 'Convocation Organising Committee',
+        subtitle: 'Centre Block, Rows D–F',
+        accent: categories.faculty?.color || '#fbbf24',
+        rows: pick((s) => Boolean(s.attendee?.seatLock) && s.categoryId === 'faculty'),
+      },
+      {
+        title: 'Rank Holders & Awardees',
+        subtitle: 'Left Wing, Row B',
+        accent: categories.awardees?.color || '#e879f9',
+        rows: pick((s) => s.categoryId === 'awardees'),
+      },
+      {
+        title: 'Student Guides',
+        subtitle: 'Left Wing, Row A',
+        accent: categories.guide?.color || '#a3e635',
+        rows: pick((s) => s.categoryId === 'guide'),
+      },
+      {
+        title: 'Wheelchair Spaces',
+        subtitle: 'Left Wing, Row A corner',
+        accent: categories.accessible?.color || '#22d3ee',
+        rows: pick((s) => s.categoryId === 'accessible'),
+      },
+    ].filter((g) => g.rows.length > 0);
+  }, [auditoriumSeats, categories]);
+
   const categoryCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
     for (const seat of auditoriumSeats) {
@@ -102,6 +156,7 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
   }, [auditoriumSeats]);
 
   return (
+    <>
     <div className="printable-chart bg-white text-slate-900 p-6 max-w-4xl mx-auto rounded-xl shadow-lg border border-slate-300 print:border-0 print:shadow-none print:p-0 print:m-0 print:max-w-none print:w-full">
       
       {/* Printable Header */}
@@ -242,5 +297,57 @@ export const PrintableChart: React.FC<PrintableChartProps> = ({
         })}
       </div>
     </div>
+
+      {/* Named seat allotments — printed on its own page after the map */}
+      {namedGroups.length > 0 && (
+        <div className="printable-chart-notes bg-white text-slate-900 p-6 max-w-4xl mx-auto mt-6 rounded-xl shadow-lg border border-slate-300 print:mt-0 print:border-0 print:shadow-none print:p-0 print:max-w-none print:w-full">
+          <div className="text-center mb-3 border-b-2 border-slate-800 pb-2.5 print:mb-3 print:pb-2">
+            <h1 className="text-xl font-black tracking-tight text-slate-900 font-serif print:text-lg">
+              Named Seat Allotments
+            </h1>
+            <h2 className="text-sm font-bold text-slate-700 mt-0.5 print:text-xs">
+              {eventTitle} — {departmentName}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 print:grid-cols-2 print:gap-x-6 print:gap-y-4">
+            {namedGroups.map((group) => (
+              <div key={group.title} className="break-inside-avoid">
+                <div
+                  className="flex items-baseline gap-2 border-l-4 pl-2 mb-1.5 print:mb-2"
+                  style={{ borderColor: group.accent }}
+                >
+                  <h3 className="text-xs font-black uppercase tracking-wide text-slate-900 print:text-[11px]">
+                    {group.title}
+                  </h3>
+                  <span className="text-[10px] font-semibold text-slate-500 print:text-[9px]">
+                    {group.subtitle}
+                  </span>
+                </div>
+                <table className="w-full text-left text-[11px] print:text-[10px]">
+                  <tbody>
+                    {group.rows.map((r) => (
+                      <tr key={r.seatNumber} className="align-baseline border-b border-slate-100 last:border-0">
+                        <td className="py-0.5 pr-2 font-mono font-black text-slate-900 whitespace-nowrap print:py-1">
+                          {r.seatNumber}
+                        </td>
+                        <td className="py-0.5 print:py-1">
+                          <span className="font-bold text-slate-900">{r.name}</span>
+                          {r.detail && (
+                            <span className="block text-slate-600 text-[10px] print:text-[9px] leading-tight">
+                              {r.detail}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

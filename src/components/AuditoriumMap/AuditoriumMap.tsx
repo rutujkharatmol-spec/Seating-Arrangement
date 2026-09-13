@@ -109,6 +109,10 @@ export function getSeatCoordinates(seat: Seat): { x: number; y: number } {
     if (seat.row === 'A') {
       return { x: 817 - (seat.col - 1) * 28, y };
     }
+    // Row P is numbered P1–P6 but sits one seat in from the wall.
+    if (seat.row === 'P') {
+      return { x: 873 - seat.col * 28, y };
+    }
     return { x: 873 - (seat.col - 1) * 28, y };
   }
   if (seat.block === 'LOWER_CENTER') {

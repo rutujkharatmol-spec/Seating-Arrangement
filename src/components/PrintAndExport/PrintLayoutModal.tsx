@@ -3,7 +3,8 @@ import { Seat, Attendee, Volunteer, CategoryInfo } from '../../types/seating';
 import { PrintableChart } from './PrintableChart';
 import { SeatPassBadge } from './SeatPassBadge';
 import { SeatTicketSheet } from './SeatTicketSheet';
-import { Printer, Map, DoorOpen, Ticket, Scissors } from 'lucide-react';
+import { MasterAttendeeList } from './MasterAttendeeList';
+import { Printer, Map, DoorOpen, Ticket, Scissors, ListOrdered } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
 
 interface PrintLayoutModalProps {
@@ -25,7 +26,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
   totalSeats,
   categories = CATEGORIES,
 }) => {
-  const [printMode, setPrintMode] = useState<'chart' | 'gate1' | 'gate2' | 'gateExam' | 'badges' | 'tickets'>('chart');
+  const [printMode, setPrintMode] = useState<'chart' | 'master' | 'gate1' | 'gate2' | 'gateExam' | 'badges' | 'tickets'>('chart');
 
   const ticketableSeats = seats.filter((s) => !s.isBlocked);
 
@@ -57,37 +58,44 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
       badge: 'Master Chart',
     },
     {
+      id: 'master' as const,
+      icon: ListOrdered,
+      title: '2. Master Seating List',
+      description: 'Every guest with their seat number, grouped by section — for the registration desk.',
+      badge: `${attendees.length} Guests`,
+    },
+    {
       id: 'gate1' as const,
       icon: DoorOpen,
-      title: '2. Gate-1 Usher Sheet',
+      title: '3. Gate-1 Usher Sheet',
       description: 'Print for volunteers & security managing Gate-1 Entry.',
       badge: `${gate1Attendees.length} Guests`,
     },
     {
       id: 'gate2' as const,
       icon: DoorOpen,
-      title: '3. Gate-2 Usher Sheet',
+      title: '4. Gate-2 Usher Sheet',
       description: 'Print for volunteers & security managing Gate-2 Entry.',
       badge: `${gate2Attendees.length} Guests`,
     },
     {
       id: 'gateExam' as const,
       icon: DoorOpen,
-      title: '4. Exam Hall Usher Sheet',
+      title: '5. Exam Hall Usher Sheet',
       description: 'Print for volunteers & ushers managing Exam Section Hall entrance.',
       badge: `${examGateAttendees.length} Guests`,
     },
     {
       id: 'badges' as const,
       icon: Ticket,
-      title: '5. Guest Entry Passes',
+      title: '6. Guest Entry Passes',
       description: 'Print admission badges & seat passes with QR code representation.',
       badge: `${attendees.length} Passes`,
     },
     {
       id: 'tickets' as const,
       icon: Scissors,
-      title: '6. Seat Tickets (cut & hand out)',
+      title: '7. Seat Tickets (cut & hand out)',
       description: 'One ticket per seat, 8 per A4 page. Filter by section, area or empty seats.',
       badge: `${ticketableSeats.length} Seats`,
     },
@@ -178,7 +186,18 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
           />
         )}
 
-        {/* 2. GATE 1 USHER LIST */}
+        {/* 2. MASTER SEATING LIST */}
+        {printMode === 'master' && (
+          <MasterAttendeeList
+            seats={seats}
+            attendees={attendees}
+            eventTitle={eventTitle}
+            departmentName={departmentName}
+            categories={categories}
+          />
+        )}
+
+        {/* 3. GATE 1 USHER LIST */}
         {printMode === 'gate1' && (
           <div className="bg-white text-slate-900 p-8 max-w-4xl mx-auto rounded-3xl shadow-sm border border-slate-300 print:shadow-none print:border-0 print:p-0">
             <div className="border-b-2 border-emerald-700 pb-3 mb-4">

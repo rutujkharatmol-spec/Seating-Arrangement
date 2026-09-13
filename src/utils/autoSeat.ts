@@ -59,8 +59,8 @@ function colRank(seat: Seat): number {
       return seat.col - aisle;
     }
     default: {
-      // Right wing: inner aisle is seat 5 for Row A, 7 for other rows
-      const aisle = seat.row === 'A' ? 5 : 7;
+      // Right wing: inner aisle is seat 5 for Row A, 6 for Row P, 7 elsewhere
+      const aisle = seat.row === 'A' ? 5 : seat.row === 'P' ? 6 : 7;
       return Math.abs(seat.col - aisle);
     }
   }

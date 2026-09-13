@@ -5,10 +5,10 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     id: 'vip',
     name: 'VIP & Dignitaries',
     shortName: 'VIP',
-    color: '#4ade80',       // Vivid Emerald Green
-    textColor: '#14532d',
-    borderColor: '#16a34a',
-    description: 'Chief guests and dignitaries (Middle Rows C–D, 26 seats)',
+    color: '#c084fc',       // Royal Purple
+    textColor: '#3b0764',
+    borderColor: '#7e22ce',
+    description: 'Chief guests and dignitaries (Middle Rows B–C, 26 seats)',
     defaultCount: 26,
     priority: 1,
     recommendedGate: 'Gate-1 or Gate-2',
@@ -99,8 +99,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#fbbf24',       // Sunflower Yellow
     textColor: '#713f12',
     borderColor: '#d97706',
-    description: 'Professors, Additional/Associate/Assistant Professors (Middle Rows E–R, 175 seats)',
-    defaultCount: 175,
+    description: 'Professors, Additional/Associate/Assistant Professors (Middle Rows D–R, 195 seats)',
+    defaultCount: 195,
     priority: 8,
     recommendedGate: 'Gate-1 or Gate-2',
     isCustom: false,
@@ -164,8 +164,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#e2e8f0',       // Slate Gray
     textColor: '#475569',
     borderColor: '#94a3b8',
-    description: 'Seats kept blank (Middle Rows Q–U, 60 seats)',
-    defaultCount: 60,
+    description: 'Seats kept blank (Middle Rows S–U, 37 seats)',
+    defaultCount: 37,
     priority: 13,
     recommendedGate: 'Gate-1 or Gate-2',
     isCustom: false,
