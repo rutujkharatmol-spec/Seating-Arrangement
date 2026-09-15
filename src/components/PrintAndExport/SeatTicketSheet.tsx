@@ -27,7 +27,9 @@ import {
   MapPin,
   QrCode,
   LucideIcon,
+  Sparkles,
 } from 'lucide-react';
+import { SAMPLE_TICKETS, ALL_SAMPLE_SEATS } from '../../data/sampleTickets';
 
 interface SeatTicketSheetProps {
   seats: Seat[];
@@ -68,11 +70,14 @@ const SECTION_ICON: Record<string, LucideIcon> = {
   mbbs: GraduationCap,
   nursing: HeartPulse,
   pg: Stethoscope,
+  awardees: Award,
   accompanying: Users,
   reporters: Camera,
   admin_staff: Briefcase,
   it_staff: Monitor,
   guide: Compass,
+  accessible: HeartPulse,
+  available: Armchair,
 };
 
 type Occupancy = 'all' | 'named' | 'empty';
@@ -101,6 +106,8 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
   const [picked, setPicked] = useState<Set<string>>(new Set());
   /** null until Generate is pressed — nothing prints before that. */
   const [generated, setGenerated] = useState<Seat[] | null>(null);
+  const [isSampleMode, setIsSampleMode] = useState(false);
+  const [sampleCategoryFilter, setSampleCategoryFilter] = useState<string>('all');
 
   // Blocked seats are not for sitting, so they never get a ticket.
   const printable = useMemo(() => seats.filter((s) => !s.isBlocked), [seats]);
@@ -158,7 +165,20 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
     });
 
   const generate = (list: Seat[]) => {
+    setIsSampleMode(false);
     setGenerated([...list].sort(bySeatOrder));
+    window.setTimeout(() => {
+      document.querySelector('.ticket-page')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  };
+
+  const handleGenerateSamplePack = (catFilter = 'all') => {
+    setIsSampleMode(true);
+    setSampleCategoryFilter(catFilter);
+    const chosen = catFilter === 'all'
+      ? ALL_SAMPLE_SEATS
+      : ALL_SAMPLE_SEATS.filter((s) => s.categoryId === catFilter || s.id === catFilter);
+    setGenerated(chosen);
     window.setTimeout(() => {
       document.querySelector('.ticket-page')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 60);
@@ -182,18 +202,46 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
       <div className="space-y-4 print:space-y-0">
         <div className="no-print bg-white border border-slate-300 rounded-2xl p-4 shadow-sm flex flex-wrap items-center gap-3">
           <button
-            onClick={() => setGenerated(null)}
+            onClick={() => {
+              setGenerated(null);
+              setIsSampleMode(false);
+            }}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
-            Change selection
+            {isSampleMode ? 'Back to Auditorium Seats' : 'Change selection'}
           </button>
 
-          <div className="flex items-center gap-2 text-xs font-bold text-purple-900 bg-purple-50 border border-purple-200 rounded-xl px-3 py-2">
-            <Ticket className="w-4 h-4 text-purple-600" />
-            {generated.length} ticket{generated.length === 1 ? '' : 's'} ready · {pages.length} page
-            {pages.length === 1 ? '' : 's'}
-          </div>
+          {isSampleMode ? (
+            <div className="flex items-center gap-2 text-xs font-black text-amber-950 bg-amber-100/90 border border-amber-300 rounded-xl px-3 py-2 shadow-2xs">
+              <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>Sample Ticket Pack: 1 of Each Type ({generated.length} ticket{generated.length === 1 ? '' : 's'})</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-xs font-bold text-purple-900 bg-purple-50 border border-purple-200 rounded-xl px-3 py-2">
+              <Ticket className="w-4 h-4 text-purple-600" />
+              {generated.length} ticket{generated.length === 1 ? '' : 's'} ready · {pages.length} page
+              {pages.length === 1 ? '' : 's'}
+            </div>
+          )}
+
+          {isSampleMode && (
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">
+              <span className="text-[10px] text-slate-500 uppercase tracking-wider">Type Filter:</span>
+              <select
+                value={sampleCategoryFilter}
+                onChange={(e) => handleGenerateSamplePack(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-800 cursor-pointer"
+              >
+                <option value="all">All Types ({ALL_SAMPLE_SEATS.length} Tickets)</option>
+                {SAMPLE_TICKETS.map((item) => (
+                  <option key={item.id} value={item.seat.categoryId}>
+                    {item.categoryName} ({item.badgeLabel})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
             <Scissors className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -205,7 +253,7 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
             className="ml-auto flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition active:scale-95 cursor-pointer"
           >
             <Printer className="w-4 h-4" />
-            Print these tickets
+            Print {isSampleMode ? 'Sample Tickets' : 'these tickets'}
           </button>
         </div>
 
@@ -236,6 +284,39 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
   // ------------------------------------------------------------ selection view
   return (
     <div className="no-print space-y-4">
+      {/* Sample Tickets Quick Showcase Card */}
+      <div className="bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-indigo-500/10 border border-purple-200 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-2xs">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-2xl bg-gradient-to-br from-amber-500 to-purple-600 text-white shadow-xs shrink-0">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-black text-slate-900">
+                Sample Ticket Pack (1 of Each Type)
+              </h3>
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                Faculty · Admin · VIP · MBBS · Press + 9 more
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Instantly preview or test-print a full sheet showing one genuine ticket for every category type with authentic roles, badges, QR codes & stubs.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => handleGenerateSamplePack('all')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-sm transition active:scale-95 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Preview Sample Pack ({ALL_SAMPLE_SEATS.length} Tickets)</span>
+          </button>
+        </div>
+      </div>
+
       <div className="bg-white border border-slate-300 rounded-2xl p-4 shadow-sm space-y-3">
         <div className="flex flex-wrap items-end gap-3">
           <div>
@@ -390,8 +471,17 @@ export const SeatTicketSheet: React.FC<SeatTicketSheetProps> = ({
             Generate all {shown.length} shown
           </button>
 
+          <button
+            type="button"
+            onClick={() => handleGenerateSamplePack('all')}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md transition active:scale-95 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-white" />
+            Sample Pack (1 of Each Type)
+          </button>
+
           <p className="text-[11px] text-slate-500">
-            Tick rows for one-off tickets, or generate a whole group at once.
+            Tick rows for one-off tickets, or generate a whole group or sample pack at once.
           </p>
         </div>
       </div>
@@ -469,7 +559,11 @@ function splitName(fullName: string): { givenName: string; surname: string } {
   return { givenName, surname };
 }
 
-const SeatTicket: React.FC<{
+/**
+ * One cut-and-hand-out ticket. Exported so the walk-in desk prints the very
+ * same design as this sheet rather than a second, slightly different one.
+ */
+export const SeatTicket: React.FC<{
   seat: Seat;
   eventTitle: string;
   categories: Record<string, CategoryInfo>;
@@ -497,8 +591,26 @@ const SeatTicket: React.FC<{
       ? 'Honourable Dignitary'
       : seat.categoryId === 'faculty'
       ? 'Distinguished Faculty'
-      : seat.categoryId.startsWith('mbbs') || seat.categoryId === 'nursing' || seat.categoryId === 'pg'
-      ? 'Graduating Scholar'
+      : seat.categoryId === 'admin_staff'
+      ? 'Administrative Staff'
+      : seat.categoryId === 'awardees'
+      ? 'Merit Awardee'
+      : seat.categoryId === 'reporters'
+      ? 'Accredited Media & Press'
+      : seat.categoryId === 'it_staff'
+      ? 'Technical Specialist'
+      : seat.categoryId === 'guide'
+      ? 'Event Guide / Usher'
+      : seat.categoryId === 'accessible'
+      ? 'Special Assisted Guest'
+      : seat.categoryId.startsWith('mbbs')
+      ? 'Graduating MBBS Scholar'
+      : seat.categoryId === 'nursing'
+      ? 'Graduating Nursing Scholar'
+      : seat.categoryId === 'pg'
+      ? 'Resident Doctor (PG)'
+      : seat.categoryId === 'accompanying'
+      ? 'Honoured Family & Guardian'
       : 'Honoured Guest'
     : 'Auditorium Seat Pass';
 

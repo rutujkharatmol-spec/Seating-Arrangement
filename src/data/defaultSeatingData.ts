@@ -17,7 +17,7 @@ import { Seat, CategoryId, BlockType, TierType } from '../types/seating';
  * Bump whenever the zone rules change. Any saved plan (cloud, snapshot or
  * browser cache) carrying an older version is moved onto the new layout once.
  */
-export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-13-faculty-from-row-d';
+export const CONVOCATION_LAYOUT_VERSION = 'convocation-2026-09-15-two-chairs-to-parents';
 
 const LOWER_ROW_LIST = [
   'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M',
@@ -177,8 +177,8 @@ export interface ZoneCounts {
 
 /** From the organising committee's summary sheet (PDF). */
 export const DEFAULT_ZONE_COUNTS: ZoneCounts = {
-  faculty: 195,  // Center rows D–R (15×13 = 195 seats)
-  nursing: 41,   // Left U–X (28) + Center W (13) = 41 capacity, 4 rank holders moved to awardees
+  faculty: 193,  // Center rows D–R, less R19–R20 (195 − 2 = 193 seats)
+  nursing: 37,   // Left U–X (28) + Center W12–W20 (9) = 37 capacity, 4 rank holders moved to awardees
   mbbs: 105,     // Left rows C–I and M–T (104 capacity), 3 rank holders moved to awardees
 };
 
@@ -208,10 +208,19 @@ const LEFT_WING_PLAN: ZoneSegment[] = [
 
 const MIDDLE_BLOCK_PLAN: ZoneSegment[] = [
   { categoryId: 'vip', seats: 26 },       // Rows B–C — dignitaries, deans and registrar
-  { categoryId: 'faculty', seats: 195 },  // Rows D–R
-  { categoryId: 'available', seats: 37 }, // Rows S–T, then 11 of row U
+  { categoryId: 'faculty', seats: 193 },  // Rows D–R, less the last two chairs
+  // The last two chairs of the faculty block (R19–R20) stood empty — faculty
+  // reaches only row O — and go to the two guests who would otherwise sit in
+  // the Exam Hall. They adjoin the parents' rows directly behind them, and no
+  // one on the faculty list moves.
+  { categoryId: 'accompanying', seats: 39 }, // R19–R20, rows S–T, then 11 of row U
   { categoryId: 'pg', seats: 15 },        // Last 2 of row U + row V — right in front of nursing
-  { categoryId: 'nursing', seats: 13 },   // Row W
+  // Row W splits: the four chairs nearest the right aisle (W8–W11) join the
+  // parents' block beside them, and nursing keeps W12–W20, which runs straight
+  // on into the left wing across the aisle. The four nursing graduates this
+  // displaces move to the left wing's own spare chairs, X8–X11.
+  { categoryId: 'accompanying', seats: 4 }, // W8–W11
+  { categoryId: 'nursing', seats: 9 },      // W12–W20
 ];
 
 const RIGHT_WING_PLAN: ZoneSegment[] = [
@@ -227,7 +236,7 @@ const RIGHT_WING_PLAN: ZoneSegment[] = [
  *
  * - Balcony: parents (132).
  * - Right wing: reporters 26, admin 30, parents 109.
- * - Middle block: VIP 26, faculty 195, blank 37, PG 15, nursing 13
+ * - Middle block: VIP 26, faculty 193, parents 39, PG 15, parents 4, nursing 9
  *   (PG sits immediately in front of nursing, with no gap between them).
  * - Left wing: guide 5, wheelchair 2, awardees 7, MBBS 49, IT staff 21, MBBS 55,
  *   nursing 28.
@@ -321,15 +330,15 @@ export const INITIAL_QUESTIONNAIRE_ANSWERS = {
   departmentName: 'Convocation Organizing Committee',
   numVip: 26,             // Center rows B–C
   numSeniorFaculty: 0,
-  numFaculty: 195,        // Center rows D–R
+  numFaculty: 193,        // Center rows D–R, less R19–R20
   numAwardees: 7,       // Left wing Row B — rank holders & best outgoing students
   numReporters: 26,       // Right rows A–D
-  numAccompanying: 341,   // Balcony (132) + Right rows I–X (109) + Exam Section Hall (100)
+  numAccompanying: 384,   // Balcony (132) + Centre R19–R20 and rows S–U (39) + Centre W8–W11 (4) + Right rows I–X (109) + Exam Section Hall (100)
   numBandParty: 0,
   numConsole: 0,
   numBlocked: 0,
-  numAudience: 280,       // Admin(30), IT staff(21), MBBS(104), nursing(41), PG(15), guide(5), awardees(7), wheelchair(2), blank(37)
+  numAudience: 239,       // Admin(30), IT staff(21), MBBS(104), nursing(37), PG(15), guide(5), awardees(7), wheelchair(2)
   totalSeats: 850,        // Main Auditorium (750) + Exam Section Hall (100)
-  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (750 seats, Balcony: 132 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP and visiting dignitaries in center rows B–C, faculty in center rows D–R, reporters in right rows A–D, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center back, PG in center rows U–V, guides in left row A, rank holders in left row B.',
+  notes: 'AIIMS Kalyani Convocation layout: Main Auditorium (750 seats, Balcony: 132 seats) + Exam Section Hall (100 seats: 10x10 for overflow parents), VIP and visiting dignitaries in center rows B–C, faculty in center rows D–R, reporters in right rows A–D, admin in right mid-front, IT staff in left middle, MBBS in left (split around IT), nursing in left back + center W12–W20, PG in center rows U–V, guides in left row A, rank holders in left row B, overflow parents in center rows S–U.',
 };
 

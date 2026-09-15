@@ -39,11 +39,12 @@ import { AutoSeatByDesignationModal } from './components/AttendeeRoster/AutoSeat
 import { assignSeatsByDesignationOrder } from './utils/designationHierarchy';
 import { PrintLayoutModal } from './components/PrintAndExport/PrintLayoutModal';
 import { SeatTrackerKiosk } from './components/Kiosk/SeatTrackerKiosk';
+import { WalkInTicketDesk } from './components/Tickets/WalkInTicketDesk';
 import { AdminPinGate } from './components/Auth/AdminPinGate';
 import { CloudSyncModal } from './components/UI/CloudSyncModal';
 import { publishPlanToCloud, fetchLiveCloudPlan } from './services/cloudSync';
 
-type TabId = 'map' | 'editor' | 'roster' | 'print';
+type TabId = 'map' | 'editor' | 'roster' | 'tickets' | 'print';
 
 /**
  * Joins the searchable fields of a seat. A typed query can never contain NUL,
@@ -656,6 +657,35 @@ export function App() {
     showToast(`Added ${newAttendee.name} to roster`);
   };
 
+  /**
+   * A pass handed out at the door. The chair is already chosen from the free
+   * ones, so this only appends to the roster — nobody seated is touched.
+   */
+  const handleIssueWalkInTicket = (newAttendee: Attendee) => {
+    let committedPlan: PlanState | null = null;
+    plan.commit((p) => {
+      committedPlan = { ...p, attendees: [...p.attendees, newAttendee] };
+      return committedPlan;
+    }, `Issue ticket for ${newAttendee.name}`);
+    showToast(
+      newAttendee.seatId
+        ? `Ticket issued — ${newAttendee.name}, seat ${newAttendee.seatId}`
+        : `Ticket issued — ${newAttendee.name} (no seat)`
+    );
+    if (committedPlan) publishPlanToCloud(committedPlan).catch(() => {});
+  };
+
+  const handleCancelWalkInTicket = (attendeeId: string) => {
+    let committedPlan: PlanState | null = null;
+    const target = attendees.find((a) => a.id === attendeeId);
+    plan.commit((p) => {
+      committedPlan = { ...p, attendees: p.attendees.filter((a) => a.id !== attendeeId) };
+      return committedPlan;
+    }, `Cancel ticket for ${target?.name || 'guest'}`);
+    showToast(`Cancelled ticket for ${target?.name || 'guest'}`, 'info');
+    if (committedPlan) publishPlanToCloud(committedPlan).catch(() => {});
+  };
+
   const handleUpdateAttendee = (updated: Attendee) => {
     plan.commit(
       (p) => ({
@@ -1095,6 +1125,18 @@ export function App() {
             onClearSeat={handleClearSeat}
             eventTitle={answers.eventTitle}
             categories={categories}
+          />
+        )}
+
+        {activeTab === 'tickets' && (
+          <WalkInTicketDesk
+            seats={seatsWithPeople}
+            attendees={attendees}
+            categories={categories}
+            eventTitle={answers.eventTitle}
+            departmentName={answers.departmentName}
+            onIssue={handleIssueWalkInTicket}
+            onUndoIssue={handleCancelWalkInTicket}
           />
         )}
 

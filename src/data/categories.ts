@@ -60,8 +60,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#f472b6',       // Rose Pink
     textColor: '#831843',
     borderColor: '#db2777',
-    description: 'B.Sc (Hons) and M.Sc Nursing graduates (Left Wing Rows T–X and Middle Row W, 45 seats)',
-    defaultCount: 45,
+    description: 'B.Sc (Hons) and M.Sc Nursing graduates (Left Wing Rows U–X and Middle Row W12–W20, 37 seats)',
+    defaultCount: 37,
     priority: 5,
     recommendedGate: 'Gate-2 or Balcony Gate',
     isCustom: false,
@@ -86,8 +86,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#c7d2fe',       // Soft Lavender
     textColor: '#312e81',
     borderColor: '#4f46e5',
-    description: 'Parents and guardians (whole Balcony, Right Wing Row A and Rows I–X, 247 seats)',
-    defaultCount: 247,
+    description: 'Parents and guardians (whole Balcony, Centre R19–R20, Rows S–U and W8–W11, Right Wing Rows I–X and the Exam Section Hall, 384 seats)',
+    defaultCount: 384,
     priority: 7,
     recommendedGate: 'Gate-1',
     isCustom: false,
@@ -99,8 +99,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#fbbf24',       // Sunflower Yellow
     textColor: '#713f12',
     borderColor: '#d97706',
-    description: 'Professors, Additional/Associate/Assistant Professors (Middle Rows D–R, 195 seats)',
-    defaultCount: 195,
+    description: 'Professors, Additional/Associate/Assistant Professors (Middle Rows D–R, less R19–R20, 193 seats)',
+    defaultCount: 193,
     priority: 8,
     recommendedGate: 'Gate-1 or Gate-2',
     isCustom: false,
@@ -164,8 +164,8 @@ export const CATEGORIES: Record<string, CategoryInfo> = {
     color: '#e2e8f0',       // Slate Gray
     textColor: '#475569',
     borderColor: '#94a3b8',
-    description: 'Seats kept blank (Middle Rows S–U, 37 seats)',
-    defaultCount: 37,
+    description: 'Seats with no section assigned yet',
+    defaultCount: 0,
     priority: 13,
     recommendedGate: 'Gate-1 or Gate-2',
     isCustom: false,

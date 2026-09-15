@@ -11,8 +11,9 @@ const SeatTicketSheet = lazy(() =>
   import('./SeatTicketSheet').then((m) => ({ default: m.SeatTicketSheet }))
 );
 import { MasterAttendeeList } from './MasterAttendeeList';
-import { Printer, Map as MapIcon, DoorOpen, Ticket, Scissors, ListOrdered } from 'lucide-react';
+import { Printer, Map as MapIcon, DoorOpen, Ticket, Scissors, ListOrdered, Sparkles } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
+import { SAMPLE_TICKETS } from '../../data/sampleTickets';
 
 interface PrintLayoutModalProps {
   seats: Seat[];
@@ -34,6 +35,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
   categories = CATEGORIES,
 }) => {
   const [printMode, setPrintMode] = useState<'chart' | 'master' | 'gate1' | 'gate2' | 'gateExam' | 'badges' | 'tickets'>('chart');
+  const [badgeViewMode, setBadgeViewMode] = useState<'roster' | 'samples'>('roster');
 
   /**
    * Seat id -> seat. The three usher sheets and the badge sheet each ran
@@ -132,7 +134,7 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
       id: 'tickets' as const,
       icon: Scissors,
       title: '7. Seat Tickets (cut & hand out)',
-      description: 'One ticket per seat, 8 per A4 page. Filter by section, area or empty seats.',
+      description: 'One ticket per seat, 8 per A4 page. Includes 1-click Sample Pack preview (Faculty, Admin, VIP, etc.).',
       badge: `${ticketableSeats.length} Seats`,
     },
   ];
@@ -377,22 +379,67 @@ export const PrintLayoutModal: React.FC<PrintLayoutModalProps> = ({
           </div>
         )}
 
-        {/* 5. SEAT PASS BADGES */}
+        {/* 6. SEAT PASS BADGES */}
         {printMode === 'badges' && (
-          <div className="flex flex-wrap gap-4 justify-center">
-            {attendees.map((att) => {
-              const seat = att.seatId ? seatById.get(att.seatId) : undefined;
-              return (
-                <SeatPassBadge
-                  key={att.id}
-                  attendee={att}
-                  seat={seat}
-                  eventTitle={eventTitle}
-                  departmentName={departmentName}
-                  categories={categories}
-                />
-              );
-            })}
+          <div className="space-y-4">
+            <div className="no-print flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-300 p-3.5 rounded-2xl shadow-2xs">
+              <div className="flex items-center gap-2">
+                <Ticket className="w-4 h-4 text-purple-600" />
+                <span className="text-xs font-black text-slate-900">Pass Mode:</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setBadgeViewMode('roster')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    badgeViewMode === 'roster'
+                      ? 'bg-purple-600 text-white shadow-2xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  All Guest Passes ({attendees.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBadgeViewMode('samples')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    badgeViewMode === 'samples'
+                      ? 'bg-amber-600 text-white shadow-2xs'
+                      : 'bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  Sample Pack: 1 of Each Type ({SAMPLE_TICKETS.filter((t) => t.seat.attendee).length})
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4 justify-center">
+              {badgeViewMode === 'samples'
+                ? SAMPLE_TICKETS.filter((t) => t.seat.attendee).map((t) => (
+                    <SeatPassBadge
+                      key={t.id}
+                      attendee={t.seat.attendee!}
+                      seat={t.seat}
+                      eventTitle={eventTitle}
+                      departmentName={departmentName}
+                      categories={categories}
+                    />
+                  ))
+                : attendees.map((att) => {
+                    const seat = att.seatId ? seatById.get(att.seatId) : undefined;
+                    return (
+                      <SeatPassBadge
+                        key={att.id}
+                        attendee={att}
+                        seat={seat}
+                        eventTitle={eventTitle}
+                        departmentName={departmentName}
+                        categories={categories}
+                      />
+                    );
+                  })}
+            </div>
           </div>
         )}
 

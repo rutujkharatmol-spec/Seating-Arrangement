@@ -19,13 +19,14 @@ import {
   FileSpreadsheet,
   Cloud,
   Lock,
+  TicketPlus,
 } from 'lucide-react';
 import { PRESET_TEMPLATES } from '../data/presetTemplates';
 import { SeatingPreset } from '../types/seating';
 
 export interface HeaderProps {
-  activeTab: 'map' | 'editor' | 'roster' | 'print';
-  setActiveTab: (tab: 'map' | 'editor' | 'roster' | 'print') => void;
+  activeTab: 'map' | 'editor' | 'roster' | 'tickets' | 'print';
+  setActiveTab: (tab: 'map' | 'editor' | 'roster' | 'tickets' | 'print') => void;
   eventTitle: string;
   departmentName: string;
   totalSeats: number;
@@ -148,6 +149,18 @@ export const Header: React.FC<HeaderProps> = ({
                 {rosterCount}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('tickets')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+              activeTab === 'tickets'
+                ? 'bg-white text-blue-700 shadow-xs border border-slate-200/80'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <TicketPlus className="w-3.5 h-3.5 text-amber-600" />
+            <span>Ticket Desk</span>
           </button>
 
           <button
