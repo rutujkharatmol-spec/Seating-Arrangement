@@ -19860,19 +19860,6 @@
       "seatId": "X1",
       "seatLock": true,
       "notes": "Friend of PEEYUSH KIRAN TRIPATHY | Guest 2 of 2"
-    },
-    {
-      "id": "att-walkin-1789433436983-z3f3p",
-      "name": "r",
-      "designation": "Faculty",
-      "department": "",
-      "institution": "AIIMS Kalyani",
-      "email": "",
-      "phone": "",
-      "categoryId": "faculty",
-      "seatLock": true,
-      "isVip": false,
-      "notes": "Issued at the desk on 9/15/2026, 6:20:36 AM"
     }
   ],
   "volunteers": [
@@ -20189,5 +20176,5 @@
     }
   },
   "layoutVersion": "convocation-2026-09-15-two-chairs-to-parents",
-  "_publishedAt": "2026-09-15T00:53:00.664Z"
+  "_publishedAt": "2026-09-15T01:50:29.000Z"
 }

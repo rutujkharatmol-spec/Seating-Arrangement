@@ -27,7 +27,8 @@ import {
   Cloud,
   ChevronRight,
   Send,
-  Navigation
+  Navigation,
+  Users
 } from 'lucide-react';
 import { fetchLiveCloudPlan, getMobileKioskUrl } from '../../services/cloudSync';
 
@@ -296,6 +297,45 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
     },
     [seatById, attendeeMap, centerOnSeat]
   );
+
+  /**
+   * The rest of a guest's party. A guest record carries "Guest of <student>",
+   * which links a graduate to the people who came to watch them — so from
+   * either side we can show the whole family and where each of them is sitting.
+   */
+  const family = useMemo(() => {
+    if (!selectedAttendee) return [];
+    const nameOf = (a: Attendee) => {
+      const m = /^Guest of (.*)$/i.exec((a.department || '').trim());
+      return m ? m[1].trim().toUpperCase() : null;
+    };
+    const relationOf = (a: Attendee) => {
+      const first = (a.notes || '').split('|')[0].trim();
+      const m = /^(.+?)\s+of\s+/i.exec(first);
+      if (!m) return 'Guest';
+      const word = m[1].trim();
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    };
+
+    const hostName = nameOf(selectedAttendee);
+    // Viewing a guest: show the graduate, then the other guests in the party.
+    // Viewing a graduate: show their guests.
+    const host = hostName
+      ? liveAttendees.find((a) => a.name.trim().toUpperCase() === hostName)
+      : selectedAttendee;
+    if (!host) return [];
+
+    const hostKey = host.name.trim().toUpperCase();
+    const guests = liveAttendees.filter((a) => nameOf(a) === hostKey);
+    const party = [
+      { person: host, label: host.designation || 'Graduate' },
+      ...guests.map((g) => ({ person: g, label: relationOf(g) })),
+    ];
+
+    return party
+      .filter((m) => m.person.id !== selectedAttendee.id)
+      .map((m) => ({ ...m, seat: m.person.seatId ? seatById.get(m.person.seatId) : undefined }));
+  }, [selectedAttendee, liveAttendees, seatById]);
 
   const handleSelectSeatOnly = useCallback(
     (seat: Seat) => {
@@ -741,6 +781,52 @@ export const SeatTrackerKiosk: React.FC<SeatTrackerKioskProps> = ({
                   )}
                 </ol>
               </div>
+
+              {/* Where the rest of the family is sitting */}
+              {family.length > 0 && (
+                <div className="bg-violet-50/70 border border-violet-200 p-3.5 rounded-2xl space-y-2">
+                  <div className="text-[11px] font-extrabold text-violet-900 flex items-center gap-1.5 uppercase tracking-wider">
+                    <Users className="w-4 h-4 text-violet-600" />
+                    <span>Your family is sitting here</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {family.map(({ person, label, seat }) => (
+                      <button
+                        key={person.id}
+                        type="button"
+                        onClick={() => handleSelectAttendee(person)}
+                        className="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white border border-violet-200 hover:border-violet-400 hover:bg-violet-50 text-left transition cursor-pointer active:scale-98"
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-[10px] font-black uppercase tracking-wider text-violet-700">
+                            {label}
+                          </span>
+                          <span className="block text-sm font-bold text-slate-900 truncate">
+                            {person.name}
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-right">
+                          {seat ? (
+                            <>
+                              <span className="block font-mono font-black text-sm text-violet-900">
+                                {seat.id}
+                              </span>
+                              <span className="block text-[9px] text-slate-500 font-semibold">
+                                {seat.gateRecommendation}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-[10px] text-amber-600 font-bold">No seat</span>
+                          )}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-violet-700/80">
+                    Tap any name to see their seat and directions.
+                  </p>
+                </div>
+              )}
 
               {/* Mobile Actions: Copy Pass, View Map, Share on WhatsApp */}
               <div className="flex flex-wrap items-center gap-2 pt-1">

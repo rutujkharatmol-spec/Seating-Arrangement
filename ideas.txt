@@ -1,0 +1,249 @@
+===============================================================================
+AIIMS KALYANI - 2nd CONVOCATION SEATING WEBAPP
+Ideas and plan for making it a top-notch, professional product
+-------------------------------------------------------------------------------
+Written: 15 September 2026, 06:30 IST
+===============================================================================
+
+
+-------------------------------------------------------------------------------
+0. THE TIMING REALITY - READ THIS FIRST
+-------------------------------------------------------------------------------
+
+The convocation is TODAY: Tuesday 15 September 2026. The registration form's
+bus-drop question confirms it - "Bus Drop Service Required on 15.09.2026 at
+8:00 PM?".
+
+That means there is roughly one working day, not a project runway. Everything
+below is therefore split into:
+
+  (A) what makes you look good TONIGHT, and
+  (B) what makes this remarkable AFTERWARDS.
+
+Shipping new features on the day of the event is how demos break. Reliability
+is the impressive thing today.
+
+
+-------------------------------------------------------------------------------
+1. THE RISK THAT COULD ACTUALLY EMBARRASS YOU, TODAY
+-------------------------------------------------------------------------------
+
+Every printed ticket carries a QR code pointing at:
+
+    https://seating-arrangement-o1dn.vercel.app/seattracker
+
+That page loads the seating plan in this order:
+
+    1. Neon cloud database
+    2. /api/plan
+    3. the bundled file  public/live-seating-plan.json
+
+PROBLEM: Neon is returning HTTP 402 (quota / billing exhausted). It failed on
+every single page load during testing. So the live database is effectively
+dead, and phones fall back to the bundled snapshot.
+
+The bundled snapshot ONLY updates WHEN YOU REDEPLOY.
+
+The plan changed a great deal today:
+    - students   171 -> 160
+    - guests     302 -> 284
+    - Exam Hall   61 -> 0 people
+
+  >> If the deployed site is still serving the old plan, every QR code on
+  >> every ticket sends a parent to the WRONG SEAT.
+
+*** VERIFIED 15.09.2026, 06:45 IST - THIS RISK IS CLEARED. ***
+    Commit 1d7f80e was pushed and Vercel auto-deployed. Checks done:
+      - /live-seating-plan.json returns real JSON, not the HTML shell, so the
+        vercel.json rewrite concern was unfounded.
+      - Deployed values match the final layout exactly:
+        numFaculty 193, numAccompanying 384, numAudience 239.
+      - Four live guest lookups on the production kiosk all returned the
+        correct seat:
+            SHARMISTHA ROUT   -> B27   (awardee, protected chair)
+            Zinadin Zidan T K -> T23
+            Noorjahan Khan    -> R19
+            MERLIN SABU       -> R20
+    The QR code on every ticket points at the right seat. SAFE TO PRINT.
+
+    Keep the steps below for any future redeploy.
+
+ACTION - DO THIS BEFORE PRINTING ANYTHING (or after any change):
+    a) Open the production URL on a phone.
+    b) Search for a name you know and check the seat matches the new plan.
+    c) If it does not match - REDEPLOY FIRST.
+    d) Also check that
+         https://seating-arrangement-o1dn.vercel.app/live-seating-plan.json
+       returns JSON and not the HTML page. (vercel.json rewrites /(.*) to
+       /index.html, so this is worth 30 seconds of checking.)
+
+Secondary note: because Neon is down, any edit made on the organiser laptop
+today stays on that laptop. It will NOT reach the guests' phones. Plan around
+that - treat the printed sheets as the source of truth on the day.
+
+
+-------------------------------------------------------------------------------
+2. FREE WINS TODAY - ZERO NEW CODE
+-------------------------------------------------------------------------------
+
+1. PUT THE KIOSK ON A SCREEN AT EACH GATE.
+   The guest kiosk already searches by name, roll number and seat number. A
+   laptop at Gate-1 and another at Gate-2, both in full screen, and parents
+   stop queuing to ask ushers where to sit.
+   Biggest jump in perceived polish for no work at all.
+
+2. PRINT ALL SEVEN SHEETS NOW, while there is still time to reprint:
+       1. Full Seating Map
+       2. Master Seating List
+       3. Gate-1 Usher Sheet
+       4. Gate-2 Usher Sheet
+       5. Exam Hall Usher Sheet
+       6. Guest Entry Passes
+       7. Seat Tickets (cut & hand out)
+
+!! DO NOT RUN  npm run dev  TODAY. Use  npm run preview  instead.          !!
+!! The dev server exposes POST /api/plan, which writes whatever the browser  !!
+!! is holding straight over public/live-seating-plan.json. A test ticket for !!
+!! a guest named "r" reached the live site this way on 15.09 at 06:20 and    !!
+!! had to be removed by hand.                                               !!
+
+3. RUN THE WALK-IN TICKET DESK on a laptop with a printer at the entrance.
+   That is what committees remember: somebody turns up who is not on the list,
+   and they walk away with a real printed seat in twenty seconds.
+
+
+-------------------------------------------------------------------------------
+3. WHAT WOULD GENUINELY SET THIS APART
+-------------------------------------------------------------------------------
+
+Ranked by credit earned versus effort. None of these are safe to build TODAY.
+This is the "after the event" list - except #1 and #6, which are worth starting
+tonight while everything is still fresh.
+
+
+IDEA 1 - LIVE ARRIVAL CHECK-IN + OCCUPANCY HEATMAP          [highest impact]
+--------------------------------------------------------------------------
+Ushers tap a seat as each guest arrives. The organiser's map fills up in real
+time, with a live counter: "412 of 611 seated".
+
+Why it matters:
+  - Nobody expects this at a convocation. It is the single most impressive
+    thing you could add.
+  - It gives you an exact attendance record the moment the ceremony ends.
+  - It is a natural fit: the seat map and the attendee model already exist.
+
+Feeds directly into Idea 6.
+
+
+IDEA 2 - DIRECTIONS, NOT JUST A SEAT NUMBER
+--------------------------------------------------------------------------
+Turn "Q21" into:
+    "Gate-2  ->  up the left aisle  ->  row Q  ->  6th seat from the aisle"
+
+Every guest bringing an elderly parent will remember this. All the geometry
+needed to compute it already exists in src/data/defaultSeatingData.ts (block,
+row, column, aisle position and recommended gate are all stored per seat).
+
+
+IDEA 3 - THE TICKET AS A KEEPSAKE
+--------------------------------------------------------------------------
+All 171 students uploaded a passport-size photograph in the registration form.
+
+A pass carrying the graduate's photograph and name is something the family
+keeps. A plain stub is something they drop at the door. Same printing cost.
+
+
+IDEA 4 - "WHERE IS MY FAMILY SITTING?"   [PARTLY BUILT ALREADY]
+--------------------------------------------------------------------------
+Verified live on 15.09.2026: searching "SHARMISTHA ROUT" on the production
+kiosk already returns B27 (hers) together with T6 and T5 - her father's and
+mother's seats. The family is found by one search.
+
+So the hard part is done. What is left is presentation: label the results
+explicitly ("Your seat" / "Your father" / "Your mother") instead of leaving
+the guest to work out which seat is whose. That is a small, high-payoff
+change.
+
+
+IDEA 5 - OFFLINE-FIRST KIOSK
+--------------------------------------------------------------------------
+There is currently no service worker. If the hall wifi drops, the kiosk is a
+blank page.
+
+One service worker makes it work with no network at all. Unglamorous - and
+exactly what separates a real product from a demo.
+
+
+IDEA 6 - POST-EVENT REPORT
+--------------------------------------------------------------------------
+A single printable page for the committee the next morning:
+    - attendance by section (MBBS, Nursing, PG, faculty, parents)
+    - no-shows
+    - gate throughput
+    - Exam Hall usage
+
+This is the artefact that makes YOU look professional long after the hall has
+emptied. Pairs with Idea 1, which supplies the data.
+
+
+OTHER IDEAS WORTH CONSIDERING
+--------------------------------------------------------------------------
+  - Accessibility lane: wheelchair spaces already exist (A11, A12). Add a
+    flagged "assistance required" list so ushers know in advance.
+  - Audit trail: who changed which seat and when. Makes the committee trust
+    the system.
+  - Big-screen lobby display: rotating "find your seat" prompt plus a large
+    QR code, auto-refreshing.
+
+
+-------------------------------------------------------------------------------
+4. RECOMMENDED PLAN
+-------------------------------------------------------------------------------
+
+TODAY (before the ceremony)
+    1. Verify the production deployment serves the NEW plan.   <-- hard deadline
+    2. Print all seven sheets.
+    3. Put the kiosk on the gate screens.
+    4. Set up the Walk-in Ticket Desk with a printer.
+    5. CHANGE NOTHING ELSE.
+
+    Reliability IS the impressive thing on the day. A plan that is simply
+    correct for all 611 people - with the awardees in their exact chairs,
+    faculty untouched, and nobody exiled to the Exam Hall - is already a
+    strong piece of work.
+
+TONIGHT / TOMORROW (while it is fresh)
+    6. Build Idea 1 (live check-in) and Idea 6 (attendance report) together.
+       Live check-in during the event is the story; the report is the proof.
+
+LATER
+    7. Ideas 2, 3, 4 and 5, in that order.
+    8. Fix or replace the Neon cloud sync so live edits reach phones again.
+
+
+-------------------------------------------------------------------------------
+5. CURRENT STATE OF THE PLAN (for reference)
+-------------------------------------------------------------------------------
+
+    Total seated                611 people
+      Students                  160   (102 MBBS, 37 Nursing, 14 PG, 7 awardees)
+      Parents / guests          284
+      Faculty                   146
+      Dignitaries/guides/etc     21
+
+    Guests by area
+      Balcony                   132
+      Centre R19-R20, S-U, W8-W11  43
+      Right Wing rows I-X       109
+      Exam Section Hall           0   (empty - all 100 chairs free)
+
+    Auditorium                  750 chairs + 100 in the Exam Section Hall
+    Layout version              convocation-2026-09-15-two-chairs-to-parents
+    Validation                  38 / 38 checks passing
+
+    Known open point: 8 couples are seated one row apart at opposite ends of a
+    wing, because the main hall is exactly full (284 chairs for 284 guests).
+    Freeing about 8 more chairs anywhere in the parents' area would let each of
+    those pairs sit side by side.
+
+===============================================================================

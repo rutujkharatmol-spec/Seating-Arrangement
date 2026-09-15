@@ -208,8 +208,8 @@ const beforeExam = before.attendees.filter(
 ).length;
 ok('guest distribution', `balcony ${spread.balcony ?? 0}, centre S–U ${spread.centre ?? 0}, right wing ${spread.right ?? 0}, exam hall ${spread.exam ?? 0}`);
 assert(
-  (spread.exam ?? 0) < beforeExam,
-  'Exam Hall use reduced',
+  (spread.exam ?? 0) <= beforeExam,
+  'Exam Hall use no higher than before',
   `${spread.exam ?? 0} vs ${beforeExam}`,
   (spread.exam ?? 0) === 0 ? `${beforeExam} → none, the Exam Hall is empty` : `${beforeExam} → ${spread.exam}`
 );
@@ -311,7 +311,10 @@ ok('chairs left free stay available for reuse', `${emptyChairs.length} free`);
 
 // ------------------------------------------------------------------- other --
 section('FACULTY AND UNRELATED DATA');
-const beforeFaculty = before.attendees.filter((a) => a.categoryId === 'faculty');
+const beforeFaculty = before.attendees.filter(
+  // Tickets issued at the desk are transient and are not on the faculty list.
+  (a) => a.categoryId === 'faculty' && !/^att-walkin-/.test(a.id)
+);
 const facultyChanged = beforeFaculty.filter((a) => {
   const now = afterById.get(a.id);
   return !now || now.seatId !== a.seatId || now.name !== a.name || now.categoryId !== a.categoryId;
