@@ -1,4 +1,4 @@
-import { CategoryInfo } from '../types/seating';
+import { CategoryInfo, Volunteer } from '../types/seating';
 
 export const CATEGORIES: Record<string, CategoryInfo> = {
   vip: {
@@ -189,19 +189,9 @@ export const COLOR_SWATCH_PRESETS = [
   { color: '#fca5a5', borderColor: '#e11d48', textColor: '#881337', label: 'Rose' },
 ];
 
-export const DEFAULT_VOLUNTEERS = [
-  { id: 'v1', name: 'Dr. Arjun Sen', role: 'Upper Balcony Coordinator', location: 'Upper Left Balcony Entrance', phone: '+91 98301 11223', x: 75, y: 70, gate: 'Balcony Gate' },
-  { id: 'v2', name: 'Pooja Sharma', role: 'Upper Center Exit Usher', location: 'Upper Center Left Exit', phone: '+91 98301 22334', x: 340, y: 130, gate: 'Balcony Gate' },
-  { id: 'v3', name: 'Rahul Mondal', role: 'Upper Center Exit Usher', location: 'Upper Center Right Exit', phone: '+91 98301 33445', x: 680, y: 130, gate: 'Balcony Gate' },
-  { id: 'v4', name: 'Dr. Neha Ghosh', role: 'Upper Right Balcony Usher', location: 'Upper Right Balcony Corner', phone: '+91 98301 44556', x: 940, y: 70, gate: 'Balcony Gate' },
-  { id: 'v5', name: 'Siddharth Roy', role: 'Mid-Left Cross-Aisle Usher', location: 'Mid-Left Cross Aisle (Row M/N)', phone: '+91 98301 55667', x: 360, y: 280, gate: 'Gate-2' },
-  { id: 'v6', name: 'Ananya Paul', role: 'Mid-Right Cross-Aisle Usher', location: 'Mid-Right Cross Aisle (Row M/N)', phone: '+91 98301 66778', x: 655, y: 280, gate: 'Gate-1' },
-  { id: 'v7', name: 'Debashis Das', role: 'Outer Left Wing Usher', location: 'Left Outer Aisle (Row S/T)', phone: '+91 98301 77889', x: 45, y: 430, gate: 'Gate-2' },
-  { id: 'v8', name: 'Sneha Mukherjee', role: 'Center Block Aisle Usher', location: 'Center Aisle (Row S/T)', phone: '+91 98301 88990', x: 678, y: 430, gate: 'Gate-1' },
-  { id: 'v9', name: 'Dr. Kaushik Basu', role: 'IT & Tech Liaison', location: 'Left Aisle (Row J/K)', phone: '+91 98301 99001', x: 45, y: 660, gate: 'Gate-2' },
-  { id: 'v10', name: 'Mousumi Dey', role: 'Faculty Seating Usher', location: 'Center Aisle (Row J/K)', phone: '+91 98301 10112', x: 678, y: 660, gate: 'Gate-1' },
-  { id: 'v11', name: 'Tanmoy Banerjee', role: 'Awardees Seating Usher', location: 'Right Aisle (Row J/K)', phone: '+91 98301 21223', x: 960, y: 660, gate: 'Gate-1' },
-  { id: 'v12', name: 'Dr. Subhashree Sen', role: 'Gate-2 Lead Usher', location: 'Gate-2 Main Entry (Bottom Left)', phone: '+91 98301 32334', x: 45, y: 920, gate: 'Gate-2' },
-  { id: 'v13', name: 'Sourav Ganguly', role: 'VIP & Stage Coordinator', location: 'Center Front Aisle (Row A)', phone: '+91 98301 43445', x: 655, y: 940, gate: 'Gate-1 or Gate-2' },
-  { id: 'v14', name: 'Dr. Rituparna Bose', role: 'Gate-1 Lead Usher', location: 'Gate-1 Main Entry (Bottom Right)', phone: '+91 98301 54556', x: 960, y: 920, gate: 'Gate-1' },
-];
+/**
+ * No volunteers are defined by default. The list that used to sit here was
+ * placeholder data; real coordinators are added from the Live Editor's
+ * Volunteers tab, so nobody invented appears on the printed map.
+ */
+export const DEFAULT_VOLUNTEERS: Volunteer[] = [];
